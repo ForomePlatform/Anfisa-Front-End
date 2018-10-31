@@ -1,0 +1,142 @@
+<template>
+    <div class="variants-panel">
+        <div class="variants-panel_header">
+            <CustomToggle :isActive="!listView" :toggle="toggleView" />
+            <div class="variants-panel_count">
+                {{countCurrent}} / <b>{{countAmount}}</b>
+            </div>
+            <div v-if="!listView"
+              @click="toggleAllGroups"
+              v-bind:class="{
+                  'variants-groups_common-control': true,
+                  'variants-groups_common-control__active': !collapseAllStatus
+              }">
+                <div/>
+                <div/>
+                <div/>
+            </div>
+        </div>
+        <CustomScroll className="variants-panel_list">
+            <VariantsList v-if="listView" :data="list" :selectedItem="selectedItem" :selectItem="selectItem"/>
+            <VariantsGroups v-else :data="groups" :selectedItem="selectedItem" :selectItem="selectItem" :className="className"/>
+        </CustomScroll>
+    </div >
+</template>
+
+<script>
+import CustomToggle from './CustomToggle';
+import VariantsList from './VariantsList';
+import VariantsGroups from './VariantsGroups';
+import CustomScroll from './CustomScroll';
+
+export default {
+    name: 'VariantsPanel',
+    data: function() {
+        return {
+            collapseAllStatus: true,
+            className: 'js-toggle-control',
+        }
+    },
+    computed: {
+        countCurrent: function() {
+           return this.$store.state.filtered;
+        },
+        countAmount: function() {
+            return this.$store.state.total;
+        },
+        list: function () {
+            return this.$store.getters.list;
+        },
+        groups: function () {
+            return this.$store.getters.groups;
+        },
+        listView: function () {
+            return this.$store.state.listView;
+        },
+        selectedItem: function () {
+            return this.$store.state.selectedVariant;
+        }
+    },
+    methods: {
+        selectItem: function (id) {
+            console.log('selected item: ', id);
+            this.$store.dispatch('getVariantDetails', id);
+        },
+        toggleView: function() {
+            if (this.listView) {
+                this.collapseAllStatus = true;
+            }
+            this.$store.dispatch('toggleListView');           
+        },
+        toggleAllGroups: function () {
+            const elements = document.getElementsByClassName(this.className);
+            Array.from(elements).forEach(element => {
+                if((element.getAttribute('aria-expanded') === 'true') !== this.collapseAllStatus) {
+                    element.click();
+                }
+            });
+            this.collapseAllStatus = !this.collapseAllStatus;
+        },
+    },
+    components: {
+        CustomToggle,
+        VariantsList,
+        VariantsGroups,
+        CustomScroll,
+    },
+}
+</script>
+
+<style lang="scss" scoped>
+    .variants-panel {
+        flex-shrink: 0;
+        position: relative;
+        width: 326px;
+        height: 100%;
+        padding-bottom: 44px;
+        &_header {
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            background-color: #1a3e6c;
+            color: #ffffff;
+            height: 44px;
+        }
+        &_list {
+            background-color: #0b2341;
+            box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
+            padding: 8px 0;
+            height: 100%;
+            overflow-y: scroll;
+        }
+        &_count {
+            font-size: 13px;
+            letter-spacing: 0px;
+        }
+        
+    }
+    .variants-groups_common-control {
+        position: absolute;
+        top: 13px;
+        right: 16px;
+        cursor: pointer;
+        div {
+            width: 0;
+            height: 0;
+            border-top: 0;
+            border-right: 4px solid transparent;
+            border-bottom: 4px solid #12aaeb;
+            border-left: 4px solid transparent;
+            padding-bottom: 2px;
+        }
+        &__active {
+            padding-top: 2px;
+            div {
+                border-right: 4px solid transparent;
+                border-top: 4px solid #597a96;
+                border-left: 4px solid transparent;
+                border-bottom: 0;
+            }
+        }
+    }
+</style>
