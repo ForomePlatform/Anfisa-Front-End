@@ -17,11 +17,11 @@ import baron from 'baron';
 export default {
     name: 'CustomScroll',
     props: {
-       id: String,
+        id: String,
     },
-    mounted: function() {
+    mounted() {
         baron({
-            root: '.' + this.id,
+            root: `.${this.id}`,
             scroller: '.baron__scroller',
             bar: '.baron__bar',
             scrollingCls: '_scrolling',
@@ -29,9 +29,9 @@ export default {
             direction: 'h',
         }).controls({
             track: '.baron__track',
-        })
-    }
-}
+        });
+    },
+};
 </script>
 
 <style lang="scss" scoped>

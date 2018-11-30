@@ -3,19 +3,25 @@
         <div class="settings-header_title">
             {{title}}
         </div>
-        <img v-if="!hideIcon" class="settings-header_icon" onClick="onClick" alt="settings icon" src="../assets/settingsIcon.svg" />
+        <img
+          v-if="!hideIcon"
+          class="settings-header_icon"
+          onClick="onClick"
+          alt="settings icon"
+          src="../assets/settingsIcon.svg"
+        />
     </div>
 </template>
 
 <script>
-    export default {
-        name: 'SettingsHeader',
-        props: {
-            title: String,
-            onClick: Function,
-            hideIcon: Boolean,
-        }
-    }
+export default {
+    name: 'SettingsHeader',
+    props: {
+        title: String,
+        onClick: Function,
+        hideIcon: Boolean,
+    },
+};
 </script>
 
 <style lang="scss" scoped>

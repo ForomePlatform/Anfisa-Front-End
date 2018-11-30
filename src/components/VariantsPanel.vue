@@ -17,61 +17,71 @@
             </div>
         </div>
         <CustomScroll className="variants-panel_list">
-            <VariantsList v-if="listView" :data="list" :selectedItem="selectedItem" :selectItem="selectItem"/>
-            <VariantsGroups v-else :data="groups" :selectedItem="selectedItem" :selectItem="selectItem" :className="className"/>
+            <VariantsList
+              v-if="listView"
+              :data="list"
+              :selectedItem="selectedItem"
+              :selectItem="selectItem"
+            />
+            <VariantsGroups
+              v-else :data="groups"
+              :selectedItem="selectedItem"
+              :selectItem="selectItem"
+              :className="className"
+            />
         </CustomScroll>
     </div >
 </template>
 
 <script>
-import CustomToggle from './CustomToggle';
-import VariantsList from './VariantsList';
-import VariantsGroups from './VariantsGroups';
-import CustomScroll from './CustomScroll';
+import CustomToggle from './CustomToggle.vue';
+import VariantsList from './VariantsList.vue';
+import VariantsGroups from './VariantsGroups.vue';
+import CustomScroll from './CustomScroll.vue';
 
 export default {
     name: 'VariantsPanel',
-    data: function() {
+    data() {
         return {
             collapseAllStatus: true,
             className: 'js-toggle-control',
-        }
+        };
     },
     computed: {
-        countCurrent: function() {
-           return this.$store.state.filtered;
+        countCurrent() {
+            return this.$store.state.filtered;
         },
-        countAmount: function() {
+        countAmount() {
             return this.$store.state.total;
         },
-        list: function () {
+        list() {
             return this.$store.getters.list;
         },
-        groups: function () {
+        groups() {
             return this.$store.getters.groups;
         },
-        listView: function () {
+        listView() {
             return this.$store.state.listView;
         },
-        selectedItem: function () {
+        selectedItem() {
             return this.$store.state.selectedVariant;
-        }
+        },
     },
     methods: {
-        selectItem: function (id) {
+        selectItem(id) {
             console.log('selected item: ', id);
             this.$store.dispatch('getVariantDetails', id);
         },
-        toggleView: function() {
+        toggleView() {
             if (this.listView) {
                 this.collapseAllStatus = true;
             }
-            this.$store.dispatch('toggleListView');           
+            this.$store.dispatch('toggleListView');
         },
-        toggleAllGroups: function () {
+        toggleAllGroups() {
             const elements = document.getElementsByClassName(this.className);
-            Array.from(elements).forEach(element => {
-                if((element.getAttribute('aria-expanded') === 'true') !== this.collapseAllStatus) {
+            Array.from(elements).forEach((element) => {
+                if ((element.getAttribute('aria-expanded') === 'true') !== this.collapseAllStatus) {
                     element.click();
                 }
             });
@@ -84,7 +94,7 @@ export default {
         VariantsGroups,
         CustomScroll,
     },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -113,7 +123,7 @@ export default {
             font-size: 13px;
             letter-spacing: 0px;
         }
-        
+
     }
     .variants-groups_common-control {
         position: absolute;

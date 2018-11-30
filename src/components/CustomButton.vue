@@ -5,13 +5,13 @@
 </template>
 
 <script>
-    export default {
-        name: "CustomButton",
-        props: {
-            title: String,
-            onClick: Function,
-        }
-    }
+export default {
+    name: 'CustomButton',
+    props: {
+        title: String,
+        onClick: Function,
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -28,7 +28,7 @@
         color: #ffffff;
         font-weight: 800;
         cursor: pointer;
-        user-select: none; 
+        user-select: none;
         &:hover {
             background-color: #597995;
         }

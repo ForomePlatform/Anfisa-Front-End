@@ -7,11 +7,11 @@ export function setWorkspace(state, workspace) {
 }
 
 export function setTotal(state, total) {
-    state.total = total;
+    state.total = total || 0;
 }
 
 export function setFiltered(state, filtered) {
-    state.filtered = filtered;
+    state.filtered = filtered || 0;
 }
 
 export function setTags(state, tags) {

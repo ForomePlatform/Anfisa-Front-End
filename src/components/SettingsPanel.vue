@@ -33,45 +33,45 @@
 </template>
 
 <script>
-    import DropdownButton from './DropdownButton';
-    import CustomButton from './CustomButton';
-    import User from './User';
-    import SettingsHeader from './SettingsHeader';
+import DropdownButton from './DropdownButton.vue';
+import CustomButton from './CustomButton.vue';
+import User from './User.vue';
+import SettingsHeader from './SettingsHeader.vue';
 
-    export default {
-        name: 'SettingsPanel',
-        computed: {
-            workspace: function() {
-                return this.$store.state.workspace;
-            },
-            presets: function() {
-                return this.$store.state.presets;
-            },
-            tags: function() {
-                return this.$store.state.tags;
-            },
-            selectedPreset: function() {
-                return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'PRESETS';
-            },
-            selectedTag: function() {
-                return this.$store.state.selectedTag ? this.$store.state.selectedTag : 'TAGS';
-            },
+export default {
+    name: 'SettingsPanel',
+    computed: {
+        workspace() {
+            return this.$store.state.workspace;
         },
-        methods: {
-            changePreset: function(preset){
-                this.$store.dispatch('getListByPrefilter', preset)
-            },
-            changeTag: function(tag){
-                this.$store.dispatch('getListByTag', tag)
-            },
+        presets() {
+            return this.$store.state.presets;
         },
-        components: {
-            DropdownButton,
-            CustomButton,
-            User,
-            SettingsHeader,
-        }
-    }
+        tags() {
+            return this.$store.state.tags;
+        },
+        selectedPreset() {
+            return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'PRESETS';
+        },
+        selectedTag() {
+            return this.$store.state.selectedTag ? this.$store.state.selectedTag : 'TAGS';
+        },
+    },
+    methods: {
+        changePreset(preset) {
+            this.$store.dispatch('getListByPrefilter', preset);
+        },
+        changeTag(tag) {
+            this.$store.dispatch('getListByTag', tag);
+        },
+    },
+    components: {
+        DropdownButton,
+        CustomButton,
+        User,
+        SettingsHeader,
+    },
+};
 </script>
 
 <style  scoped lang="scss">
@@ -103,10 +103,10 @@
         }
         &_block {
             padding: 16px 0;
-            background-image: linear-gradient(to right, rgb(39, 63, 89) 25%, rgba(39, 63, 89, 0) 0%);
+            background-image: linear-gradient(to right, rgb(39, 63, 89) 25%,rgba(39, 63, 89, 0) 0%);
             background-position: top;
             background-size: 8px 2px;
-            background-repeat: repeat-x;            
+            background-repeat: repeat-x;
         }
     }
 </style>

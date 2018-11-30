@@ -8,14 +8,18 @@
                 <div class="variants-groups_header_icon"/>
             </div>
             <b-collapse :id="'variant'+index">
-                <VariantsList :data="data[group]" :selectedItem="selectedItem" :selectItem="selectItem" />
+                <VariantsList
+                  :data="data[group]"
+                  :selectedItem="selectedItem"
+                  :selectItem="selectItem"
+                />
             </b-collapse>
         </div>
     </div>
 </template>
 
 <script>
-import VariantsList from './VariantsList';
+import VariantsList from './VariantsList.vue';
 
 export default {
     props: {
@@ -26,7 +30,7 @@ export default {
         selectItem: Function,
     },
     computed: {
-        groups: function () {
+        groups() {
             return Object.keys(this.data);
         },
     },

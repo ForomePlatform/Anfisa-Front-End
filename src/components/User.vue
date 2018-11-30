@@ -5,20 +5,22 @@
     </div>
 </template>
 <script>
+const unknownUser = require('../assets/unknownUser.svg');
+
 export default {
     name: 'User',
-    data(){
-        return{
-            title: 'LOGIN'
-        }
+    data() {
+        return {
+            title: 'LOGIN',
+        };
     },
 
     computed: {
         imgUrl() {
-            return require('../assets/unknownUser.svg');
-        }
-    }
-}
+            return unknownUser;
+        },
+    },
+};
 </script>
 <style scoped lang="scss">
     .user-info {
@@ -40,6 +42,6 @@ export default {
                 cursor: pointer;
                 color: #587a97;
             }
-        }     
+        }
     }
 </style>

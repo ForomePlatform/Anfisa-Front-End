@@ -1,5 +1,8 @@
 <template>
-    <b-dropdown size="sm" :text="text">
+    <b-dropdown size="sm">
+        <template slot="button-content">
+            <div class="dropdown-toggle-slot">{{text}}</div>
+        </template>
         <b-dropdown-item-button v-for="item in data" :key="item" @click="onChange(item)">
             {{item}}
         </b-dropdown-item-button>
@@ -7,25 +10,22 @@
 </template>
 
 <script>
-    export default{
-        name: 'AdvancedButton',
-        props: {
-            text: {
-                default: 'SELECT',
-                type: String
-            },
-            data: {
-                type: Array
-            },
-            onChange: {
-                type: Function,
-            }
-        }
-    }
+export default{
+    name: 'AdvancedButton',
+    props: {
+        text: {
+            default: 'SELECT',
+            type: String,
+        },
+        data: {
+            type: Array,
+        },
+        onChange: {
+            type: Function,
+        },
+    },
+};
 </script>
-
-
-
 
 <style scoped lang="scss">
     .dropdown {
@@ -36,7 +36,6 @@
         }
     }
     /deep/ .dropdown-toggle  {
-        
         width: 133px;
         height: 33px;
         border-radius: 3px;
@@ -47,12 +46,16 @@
         border-width: 0;
         letter-spacing: 0px;
         color: #95acbc;
+        padding-right: 15px;
+        &-slot {
+            overflow: hidden;
+        }
         &:hover {
             background-color: #2bb3ed;
             border-width: 0;
             color: #ffffff;
             &::after{
-                border-top-color: #10aaef;
+                border-top-color: #ffffff;
             }
         }
         &::after {
