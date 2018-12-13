@@ -71,6 +71,7 @@ export default {
         selectItem(id) {
             console.log('selected item: ', id);
             this.$store.dispatch('getVariantDetails', id);
+            this.$store.dispatch('getVariantTags', id);
         },
         toggleView() {
             if (this.listView) {

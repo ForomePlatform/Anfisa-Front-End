@@ -1,5 +1,12 @@
 <template>
-    <div class="settings-panel">
+    <div :class="[panelCollapsed ? 'settings-panel__collapsed' : '', 'settings-panel']">
+        <div
+          class="settings-panel_collapse-icon"
+          v-on:click="togglePanel"
+        >
+            {{panelCollapsedIcon}}
+        </div>
+        <div v-if="!panelCollapsed">
         <img class="mb-4" alt="Foreme logo" src="../assets/foromeLogo.svg" />
         <div class="settings-panel_block">
             <SettingsHeader title="PROJECT"/>
@@ -29,6 +36,7 @@
             <SettingsHeader title="USER" hideIcon />
             <User />
         </div>
+        </div>
     </div>
 </template>
 
@@ -40,6 +48,11 @@ import SettingsHeader from './SettingsHeader.vue';
 
 export default {
     name: 'SettingsPanel',
+    data() {
+        return {
+            panelCollapsed: false,
+        };
+    },
     computed: {
         workspace() {
             return this.$store.state.workspace;
@@ -56,6 +69,9 @@ export default {
         selectedTag() {
             return this.$store.state.selectedTag ? this.$store.state.selectedTag : 'TAGS';
         },
+        panelCollapsedIcon() {
+            return this.panelCollapsed ? '>' : '<';
+        },
     },
     methods: {
         changePreset(preset) {
@@ -63,6 +79,10 @@ export default {
         },
         changeTag(tag) {
             this.$store.dispatch('getListByTag', tag);
+        },
+        togglePanel() {
+            this.panelCollapsed = !this.panelCollapsed;
+            setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
     },
     components: {
@@ -76,6 +96,7 @@ export default {
 
 <style  scoped lang="scss">
     .settings-panel {
+        position: relative;
         flex-shrink: 0;
         width: 208px;
         height: 100%;
@@ -107,6 +128,24 @@ export default {
             background-position: top;
             background-size: 8px 2px;
             background-repeat: repeat-x;
+        }
+        &_collapse-icon {
+            position: absolute;
+            right: 0;
+            top: 0;
+            color: #577693;
+            font-size: 16px;
+            line-height: 16px;
+            font-weight: bold;
+            padding: 5px;
+            cursor: pointer;
+        }
+        &__collapsed {
+            width:20px;
+            padding: 0;
+            .settings-panel_collapse-icon {
+                color: #fff;
+            }
         }
     }
 </style>

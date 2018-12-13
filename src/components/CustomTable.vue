@@ -1,6 +1,9 @@
 <template>
     <div class="custom-table">
-        <div v-b-toggle="'table_'+id" class="custom-table_header">
+        <div
+          v-b-toggle="'table_'+id"
+          :class="['custom-table_header', secondary ? 'custom-table_header-secondary' : '']"
+        >
             {{title.toUpperCase()}}
             <div class="custom-table_header_icon" />
         </div>
@@ -26,6 +29,7 @@ export default {
         title: String,
         id: String,
         data: Array,
+        secondary: Boolean,
     },
     components: {
         CustomHScroll,
@@ -61,6 +65,14 @@ export default {
                 color: #fff;
                 .custom-table_header_icon {
                     border-bottom-color: #fff;
+                }
+            }
+            &-secondary:hover {
+                background-color: #52002957;
+                &[aria-expanded=false] {
+                    &:hover {
+                        background-color: #52002957;
+                    }
                 }
             }
             &_icon {

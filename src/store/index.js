@@ -19,7 +19,9 @@ export default new Vuex.Store({
         selectedTag: null,
         listView: true,
         selectedVariant: null,
-        variantDetails: [],
+        variantDetails: {},
+        allTags: [],
+        selectedTags: [],
     },
     actions,
     mutations,
@@ -46,6 +48,18 @@ export default new Vuex.Store({
                 }
             });
             return result;
+        },
+        annotation: (state) => {
+            const general = state.variantDetails.view_gen;
+            const generalData = general && general.data;
+            if (generalData) {
+                return [
+                    generalData[0],
+                    generalData[1],
+                    generalData[3],
+                ];
+            }
+            return [];
         },
     },
 });
