@@ -7,11 +7,11 @@ export function setWorkspace(state, workspace) {
 }
 
 export function setTotal(state, total) {
-    state.total = total;
+    state.total = total || 0;
 }
 
 export function setFiltered(state, filtered) {
-    state.filtered = filtered;
+    state.filtered = filtered || 0;
 }
 
 export function setTags(state, tags) {
@@ -40,4 +40,12 @@ export function setVariantDetails(state, variantDetails) {
 
 export function setSelectedVariant(state, selectedVariant) {
     state.selectedVariant = selectedVariant;
+}
+
+export function setSelectedTags(state, tags) {
+    state.selectedTags = tags;
+}
+
+export function setAllTags(state, tags) {
+    state.allTags = tags;
 }

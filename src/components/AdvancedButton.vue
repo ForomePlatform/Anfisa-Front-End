@@ -10,13 +10,13 @@ export default{
     props: {
         text: {
             default: 'Select',
-            type: String
+            type: String,
         },
         onClick: {
-            type: Function
-        }
-    }
-}
+            type: Function,
+        },
+    },
+};
 </script>
 
 <style scoped lang="scss">

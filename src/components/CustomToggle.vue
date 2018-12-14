@@ -6,20 +6,20 @@
         <div v-bind:class="{'custom-toggle_item': true, 'custom-toggle_item__active': !isActive}">
             LIST
         </div>
-        <div ref="toggle" v-bind:class="[isActive ? 'custom-toggle_slider__active' 
-            : 'custom-toggle_slider__inactive', 'custom-toggle_slider']" 
+        <div ref="toggle" v-bind:class="[isActive ? 'custom-toggle_slider__active'
+            : 'custom-toggle_slider__inactive', 'custom-toggle_slider']"
         />
     </div>
 </template>
 
 <script>
-    export default {
-        name: 'CustomToggle',
-        props: {
-            isActive: Boolean,
-            toggle: Function,
-        }
-    }
+export default {
+    name: 'CustomToggle',
+    props: {
+        isActive: Boolean,
+        toggle: Function,
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -58,7 +58,7 @@
         }
         &_item {
             z-index: 3;
-            user-select: none; 
+            user-select: none;
             &__active {
                 color: #fff;
             }

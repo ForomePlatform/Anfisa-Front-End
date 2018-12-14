@@ -18,20 +18,20 @@ import baron from 'baron';
 export default {
     name: 'CustomScroll',
     props: {
-       className: String, 
+        className: String,
     },
-    mounted: function() {
+    mounted() {
         baron({
-            root: '.' + this.className,
+            root: `.${this.className}`,
             scroller: '.baron__scroller',
             bar: '.baron__bar',
             scrollingCls: '_scrolling',
             draggingCls: '_dragging',
         }).controls({
             track: '.baron__track',
-        })
-    }
-}
+        });
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -77,7 +77,7 @@ export default {
     .baron__bar {
         display: none;
         position: absolute;
-        right: 0;    
+        right: 0;
         z-index: 1;
         width: 10px;
         background-color: #193b67;

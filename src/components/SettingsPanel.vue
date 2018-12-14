@@ -1,5 +1,12 @@
 <template>
-    <div class="settings-panel">
+    <div :class="[panelCollapsed ? 'settings-panel__collapsed' : '', 'settings-panel']">
+        <div
+          class="settings-panel_collapse-icon"
+          v-on:click="togglePanel"
+        >
+            {{panelCollapsedIcon}}
+        </div>
+        <div v-if="!panelCollapsed">
         <img class="mb-4" alt="Foreme logo" src="../assets/foromeLogo.svg" />
         <div class="settings-panel_block">
             <SettingsHeader title="PROJECT"/>
@@ -29,53 +36,67 @@
             <SettingsHeader title="USER" hideIcon />
             <User />
         </div>
+        </div>
     </div>
 </template>
 
 <script>
-    import DropdownButton from './DropdownButton';
-    import CustomButton from './CustomButton';
-    import User from './User';
-    import SettingsHeader from './SettingsHeader';
+import DropdownButton from './DropdownButton.vue';
+import CustomButton from './CustomButton.vue';
+import User from './User.vue';
+import SettingsHeader from './SettingsHeader.vue';
 
-    export default {
-        name: 'SettingsPanel',
-        computed: {
-            workspace: function() {
-                return this.$store.state.workspace;
-            },
-            presets: function() {
-                return this.$store.state.presets;
-            },
-            tags: function() {
-                return this.$store.state.tags;
-            },
-            selectedPreset: function() {
-                return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'PRESETS';
-            },
-            selectedTag: function() {
-                return this.$store.state.selectedTag ? this.$store.state.selectedTag : 'TAGS';
-            },
+export default {
+    name: 'SettingsPanel',
+    data() {
+        return {
+            panelCollapsed: false,
+        };
+    },
+    computed: {
+        workspace() {
+            return this.$store.state.workspace;
         },
-        methods: {
-            changePreset: function(preset){
-                this.$store.dispatch('getListByPrefilter', preset)
-            },
-            changeTag: function(tag){
-                this.$store.dispatch('getListByTag', tag)
-            },
+        presets() {
+            return this.$store.state.presets;
         },
-        components: {
-            DropdownButton,
-            CustomButton,
-            User,
-            SettingsHeader,
-        }
-    }
+        tags() {
+            return this.$store.state.tags;
+        },
+        selectedPreset() {
+            return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'PRESETS';
+        },
+        selectedTag() {
+            return this.$store.state.selectedTag ? this.$store.state.selectedTag : 'TAGS';
+        },
+        panelCollapsedIcon() {
+            return this.panelCollapsed ? '>' : '<';
+        },
+    },
+    methods: {
+        changePreset(preset) {
+            this.$store.dispatch('getListByPrefilter', preset);
+        },
+        changeTag(tag) {
+            this.$store.dispatch('getListByTag', tag);
+        },
+        togglePanel() {
+            this.panelCollapsed = !this.panelCollapsed;
+            setTimeout(() => window.dispatchEvent(new Event('resize')));
+        },
+    },
+    components: {
+        DropdownButton,
+        CustomButton,
+        User,
+        SettingsHeader,
+    },
+};
 </script>
 
 <style  scoped lang="scss">
     .settings-panel {
+        position: relative;
         flex-shrink: 0;
         width: 208px;
         height: 100%;
@@ -103,10 +124,28 @@
         }
         &_block {
             padding: 16px 0;
-            background-image: linear-gradient(to right, rgb(39, 63, 89) 25%, rgba(39, 63, 89, 0) 0%);
+            background-image: linear-gradient(to right, rgb(39, 63, 89) 25%,rgba(39, 63, 89, 0) 0%);
             background-position: top;
             background-size: 8px 2px;
-            background-repeat: repeat-x;            
+            background-repeat: repeat-x;
+        }
+        &_collapse-icon {
+            position: absolute;
+            right: 0;
+            top: 0;
+            color: #577693;
+            font-size: 16px;
+            line-height: 16px;
+            font-weight: bold;
+            padding: 5px;
+            cursor: pointer;
+        }
+        &__collapsed {
+            width:20px;
+            padding: 0;
+            .settings-panel_collapse-icon {
+                color: #fff;
+            }
         }
     }
 </style>

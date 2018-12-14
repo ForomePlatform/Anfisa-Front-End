@@ -1,6 +1,9 @@
 <template>
     <div class="custom-table">
-        <div v-b-toggle="'table_'+id" class="custom-table_header">
+        <div
+          v-b-toggle="'table_'+id"
+          :class="['custom-table_header', secondary ? 'custom-table_header-secondary' : '']"
+        >
             {{title.toUpperCase()}}
             <div class="custom-table_header_icon" />
         </div>
@@ -19,18 +22,19 @@
 </template>
 
 <script>
-import CustomHScroll from './CustomHScroll';
+import CustomHScroll from './CustomHScroll.vue';
 
 export default {
     props: {
         title: String,
         id: String,
         data: Array,
+        secondary: Boolean,
     },
     components: {
         CustomHScroll,
-    }
-}
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -56,8 +60,19 @@ export default {
             padding: 0 20px;
             &:hover {
                 cursor: pointer;
+                background-color: #12aaeb;
+                box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
+                color: #fff;
                 .custom-table_header_icon {
-                    border-bottom-color: #12aaeb;
+                    border-bottom-color: #fff;
+                }
+            }
+            &-secondary:hover {
+                background-color: #52002957;
+                &[aria-expanded=false] {
+                    &:hover {
+                        background-color: #52002957;
+                    }
                 }
             }
             &_icon {
@@ -80,13 +95,16 @@ export default {
                     border-bottom: none;
                     color: #ffffff;
                 }
-                &:hover .custom-table_header_icon{
-                    border-top-color: #12aaeb;
+                &:hover {
+                    cursor: pointer;
+                    background-color: #12aaeb;
+                    box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
+                    color: #fff;
+                    .custom-table_header_icon {
+                        border-bottom-color: #fff;
+                    }
                 }
             }
-        }
-        &_collapse {
-            width: 100%;
         }
         &_table {
             width: 100%;
@@ -96,7 +114,7 @@ export default {
                 &:last-child {
                     border-bottom: none;
                 }
-            } 
+            }
             td {
                 font-size: 14px;
                 letter-spacing: 0px;

@@ -15,19 +15,19 @@
 </template>
 
 <script>
-    import VariantIcon from './VariantIcon';
-    
-    export default {
-        name: 'VariantList',
-        props: {
-            data: Array,
-            selectedItem: Number,
-            selectItem: Function,
-        },
-        components: {
-            VariantIcon,
-        }
-    }
+import VariantIcon from './VariantIcon.vue';
+
+export default {
+    name: 'VariantList',
+    props: {
+        data: Array,
+        selectedItem: Number,
+        selectItem: Function,
+    },
+    components: {
+        VariantIcon,
+    },
+};
 </script>
 
 <style lang="scss" scoped>

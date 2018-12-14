@@ -7,25 +7,22 @@
 </template>
 
 <script>
-import SettingsPanel from '@/components/SettingsPanel';
-import VariantsPanel from '@/components/VariantsPanel';
-import VariantDetails from '@/components/VariantDetails';
+import SettingsPanel from '@/components/SettingsPanel.vue';
+import VariantsPanel from '@/components/VariantsPanel.vue';
+import VariantDetails from '@/components/VariantDetails.vue';
 
 export default {
-  name: 'home',
-  components: {
-    SettingsPanel,
-    VariantsPanel,
-    VariantDetails,
-  },
-  methods: {
-    
-  },
-  created: function() {
-    this.$store.dispatch('getList');
-    this.$store.dispatch('getFilters');
-    this.$store.dispatch('getTags');
-  }
+    name: 'home',
+    components: {
+        SettingsPanel,
+        VariantsPanel,
+        VariantDetails,
+    },
+    created() {
+        this.$store.dispatch('getList');
+        this.$store.dispatch('getFilters');
+        this.$store.dispatch('getTags');
+    },
 };
 </script>
 
