@@ -4,8 +4,9 @@ const commonHttp = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
 });
 
-export function getList(context) {
-    commonHttp.get('/list')
+export function getList(context, ws) {
+    const url = ws ? `/list?ws=${ws}` : '/list';
+    commonHttp.get(url)
         .then((response) => {
             const { data } = response;
             context.commit('setRecords', data.records);
@@ -144,6 +145,24 @@ export function getVariantTags(context, variant) {
         });
 }
 
+export function saveNotes(context) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('rec', context.state.selectedVariant);
+    params.append('_notes', context.state.notes);
+    commonHttp.post('/tags', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    })
+        .then(() => {
+            console.log('notes are saved');
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
 export function toggleVariantTag(context, tag) {
     const tagsObject = {};
     context.state.selectedTags.forEach((item) => {
@@ -174,5 +193,34 @@ export function toggleVariantTag(context, tag) {
             context.commit('setAllTags', []);
             context.commit('setSelectedTags', []);
             console.log(error);
+        });
+}
+
+export function getWorkspaces(context) {
+    commonHttp.get('/dirinfo')
+        .then((response) => {
+            const { data } = response;
+            context.commit('setWorkspacesList', data.workspaces);
+        });
+}
+
+export function getExportFile(context) {
+    context.commit('setExportFileUrl', null);
+    context.commit('setExportFileLoading', true);
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    commonHttp.post('/export', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    })
+        .then((response) => {
+            const { data } = response;
+            context.commit('setExportFileLoading', false);
+            context.commit('setExportFileUrl', `${process.env.VUE_APP_API_URL}/${data.fname}`);
+        })
+        .catch((error) => {
+            console.log(error);
+            context.commit('setExportFileLoading', false);
         });
 }

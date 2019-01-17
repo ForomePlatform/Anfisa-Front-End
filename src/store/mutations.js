@@ -49,3 +49,20 @@ export function setSelectedTags(state, tags) {
 export function setAllTags(state, tags) {
     state.allTags = tags;
 }
+
+export function setWorkspacesList(state, workspacesList) {
+    const list = workspacesList.map(item => ({ value: item.name, text: item.name }));
+    state.workspacesList = list;
+}
+
+export function setExportFileUrl(state, exportFileUrl) {
+    state.exportFileUrl = exportFileUrl;
+}
+
+export function changeNotes(state, notes) {
+    state.notes = notes;
+}
+
+export function setExportFileLoading(state, value) {
+    state.exportFileLoading = value;
+}

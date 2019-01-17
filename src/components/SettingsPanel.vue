@@ -4,12 +4,12 @@
           class="settings-panel_collapse-icon"
           v-on:click="togglePanel"
         >
-            {{panelCollapsedIcon}}
+            <img :src="panelCollapsedIcon" />
         </div>
         <div v-if="!panelCollapsed">
         <img class="mb-4" alt="Foreme logo" src="../assets/foromeLogo.svg" />
         <div class="settings-panel_block">
-            <SettingsHeader title="PROJECT"/>
+            <SettingsHeader global title="PROJECT" :onClick="openWorkspacesModal"/>
             <div class="settings-panel_text">{{ workspace }}</div>
         </div>
         <div class="settings-panel_block">
@@ -30,13 +30,25 @@
         <div class="settings-panel_block">
             <SettingsHeader title="REPORT"/>
             <CustomButton title="PUBLISH" />
-            <CustomButton class="mt-3" title="EXPORT" />
+            <CustomButton class="mt-3" title="EXPORT" :onClick="openExportFileModal"/>
         </div>
         <div class="settings-panel_block">
             <SettingsHeader title="USER" hideIcon />
             <User />
         </div>
         </div>
+        <b-modal ref="workspaceModal" centered title="Select Workspace" @ok="selectWorkspace">
+            <b-form-select
+              v-model="selectedWorkspace"
+              :options="workspacesList"
+              class="mb-3"
+              :select-size="8"
+            />
+        </b-modal>
+        <b-modal ref="exportFileModal" centered title="Export" @ok="exportFile" :ok-disabled="!exportFileUrl">
+            <p v-if="exportFileLoading">Wait please...</p>
+            <p v-else>Are you sure you want to download file?</p>
+        </b-modal>
     </div>
 </template>
 
@@ -46,11 +58,15 @@ import CustomButton from './CustomButton.vue';
 import User from './User.vue';
 import SettingsHeader from './SettingsHeader.vue';
 
+const collapseIcon = require('../assets/collapseIcon.svg');
+const expandIcon = require('../assets/expandIcon.svg');
+
 export default {
     name: 'SettingsPanel',
     data() {
         return {
             panelCollapsed: false,
+            selectedWorkspace: '',
         };
     },
     computed: {
@@ -70,7 +86,16 @@ export default {
             return this.$store.state.selectedTag ? this.$store.state.selectedTag : 'TAGS';
         },
         panelCollapsedIcon() {
-            return this.panelCollapsed ? '>' : '<';
+            return this.panelCollapsed ? expandIcon : collapseIcon;
+        },
+        workspacesList() {
+            return this.$store.state.workspacesList;
+        },
+        exportFileUrl() {
+            return this.$store.state.exportFileUrl;
+        },
+        exportFileLoading() {
+            return this.$store.state.exportFileLoading;
         },
     },
     methods: {
@@ -83,6 +108,20 @@ export default {
         togglePanel() {
             this.panelCollapsed = !this.panelCollapsed;
             setTimeout(() => window.dispatchEvent(new Event('resize')));
+        },
+        exportFile() {
+            window.open(this.exportFileUrl);
+        },
+        selectWorkspace() {
+            this.$store.dispatch('getList', this.selectedWorkspace);
+        },
+        openWorkspacesModal() {
+            this.$store.dispatch('getWorkspaces');
+            this.$refs.workspaceModal.show();
+        },
+        openExportFileModal() {
+            this.$store.dispatch('getExportFile');
+            this.$refs.exportFileModal.show();
         },
     },
     components: {
@@ -137,15 +176,12 @@ export default {
             font-size: 16px;
             line-height: 16px;
             font-weight: bold;
-            padding: 5px;
+            padding: 9px 5px 0 0;
             cursor: pointer;
         }
         &__collapsed {
-            width:20px;
+            width: 34px;
             padding: 0;
-            .settings-panel_collapse-icon {
-                color: #fff;
-            }
         }
     }
 </style>

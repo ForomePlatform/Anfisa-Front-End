@@ -1,6 +1,14 @@
 <template>
-    <div class="variants-panel">
-        <div class="variants-panel_header">
+    <div :class="[panelCollapsed ? 'variants-panel__collapsed' : '', 'variants-panel']">
+        <div v-if="panelCollapsed">
+            <div
+              class="variants-panel_collapse-icon"
+              v-on:click="togglePanel"
+            >
+                <img src="../assets/expandIcon.svg" />
+            </div>
+        </div>
+        <div v-else class="variants-panel_header">
             <CustomToggle :isActive="!listView" :toggle="toggleView" />
             <div class="variants-panel_count">
                 {{countCurrent}} / <b>{{countAmount}}</b>
@@ -8,15 +16,19 @@
             <div v-if="!listView"
               @click="toggleAllGroups"
               v-bind:class="{
-                  'variants-groups_common-control': true,
-                  'variants-groups_common-control__active': !collapseAllStatus
+                'variants-groups_common-control': true,
+                'variants-groups_common-control__active': !collapseAllStatus
               }">
-                <div/>
-                <div/>
-                <div/>
+                <div/><div/><div/>
+            </div>
+            <div
+              class="variants-panel_collapse-icon"
+              v-on:click="togglePanel"
+            >
+                <img src="../assets/collapseIcon.svg" />
             </div>
         </div>
-        <CustomScroll className="variants-panel_list">
+        <CustomScroll v-if="!panelCollapsed" className="variants-panel_list">
             <VariantsList
               v-if="listView"
               :data="list"
@@ -45,6 +57,7 @@ export default {
         return {
             collapseAllStatus: true,
             className: 'js-toggle-control',
+            panelCollapsed: false,
         };
     },
     computed: {
@@ -88,6 +101,10 @@ export default {
             });
             this.collapseAllStatus = !this.collapseAllStatus;
         },
+        togglePanel() {
+            this.panelCollapsed = !this.panelCollapsed;
+            setTimeout(() => window.dispatchEvent(new Event('resize')));
+        },
     },
     components: {
         CustomToggle,
@@ -124,12 +141,22 @@ export default {
             font-size: 13px;
             letter-spacing: 0px;
         }
-
+        &_collapse-icon {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            padding: 8px 5px 0 0;
+            cursor: pointer;
+        }
+        &__collapsed {
+            width: 34px;
+            background-color: #0b2341;
+        }
     }
     .variants-groups_common-control {
         position: absolute;
-        top: 13px;
-        right: 16px;
+        top: 10px;
+        right: 40px;
         cursor: pointer;
         div {
             width: 0;
