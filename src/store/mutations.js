@@ -14,22 +14,6 @@ export function setFiltered(state, filtered) {
     state.filtered = filtered || 0;
 }
 
-export function setTags(state, tags) {
-    state.tags = tags;
-}
-
-export function setPreFilters(state, filters) {
-    state.presets = filters;
-}
-
-export function setTag(state, tag) {
-    state.selectedTag = tag;
-}
-
-export function setPreFilter(state, filter) {
-    state.selectedPreset = filter;
-}
-
 export function toggleListView(state) {
     state.listView = !state.listView;
 }
@@ -65,4 +49,16 @@ export function changeNotes(state, notes) {
 
 export function setExportFileLoading(state, value) {
     state.exportFileLoading = value;
+}
+
+export function setZone(state, oZone) {
+    state.zones = {
+        ...state.zones,
+        ...oZone,
+    };
+}
+
+export function changeZoneValue(state, aZone) {
+    const [zone, value] = aZone;
+    state.zones[zone].selectedValue = value;
 }

@@ -8,8 +8,8 @@
 export default {
     props: {
         onClick: Function,
-    }
-}
+    },
+};
 </script>
 
 <style lang="scss" scoped>

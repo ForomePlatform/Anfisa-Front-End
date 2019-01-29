@@ -19,56 +19,10 @@ export function getList(context, ws) {
         });
 }
 
-export function getTags(context) {
-    commonHttp.post('/tag_select')
-        .then((response) => {
-            context.commit('setTags', response.data['tag-list']);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-}
-
-export function getFilters(context) {
-    commonHttp.post('/stat')
-        .then((response) => {
-            const filterList = response.data['filter-list'];
-            if (filterList && Array.isArray(filterList)) {
-                const data = filterList.map(item => item[0]);
-                context.commit('setPreFilters', data);
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-}
-
-export function getListByPrefilter(context, prefilter) {
-    const params = new URLSearchParams();
-    params.append('ws', context.state.workspace);
-    params.append('filter', prefilter);
-    context.commit('setPreFilter', prefilter);
-    commonHttp.post('/list', params, {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-    })
-        .then((response) => {
-            const { data } = response;
-            context.commit('setRecords', data.records);
-            context.commit('setTotal', data.total);
-            context.commit('setFiltered', data.filtered);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-}
-
 export function getListByTag(context, tag) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
     params.append('tag', tag);
-    context.commit('setTag', tag);
     commonHttp.post('/tag_select', params, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -222,5 +176,41 @@ export function getExportFile(context) {
         .catch((error) => {
             console.log(error);
             context.commit('setExportFileLoading', false);
+        });
+}
+
+async function getZoneData(context, aZone) {
+    const [zone, value] = aZone;
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('zone', zone);
+    commonHttp.post('/zone_list', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    })
+        .then((response) => {
+            const { data } = response;
+            const oZone = {
+                [zone]: {
+                    selectedValue: value,
+                    values: [value, ...data.variants],
+                },
+            };
+            context.commit('setZone', oZone);
+        });
+}
+
+export function getZoneList(context) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    commonHttp.post('/zone_list', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    })
+        .then((response) => {
+            const zones = response.data.filter(zone => zone[0].charAt(0) !== '_');
+            zones.forEach(zone => getZoneData(context, zone));
         });
 }

@@ -14,16 +14,18 @@
         </div>
         <div class="settings-panel_block">
             <SettingsHeader title="FILTERS"/>
-            <div class="d-flex justify-content-between">
-                <DropdownButton :text="selectedPreset" :data="presets" :onChange="changePreset"/>
+            <div
+              v-for="zone in Object.keys(zones)"
+              :key="zone"
+              class="d-flex justify-content-between mt-3"
+            >
+                <DropdownButton
+                  :text="zones[zone].selectedValue"
+                  :data="zones[zone].values"
+                  :onChange="value =>changeZoneValue(zone, value)"
+                />
                 <div class="settings-panel_icon-button">
                     <img alt="presets icon" src="../assets/presetsIcon.svg" />
-                </div>
-            </div>
-            <div class="d-flex justify-content-between mt-3">
-                <DropdownButton :text="selectedTag" :data="tags" :onChange="changeTag"/>
-                <div class="settings-panel_icon-button">
-                    <img alt="tags icon" src="../assets/tagsIcon.svg" />
                 </div>
             </div>
         </div>
@@ -45,7 +47,12 @@
               :select-size="8"
             />
         </b-modal>
-        <b-modal ref="exportFileModal" centered title="Export" @ok="exportFile" :ok-disabled="!exportFileUrl">
+        <b-modal
+          ref="exportFileModal"
+          centered title="Export"
+          @ok="exportFile"
+          :ok-disabled="!exportFileUrl"
+        >
             <p v-if="exportFileLoading">Wait please...</p>
             <p v-else>Are you sure you want to download file?</p>
         </b-modal>
@@ -73,17 +80,8 @@ export default {
         workspace() {
             return this.$store.state.workspace;
         },
-        presets() {
-            return this.$store.state.presets;
-        },
         tags() {
             return this.$store.state.tags;
-        },
-        selectedPreset() {
-            return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'PRESETS';
-        },
-        selectedTag() {
-            return this.$store.state.selectedTag ? this.$store.state.selectedTag : 'TAGS';
         },
         panelCollapsedIcon() {
             return this.panelCollapsed ? expandIcon : collapseIcon;
@@ -97,14 +95,11 @@ export default {
         exportFileLoading() {
             return this.$store.state.exportFileLoading;
         },
+        zones() {
+            return this.$store.state.zones;
+        },
     },
     methods: {
-        changePreset(preset) {
-            this.$store.dispatch('getListByPrefilter', preset);
-        },
-        changeTag(tag) {
-            this.$store.dispatch('getListByTag', tag);
-        },
         togglePanel() {
             this.panelCollapsed = !this.panelCollapsed;
             setTimeout(() => window.dispatchEvent(new Event('resize')));
@@ -122,6 +117,12 @@ export default {
         openExportFileModal() {
             this.$store.dispatch('getExportFile');
             this.$refs.exportFileModal.show();
+        },
+        changeZoneValue(zone, value) {
+            this.$store.commit('changeZoneValue', [zone, value]);
+            if (zone === 'tags') {
+                this.$store.dispatch('getListByTag', value);
+            }
         },
     },
     components: {
