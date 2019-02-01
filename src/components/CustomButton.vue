@@ -1,5 +1,5 @@
 <template>
-    <div :onClick ={onClick} class="custom-button">
+    <div @click ="onClick" class="custom-button">
         {{title}}
     </div>
 </template>
@@ -9,7 +9,10 @@ export default {
     name: 'CustomButton',
     props: {
         title: String,
-        onClick: Function,
+        onClick: {
+            type: Function,
+            default: () => {},
+        },
     },
 };
 </script>

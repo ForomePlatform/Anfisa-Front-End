@@ -1,6 +1,21 @@
 <template>
     <div class="variant-details">
-        <FixedPanel v-if="Object.keys(variantDetails).length" :data="annotation" />
+        <FixedPanel v-if="isSelected" :data="annotation" />
+        <FixedButton
+          v-if="isSelected"
+          :onClick="collapseAllCustomTables"
+          class="fixed-button_collapse-tables"
+        >
+            <img src="../assets/collapse.png">
+        </FixedButton>
+        <FixedButton
+          v-if="isSelected"
+          :onClick="openNote"
+          :class="['fixed-button_form', showNotes ? 'fixed-button_form__active' : '']"
+        >
+            <img src="../assets/formIcon.svg">
+        </FixedButton>
+        <NotesPanel v-if="showNotes" />
         <div class="variant-details_tables">
             <CustomTable
             v-if="variantDetails.view_gen"
@@ -72,11 +87,20 @@
 <script>
 import CustomTable from './CustomTable.vue';
 import FixedPanel from './FixedPanel.vue';
+import FixedButton from './FixedButton.vue';
+import NotesPanel from './NotesPanel.vue';
 
 export default {
+    data() {
+        return {
+            showNotes: false,
+        };
+    },
     components: {
         CustomTable,
         FixedPanel,
+        FixedButton,
+        NotesPanel,
     },
     computed: {
         variantDetails() {
@@ -84,6 +108,22 @@ export default {
         },
         annotation() {
             return this.$store.getters.annotation;
+        },
+        isSelected() {
+            return this.$store.state.selectedVariant !== null;
+        },
+    },
+    methods: {
+        collapseAllCustomTables() {
+            const elements = document.getElementsByClassName('custom-table_header');
+            Array.from(elements).forEach((element) => {
+                if (element.getAttribute('aria-expanded') === 'true') {
+                    element.click();
+                }
+            });
+        },
+        openNote() {
+            this.showNotes = !this.showNotes;
         },
     },
 };
@@ -97,6 +137,23 @@ export default {
         background-color: #f9f4e0;
         &_tables {
             margin-top: 100px;
+        }
+    }
+    .fixed-button {
+        &_collapse-tables {
+            top: 160px;
+            right: 0;
+            background-color: #cfebfd;
+        }
+        &_form {
+            top: 220px;
+            right: 0;
+            background-color: #c2ebdd;
+            &__active {
+                background-color: #deefde;
+                opacity: 1;
+                right: 299px;
+            }
         }
     }
 </style>

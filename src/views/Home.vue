@@ -20,8 +20,7 @@ export default {
     },
     created() {
         this.$store.dispatch('getList');
-        this.$store.dispatch('getFilters');
-        this.$store.dispatch('getTags');
+        this.$store.dispatch('getZoneList');
     },
 };
 </script>
