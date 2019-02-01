@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 export function setRecords(state, records) {
     state.records = records;
 }
