@@ -3,13 +3,21 @@
         <div class="settings-header_title">
             {{title}}
         </div>
-        <img
-          v-if="!hideIcon"
-          class="settings-header_icon"
-          onClick="onClick"
-          alt="settings icon"
-          src="../assets/settingsIcon.svg"
-        />
+        <div>
+            <img
+              v-if="!hideIcon && global"
+              class="settings-header_icon"
+              alt="open site"
+              src="../assets/earthIcon.svg"
+            />
+            <img
+              v-if="!hideIcon"
+              class="settings-header_icon ml-2"
+              alt="settings icon"
+              src="../assets/settingsIcon.svg"
+              @click="onClick"
+            />
+        </div>
     </div>
 </template>
 
@@ -18,8 +26,12 @@ export default {
     name: 'SettingsHeader',
     props: {
         title: String,
-        onClick: Function,
         hideIcon: Boolean,
+        global: Boolean,
+        onClick: {
+            type: Function,
+            default: () => {},
+        },
     },
 };
 </script>

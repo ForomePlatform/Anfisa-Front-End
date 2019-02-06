@@ -5,6 +5,8 @@
 </template>
 
 <script>
+/* eslint-disable global-require */
+
 import {
     VARIANT_ICON_GREEN,
     VARIANT_ICON_GREEN_BROKEN,

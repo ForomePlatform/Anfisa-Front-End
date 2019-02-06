@@ -9,7 +9,15 @@
           @click="selectItem(item.id)"
         >
             <VariantIcon :color="item.color" class="mr-2"/>
-            <span v-html="item.name" v-b-popover.hover.top.html="item.name" />
+            <span
+              v-html="item.name"
+              v-b-popover.hover = "{
+                  content: item.name,
+                  html: true,
+                  placement: 'top',
+                  delay: { show: 400, hide: 0 }
+                }"
+            />
         </div>
     </div>
 </template>

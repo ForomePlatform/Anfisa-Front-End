@@ -33,7 +33,12 @@ export default{
         .dropdown-item {
             font-size: 14px;
             padding: 2px 10px;
+            min-height: 20px;
         }
+    }
+    /deep/ .dropdown-menu.show {
+        max-height: 300px;
+        overflow-y: auto;
     }
     /deep/ .dropdown-toggle  {
         width: 133px;
