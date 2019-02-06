@@ -13,6 +13,8 @@ export function getList(context, ws) {
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.dispatch('getZoneList', ws);
+            context.dispatch('getPresets', ws);
         })
         .catch((error) => {
             console.log(error);
@@ -179,7 +181,7 @@ export function getExportFile(context) {
         });
 }
 
-async function getZoneData(context, aZone) {
+function getZoneData(context, aZone) {
     const [zone, value] = aZone;
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
@@ -193,17 +195,18 @@ async function getZoneData(context, aZone) {
             const { data } = response;
             const oZone = {
                 [zone]: {
-                    selectedValue: value,
-                    values: [value, ...data.variants],
+                    selectedValue: null,
+                    defaultValue: value,
+                    values: [null, ...data.variants],
                 },
             };
             context.commit('setZone', oZone);
         });
 }
 
-export function getZoneList(context) {
+export function getZoneList(context, ws) {
     const params = new URLSearchParams();
-    params.append('ws', context.state.workspace);
+    params.append('ws', ws || context.state.workspace);
     commonHttp.post('/zone_list', params, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -213,4 +216,65 @@ export function getZoneList(context) {
             const zones = response.data.filter(zone => zone[0].charAt(0) !== '_');
             zones.forEach(zone => getZoneData(context, zone));
         });
+}
+
+export function getPresets(context, ws) {
+    const params = new URLSearchParams();
+    params.append('ws', ws || context.state.workspace);
+    commonHttp.post('/stat', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    })
+        .then((response) => {
+            const filterList = response.data['filter-list'];
+            if (filterList && Array.isArray(filterList)) {
+                const data = filterList.map(item => item[0]);
+                context.commit('setPresets', [null, ...data]);
+                context.commit('setPreset', null);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+function getListByFilters(context) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+
+    const { zones } = context.state;
+    Object.keys(zones).forEach((currentZone) => {
+        if (zones[currentZone].selectedValue !== null) {
+            params.append('zone', JSON.stringify([currentZone, [zones[currentZone].selectedValue]]));
+        }
+    });
+    params.append('filter', context.state.selectedPreset);
+
+    return commonHttp.post('/list', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => {
+        const { data } = response;
+        context.commit('setRecords', data.records);
+        context.commit('setTotal', data.total);
+        context.commit('setFiltered', data.filtered);
+    });
+}
+
+export function getListByPreset(context, preset) {
+    context.commit('setPreset', preset);
+    getListByFilters(context).catch((error) => {
+        console.log(error);
+        context.commit('setPreset', null);
+    });
+}
+
+export function getListByZone(context, { zone, value }) {
+    context.commit('changeZoneValue', [zone, value]);
+    getListByFilters(context).catch((error) => {
+        console.log(error);
+        context.commit('changeZoneValue', [zone, null]);
+    });
 }

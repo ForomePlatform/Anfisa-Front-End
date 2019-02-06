@@ -64,3 +64,11 @@ export function changeZoneValue(state, aZone) {
     const [zone, value] = aZone;
     state.zones[zone].selectedValue = value;
 }
+
+export function setPresets(state, filters) {
+    state.presets = filters;
+}
+
+export function setPreset(state, filter) {
+    state.selectedPreset = filter;
+}
