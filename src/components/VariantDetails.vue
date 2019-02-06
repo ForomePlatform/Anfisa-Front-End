@@ -62,6 +62,13 @@
                     :data="variantDetails.colocated_v.data"
                     secondary
                     />
+                    <CustomTable
+                        v-if="variantDetails.view_pred"
+                        :title="variantDetails.view_pred.title"
+                        id="view_pred"
+                        :data="variantDetails.view_pred.data"
+                        secondary
+                    />
                 </b-col>
                 <b-col cols="6">
                     <CustomTable

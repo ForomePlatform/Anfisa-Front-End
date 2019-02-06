@@ -21,6 +21,7 @@ export default {
     created() {
         this.$store.dispatch('getList');
         this.$store.dispatch('getZoneList');
+        this.$store.dispatch('getPresets');
     },
 };
 </script>

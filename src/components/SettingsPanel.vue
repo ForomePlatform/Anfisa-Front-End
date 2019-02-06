@@ -14,18 +14,24 @@
         </div>
         <div class="settings-panel_block">
             <SettingsHeader title="FILTERS"/>
+            <div class="d-flex justify-content-between mt-3">
+                <DropdownButton :text="selectedPreset" :data="presets" :onChange="changePreset"/>
+                <div class="settings-panel_icon-button">
+                    <img alt="presets icon" src="../assets/presetsIcon.svg" />
+                </div>
+            </div>
             <div
               v-for="zone in Object.keys(zones)"
               :key="zone"
               class="d-flex justify-content-between mt-3"
             >
                 <DropdownButton
-                  :text="zones[zone].selectedValue"
+                  :text="getZoneText(zones[zone])"
                   :data="zones[zone].values"
                   :onChange="value =>changeZoneValue(zone, value)"
                 />
                 <div class="settings-panel_icon-button">
-                    <img alt="presets icon" src="../assets/presetsIcon.svg" />
+                    <img alt="presets icon" src="../assets/tagsIcon.svg" />
                 </div>
             </div>
         </div>
@@ -98,6 +104,12 @@ export default {
         zones() {
             return this.$store.state.zones;
         },
+        presets() {
+            return this.$store.state.presets;
+        },
+        selectedPreset() {
+            return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'Presets';
+        },
     },
     methods: {
         togglePanel() {
@@ -119,10 +131,13 @@ export default {
             this.$refs.exportFileModal.show();
         },
         changeZoneValue(zone, value) {
-            this.$store.commit('changeZoneValue', [zone, value]);
-            if (zone === 'tags') {
-                this.$store.dispatch('getListByTag', value);
-            }
+            this.$store.dispatch('getListByZone', { zone, value });
+        },
+        changePreset(preset) {
+            this.$store.dispatch('getListByPreset', preset);
+        },
+        getZoneText(item) {
+            return item.selectedValue === null ? item.defaultValue : String(item.selectedValue);
         },
     },
     components: {

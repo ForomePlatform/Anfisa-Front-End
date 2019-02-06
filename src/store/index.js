@@ -23,6 +23,8 @@ export default new Vuex.Store({
         exportFileUrl: null,
         exportFileLoading: false,
         zones: {},
+        presets: [],
+        selectedPreset: null,
     },
     actions,
     mutations,
