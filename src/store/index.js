@@ -25,6 +25,10 @@ export default new Vuex.Store({
         zones: {},
         presets: [],
         selectedPreset: null,
+        annotations: {
+            processingEnd: false,
+            data: {}
+        }
     },
     actions,
     mutations,

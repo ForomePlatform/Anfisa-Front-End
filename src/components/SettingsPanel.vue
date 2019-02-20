@@ -34,6 +34,7 @@
                     <img alt="presets icon" src="../assets/tagsIcon.svg" />
                 </div>
             </div>
+            <CustomButton class="mt-3" title="Get Annotations" :onClick="openGetAnnotationsModal"/>
         </div>
         <div class="settings-panel_block">
             <SettingsHeader title="REPORT"/>
@@ -50,8 +51,9 @@
               v-model="selectedWorkspace"
               :options="workspacesList"
               class="mb-3"
-              :select-size="8"
-            />
+              :select-size="8">
+
+            </b-form-select>
         </b-modal>
         <b-modal
           ref="exportFileModal"
@@ -61,6 +63,75 @@
         >
             <p v-if="exportFileLoading">Wait please...</p>
             <p v-else>Are you sure you want to download file?</p>
+        </b-modal>
+        <b-modal
+                ref="getAnnotationsModal"
+                centered title="Get annotations"
+                @ok="getAnnotationsData"
+                :ok-disabled="false"
+        >
+            <div v-if="!$store.state.annotations.processingEnd">
+                <div v-if="!processingStart">
+                    <p>To get annotations for a specific mutation, please insert its description in Forome format in the form below.</p>
+                    <p style="font-size: 0.7em;">
+                        For example: <br>
+                        chr15:89876828-89876836 TTGCTGCTGC&gt;TTGCTGC <br>
+                        chrX:153009197 G&gt;C <br>
+                    </p>
+
+                    <div>
+                        <p>Position</p>
+                        <input
+                            class="tags-panel_input"
+                            v-model="annotations.gnomAdData.position"
+                            placeholder="Position"
+                        />
+                    </div>
+
+                    <div>
+                        <p>Alternative</p>
+                        <input
+                            class="tags-panel_input"
+                            v-model="annotations.gnomAdData.alternative"
+                            placeholder="Alternative"
+                        />
+                    </div>
+
+                    <div>
+                        <p>Reference</p>
+                        <input
+                            class="tags-panel_input"
+                            v-model="annotations.gnomAdData.reference"
+                            placeholder="Reference"
+                        />
+                    </div>
+
+                    <div>
+                        <p>Chromosome</p>
+                        <input
+                            class="tags-panel_input"
+                            v-model="annotations.gnomAdData.chromosome"
+                            placeholder="Chromosome"
+                        />
+                    </div>
+                </div>
+
+                <div v-else>
+                    <p>
+                        Query processing has been started. It may take a few minutes.
+                        Please don't close this tab in your browser.
+                    </p>
+                </div>
+            </div>
+
+            <div v-else>
+                <p>Query processing finished. Click "OK" to display the annotations found.</p>
+            </div>
+
+            <div slot="modal-footer" class="w-100">
+                <b-button v-if="!processingEnd" size="sm" class="float-right" variant="primary" @click="getAnnotationsData">Submit query</b-button>
+                <b-button v-else size="sm" class="float-right" variant="primary" @click="">OK</b-button>
+            </div>
         </b-modal>
     </div>
 </template>
@@ -79,12 +150,28 @@ export default {
     data() {
         return {
             panelCollapsed: false,
+            processingStart: false,
             selectedWorkspace: '',
+            annotations: {
+                gnomAdData: {
+                    position: "",
+                    alternative: "",
+                    reference: "",
+                    chromosome: ""
+                },
+                anfisaJsonData: {
+                    chromosome: "",
+                    start: "",
+                    end: "",
+                    alternative: ""
+                }
+            }
         };
     },
     computed: {
         workspace() {
             return this.$store.state.workspace;
+
         },
         tags() {
             return this.$store.state.tags;
@@ -130,6 +217,24 @@ export default {
             this.$store.dispatch('getExportFile');
             this.$refs.exportFileModal.show();
         },
+        openGetAnnotationsModal() {
+            this.annotations.gnomAdData.position = "";
+            this.annotations.gnomAdData.alternative = "";
+            this.annotations.gnomAdData.reference = "";
+            this.annotations.gnomAdData.chromosome = "";
+
+            this.$refs.getAnnotationsModal.show();
+
+            this.processingStart = false;
+        },
+        getAnnotationsData() {
+            this.processingStart = true;
+
+            this.$store.dispatch({
+                type: 'getGnomAdData',
+                data: this.annotations.gnomAdData
+            });
+        },
         changeZoneValue(zone, value) {
             this.$store.dispatch('getListByZone', { zone, value });
         },
@@ -150,6 +255,10 @@ export default {
 </script>
 
 <style  scoped lang="scss">
+    .tags-panel_input {
+        margin-right: 5px;
+        margin-top: 5px;
+    }
     .settings-panel {
         position: relative;
         flex-shrink: 0;

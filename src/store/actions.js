@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const commonHttp = axios.create({
+let commonHttp = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
 });
 
@@ -276,5 +276,31 @@ export function getListByZone(context, { zone, value }) {
     getListByFilters(context).catch((error) => {
         console.log(error);
         context.commit('changeZoneValue', [zone, null]);
+    });
+}
+
+export function getGnomAdData(context, gnomAdData) {
+    let params = new URLSearchParams();
+    params.append('login', "admin");
+    params.append('password', "b82nfGl5sdg");
+
+    let headers = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    };
+
+    axios.post('http://localhost:3000/annotationservice/logon/login', params, headers).then((response) => {
+        let session = response.data.data.session;
+
+        params = new URLSearchParams();
+        params.append('session', session);
+        params.append('data', "[{\"position\": 36691607, \"alternative\": \"C\", \"reference\": \"A\", \"chromosome\": \"22\"}]");
+        //params.append('data', gnomAdData.data);
+
+        axios.post('http://localhost:3000/annotationservice/GetGnomAdData', params, headers).then((response) => {
+            context.commit('setProcessingEnd', true);
+            context.commit('setAnnotationsData', response.data.data[0]);
+        });
     });
 }

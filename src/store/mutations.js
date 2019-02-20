@@ -69,6 +69,14 @@ export function setPresets(state, filters) {
     state.presets = filters;
 }
 
-export function setPreset(state, filter) {
-    state.selectedPreset = filter;
+export function setPreset(state, value) {
+    state.selectedPreset = value;
+}
+
+export function setAnnotationsData(state, value) {
+    state.annotations.data = value;
+}
+
+export function setProcessingEnd(state, value) {
+    state.annotations.processingEnd = value;
 }
