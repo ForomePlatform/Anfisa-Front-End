@@ -1,12 +1,12 @@
 <template>
-    <div :class="[panelCollapsed ? 'settings-panel__collapsed' : '', 'settings-panel']">
+    <div :class="[settingsPanelCollapsed ? 'settings-panel__collapsed' : '', 'settings-panel']">
         <div
           class="settings-panel_collapse-icon"
           v-on:click="togglePanel"
         >
             <img :src="panelCollapsedIcon" />
         </div>
-        <div v-if="!panelCollapsed">
+        <div v-if="!settingsPanelCollapsed">
         <img class="mb-4" alt="Foreme logo" src="../assets/foromeLogo.svg" />
         <div class="settings-panel_block">
             <SettingsHeader global title="PROJECT" :onClick="openWorkspacesModal"/>
@@ -80,40 +80,40 @@
                     </p>
 
                     <div>
-                        <p>Chromosome</p>
+                        <p class="title-input">Chromosome</p>
                         <input
                             class="tags-panel_input"
                             v-model="annotations.anfisaJsonData[0].chromosome"
-                            placeholder="Position"
+                            placeholder="Chromosome"
                         />
                     </div>
 
                     <div>
-                        <p>Start</p>
+                        <p class="title-input">Start</p>
                         <input
                             type="number"
                             class="tags-panel_input"
-                            v-model="annotations.anfisaJsonData[0].start"
-                            placeholder="Alternative"
+                            v-model.number="annotations.anfisaJsonData[0].start"
+                            placeholder="Start"
                         />
                     </div>
 
                     <div>
-                        <p>End</p>
+                        <p class="title-input">End</p>
                         <input
                             type="number"
                             class="tags-panel_input"
-                            v-model="annotations.anfisaJsonData[0].end"
-                            placeholder="Reference"
+                            v-model.number="annotations.anfisaJsonData[0].end"
+                            placeholder="End"
                         />
                     </div>
 
                     <div>
-                        <p>Aternative</p>
+                        <p class="title-input">Alternative</p>
                         <input
                             class="tags-panel_input"
                             v-model="annotations.anfisaJsonData[0].alternative"
-                            placeholder="Chromosome"
+                            placeholder="Alternative"
                         />
                     </div>
                 </div>
@@ -131,8 +131,8 @@
             </div>
 
             <div slot="modal-footer" class="w-100">
-                <b-button v-if="!processingEnd" size="sm" class="float-right" variant="primary" @click="getAnnotationsData">Submit query</b-button>
-                <b-button v-else size="sm" class="float-right" variant="primary" @click="">OK</b-button>
+                <b-button v-if="!isProcessingEnd" :disabled="processingStart" size="sm" class="float-right" variant="primary" @click="getAnnotationsData">Submit query</b-button>
+                <b-button v-else size="sm" class="float-right" variant="primary" @click="viewAnnotationsData">OK</b-button>
             </div>
         </b-modal>
     </div>
@@ -151,17 +151,9 @@ export default {
     name: 'SettingsPanel',
     data() {
         return {
-            panelCollapsed: false,
             processingStart: false,
-            processingEnd: false,
             selectedWorkspace: '',
             annotations: {
-                gnomAdData: [{
-                    position: '',
-                    alternative: '',
-                    reference: '',
-                    chromosome: '',
-                }],
                 anfisaJsonData: [{
                     chromosome: '',
                     start: 0,
@@ -202,10 +194,13 @@ export default {
         isProcessingEnd() {
             return this.$store.state.annotations.processingEnd;
         },
+        settingsPanelCollapsed() {
+            return this.$store.state.panels.settingsPanelCollapsed;
+        }
     },
     methods: {
         togglePanel() {
-            this.panelCollapsed = !this.panelCollapsed;
+            this.$store.state.panels.settingsPanelCollapsed = !this.$store.state.panels.settingsPanelCollapsed;
             setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
         exportFile() {
@@ -223,10 +218,10 @@ export default {
             this.$refs.exportFileModal.show();
         },
         openGetAnnotationsModal() {
-            this.annotations.anfisaJsonData[0].chromosome = '';
-            this.annotations.anfisaJsonData[0].start = 0;
-            this.annotations.anfisaJsonData[0].end = 0;
-            this.annotations.anfisaJsonData[0].alternative = '';
+            this.annotations.anfisaJsonData[0].chromosome = '1';
+            this.annotations.anfisaJsonData[0].start = 6484880;
+            this.annotations.anfisaJsonData[0].end = 6484880;
+            this.annotations.anfisaJsonData[0].alternative = 'G';
             this.processingStart = false;
             this.$store.state.annotations.processingEnd = false;
 
@@ -234,22 +229,15 @@ export default {
         },
         getAnnotationsData() {
             this.processingStart = true;
-
-            this.$store.dispatch('getAnfisaJSON', this.annotations.anfisaJsonData[0]);
-
-
-            /* this.$store.dispatch({
-                /!*type: 'getGnomAdData',*!/
-                'getGnomAdData', { pos }
-                //data: this.annotations.gnomAdData[0]
-
-                /!*data: {
-                    pos,
-                    alt,
-                    ref,
-                    chr,
-                }*!/
-            }); */
+            this.$store.dispatch('getAnfisaJson', JSON.stringify(this.annotations.anfisaJsonData));
+        },
+        viewAnnotationsData() {
+            this.$refs.getAnnotationsModal.hide()
+            this.toggleVariantsPanel();
+        },
+        toggleVariantsPanel() {
+            this.$store.state.panels.variantsPanelCollapsed = true;
+            setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
         changeZoneValue(zone, value) {
             this.$store.dispatch('getListByZone', { zone, value });
@@ -271,9 +259,11 @@ export default {
 </script>
 
 <style  scoped lang="scss">
+    .title-input {
+        margin-bottom: 0;
+    }
     .tags-panel_input {
-        margin-right: 5px;
-        margin-top: 5px;
+        margin-bottom: 5px;
     }
     .settings-panel {
         position: relative;

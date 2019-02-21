@@ -1,6 +1,6 @@
 <template>
-    <div :class="[panelCollapsed ? 'variants-panel__collapsed' : '', 'variants-panel']">
-        <div v-if="panelCollapsed">
+    <div :class="[settingsPanelCollapsed ? 'variants-panel__collapsed' : '', 'variants-panel']">
+        <div v-if="settingsPanelCollapsed">
             <div
               class="variants-panel_collapse-icon"
               v-on:click="togglePanel"
@@ -28,7 +28,7 @@
                 <img src="../assets/collapseIcon.svg" />
             </div>
         </div>
-        <CustomScroll v-if="!panelCollapsed" className="variants-panel_list">
+        <CustomScroll v-if="!settingsPanelCollapsed" className="variants-panel_list">
             <VariantsList
               v-if="listView"
               :data="list"
@@ -79,6 +79,9 @@ export default {
         selectedItem() {
             return this.$store.state.selectedVariant;
         },
+        settingsPanelCollapsed() {
+            return this.$store.state.panels.variantsPanelCollapsed;
+        }
     },
     methods: {
         selectItem(id) {
@@ -101,7 +104,7 @@ export default {
             this.collapseAllStatus = !this.collapseAllStatus;
         },
         togglePanel() {
-            this.panelCollapsed = !this.panelCollapsed;
+            this.$store.state.panels.variantsPanelCollapsed = !this.$store.state.panels.variantsPanelCollapsed;
             setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
     },

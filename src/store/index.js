@@ -27,8 +27,12 @@ export default new Vuex.Store({
         selectedPreset: null,
         annotations: {
             processingEnd: false,
-            data: {},
+            anfisaJson: {},
         },
+        panels:{
+            settingsPanelCollapsed: false,
+            variantsPanelCollapsed: false
+        }
     },
     actions,
     mutations,
