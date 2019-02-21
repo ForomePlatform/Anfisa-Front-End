@@ -236,14 +236,15 @@ export function getAnfisaJson(context, anfisaJsonData) {
     params.append('login', 'admin');
     params.append('password', 'b82nfGl5sdg');
 
-    axios.post('http://localhost:3000/annotationservice/logon/login', params, headers).then((response) => {
+    context.commit('setSelectedVariant', 1);
+    axios.post('/annotationservice/logon/login', params, headers).then((response) => {
         const session = response.data.data.session;
 
         params = new URLSearchParams();
         params.append('session', session);
         params.append('data', anfisaJsonData);
 
-        axios.post('http://localhost:3000/annotationservice/GetAnfisaJSON', params, headers).then((response) => {
+        axios.post('/annotationservice/GetAnfisaJSON', params, headers).then((response) => {
             context.commit('setProcessingEnd', true);
 
             let view = response.data.data[0].result[0].view;
