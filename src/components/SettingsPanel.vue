@@ -67,10 +67,12 @@
         <b-modal
                 ref="getAnnotationsModal"
                 centered title="Get annotations"
-                @ok="getAnnotationsData"
+                @ok="getAnnotationsData(
+                    annotations.gnomAdData.position, annotations.gnomAdData.alternative, annotations.gnomAdData.reference, annotations.gnomAdData.chromosome
+                )"
                 :ok-disabled="false"
         >
-            <div v-if="!$store.state.annotations.processingEnd">
+            <div v-if="!isProcessingEnd">
                 <div v-if="!processingStart">
                     <p>To get annotations for a specific mutation, please insert its description in Forome format in the form below.</p>
                     <p style="font-size: 0.7em;">
@@ -80,37 +82,39 @@
                     </p>
 
                     <div>
-                        <p>Position</p>
+                        <p>Chromosome</p>
                         <input
                             class="tags-panel_input"
-                            v-model="annotations.gnomAdData.position"
+                            v-model="annotations.anfisaJsonData[0].chromosome"
                             placeholder="Position"
                         />
                     </div>
 
                     <div>
-                        <p>Alternative</p>
+                        <p>Start</p>
                         <input
+                            type="number"
                             class="tags-panel_input"
-                            v-model="annotations.gnomAdData.alternative"
+                            v-model="annotations.anfisaJsonData[0].start"
                             placeholder="Alternative"
                         />
                     </div>
 
                     <div>
-                        <p>Reference</p>
+                        <p>End</p>
                         <input
+                            type="number"
                             class="tags-panel_input"
-                            v-model="annotations.gnomAdData.reference"
+                            v-model="annotations.anfisaJsonData[0].end"
                             placeholder="Reference"
                         />
                     </div>
 
                     <div>
-                        <p>Chromosome</p>
+                        <p>Aternative</p>
                         <input
                             class="tags-panel_input"
-                            v-model="annotations.gnomAdData.chromosome"
+                            v-model="annotations.anfisaJsonData[0].alternative"
                             placeholder="Chromosome"
                         />
                     </div>
@@ -151,27 +155,27 @@ export default {
         return {
             panelCollapsed: false,
             processingStart: false,
+            processingEnd: false,
             selectedWorkspace: '',
             annotations: {
-                gnomAdData: {
+                gnomAdData: [{
                     position: "",
                     alternative: "",
                     reference: "",
                     chromosome: ""
-                },
-                anfisaJsonData: {
+                }],
+                anfisaJsonData: [{
                     chromosome: "",
-                    start: "",
-                    end: "",
+                    start: 0,
+                    end: 0,
                     alternative: ""
-                }
+                }]
             }
         };
     },
     computed: {
         workspace() {
             return this.$store.state.workspace;
-
         },
         tags() {
             return this.$store.state.tags;
@@ -197,6 +201,9 @@ export default {
         selectedPreset() {
             return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'Presets';
         },
+        isProcessingEnd() {
+            return this.$store.state.annotations.processingEnd;
+        }
     },
     methods: {
         togglePanel() {
@@ -218,22 +225,30 @@ export default {
             this.$refs.exportFileModal.show();
         },
         openGetAnnotationsModal() {
-            this.annotations.gnomAdData.position = "";
-            this.annotations.gnomAdData.alternative = "";
-            this.annotations.gnomAdData.reference = "";
-            this.annotations.gnomAdData.chromosome = "";
+            this.annotations.gnomAdData[0].chromosome = "";
+            this.annotations.gnomAdData[0].start = 0;
+            this.annotations.gnomAdData[0].end = 0;
+            this.annotations.gnomAdData[0].alternative = "";
 
             this.$refs.getAnnotationsModal.show();
-
-            this.processingStart = false;
         },
-        getAnnotationsData() {
+        getAnnotationsData(pos, alt, ref, chr) {
             this.processingStart = true;
 
-            this.$store.dispatch({
-                type: 'getGnomAdData',
-                data: this.annotations.gnomAdData
-            });
+            this.$store.dispatch('getAnfisaJSON', pos);
+
+            /*this.$store.dispatch({
+                /!*type: 'getGnomAdData',*!/
+                'getGnomAdData', { pos }
+                //data: this.annotations.gnomAdData[0]
+
+                /!*data: {
+                    pos,
+                    alt,
+                    ref,
+                    chr,
+                }*!/
+            });*/
         },
         changeZoneValue(zone, value) {
             this.$store.dispatch('getListByZone', { zone, value });

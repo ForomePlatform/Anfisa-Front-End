@@ -279,7 +279,7 @@ export function getListByZone(context, { zone, value }) {
     });
 }
 
-export function getGnomAdData(context, gnomAdData) {
+export function getAnfisaJSON(context, anfisaJsonData) {
     let params = new URLSearchParams();
     params.append('login', "admin");
     params.append('password', "b82nfGl5sdg");
@@ -295,10 +295,11 @@ export function getGnomAdData(context, gnomAdData) {
 
         params = new URLSearchParams();
         params.append('session', session);
-        params.append('data', "[{\"position\": 36691607, \"alternative\": \"C\", \"reference\": \"A\", \"chromosome\": \"22\"}]");
+        params.append('data', "[{\"chromosome\": \"1\", \"start\": 6484880, \"end\": 6484880, \"alternative\": \"G\"}]");
         //params.append('data', gnomAdData.data);
 
-        axios.post('http://localhost:3000/annotationservice/GetGnomAdData', params, headers).then((response) => {
+
+        axios.post('http://localhost:3000/annotationservice/GetAnfisaJSON', params, headers).then((response) => {
             context.commit('setProcessingEnd', true);
             context.commit('setAnnotationsData', response.data.data[0]);
         });
