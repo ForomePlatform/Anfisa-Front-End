@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let commonHttp = axios.create({
+const commonHttp = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
 });
 
@@ -281,22 +281,22 @@ export function getListByZone(context, { zone, value }) {
 
 export function getAnfisaJSON(context, anfisaJsonData) {
     let params = new URLSearchParams();
-    params.append('login', "admin");
-    params.append('password', "b82nfGl5sdg");
+    params.append('login', 'admin');
+    params.append('password', 'b82nfGl5sdg');
 
-    let headers = {
+    const headers = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
     };
 
     axios.post('http://localhost:3000/annotationservice/logon/login', params, headers).then((response) => {
-        let session = response.data.data.session;
+        const session = response.data.data.session;
 
         params = new URLSearchParams();
         params.append('session', session);
-        params.append('data', "[{\"chromosome\": \"1\", \"start\": 6484880, \"end\": 6484880, \"alternative\": \"G\"}]");
-        //params.append('data', gnomAdData.data);
+        params.append('data', '[{"chromosome": "1", "start": 6484880, "end": 6484880, "alternative": "G"}]');
+        // params.append('data', gnomAdData.data);
 
 
         axios.post('http://localhost:3000/annotationservice/GetAnfisaJSON', params, headers).then((response) => {

@@ -67,9 +67,7 @@
         <b-modal
                 ref="getAnnotationsModal"
                 centered title="Get annotations"
-                @ok="getAnnotationsData(
-                    annotations.gnomAdData.position, annotations.gnomAdData.alternative, annotations.gnomAdData.reference, annotations.gnomAdData.chromosome
-                )"
+                @ok="getAnnotationsData"
                 :ok-disabled="false"
         >
             <div v-if="!isProcessingEnd">
@@ -159,18 +157,18 @@ export default {
             selectedWorkspace: '',
             annotations: {
                 gnomAdData: [{
-                    position: "",
-                    alternative: "",
-                    reference: "",
-                    chromosome: ""
+                    position: '',
+                    alternative: '',
+                    reference: '',
+                    chromosome: '',
                 }],
                 anfisaJsonData: [{
-                    chromosome: "",
+                    chromosome: '',
                     start: 0,
                     end: 0,
-                    alternative: ""
-                }]
-            }
+                    alternative: '',
+                }],
+            },
         };
     },
     computed: {
@@ -203,7 +201,7 @@ export default {
         },
         isProcessingEnd() {
             return this.$store.state.annotations.processingEnd;
-        }
+        },
     },
     methods: {
         togglePanel() {
@@ -225,19 +223,22 @@ export default {
             this.$refs.exportFileModal.show();
         },
         openGetAnnotationsModal() {
-            this.annotations.gnomAdData[0].chromosome = "";
-            this.annotations.gnomAdData[0].start = 0;
-            this.annotations.gnomAdData[0].end = 0;
-            this.annotations.gnomAdData[0].alternative = "";
+            this.annotations.anfisaJsonData[0].chromosome = '';
+            this.annotations.anfisaJsonData[0].start = 0;
+            this.annotations.anfisaJsonData[0].end = 0;
+            this.annotations.anfisaJsonData[0].alternative = '';
+            this.processingStart = false;
+            this.$store.state.annotations.processingEnd = false;
 
             this.$refs.getAnnotationsModal.show();
         },
-        getAnnotationsData(pos, alt, ref, chr) {
+        getAnnotationsData() {
             this.processingStart = true;
 
-            this.$store.dispatch('getAnfisaJSON', pos);
+            this.$store.dispatch('getAnfisaJSON', this.annotations.anfisaJsonData[0]);
 
-            /*this.$store.dispatch({
+
+            /* this.$store.dispatch({
                 /!*type: 'getGnomAdData',*!/
                 'getGnomAdData', { pos }
                 //data: this.annotations.gnomAdData[0]
@@ -248,7 +249,7 @@ export default {
                     ref,
                     chr,
                 }*!/
-            });*/
+            }); */
         },
         changeZoneValue(zone, value) {
             this.$store.dispatch('getListByZone', { zone, value });

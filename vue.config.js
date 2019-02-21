@@ -4,16 +4,16 @@ module.exports = {
         proxy: {
             '/anfisa-dev/*': {
                 target: 'http://anfisa.forome.org',
-                onProxyReq: function (request, req, res) {
+                onProxyReq(request, req, res) {
                     request.setHeader('Authorization', 'Basic YmdtOmJnbTEh');
-                }
+                },
             },
             '/annotationservice/*': {
                 target: 'http://anfisa.forome.org',
-                onProxyReq: function (request, req, res) {
+                onProxyReq(request, req, res) {
                     request.setHeader('Authorization', 'Basic YmdtOmJnbTEh');
-                }
-            }
+                },
+            },
         },
         port: 3000,
     },

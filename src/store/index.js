@@ -27,8 +27,8 @@ export default new Vuex.Store({
         selectedPreset: null,
         annotations: {
             processingEnd: false,
-            data: {}
-        }
+            data: {},
+        },
     },
     actions,
     mutations,
