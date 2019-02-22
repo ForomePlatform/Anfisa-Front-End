@@ -193,6 +193,8 @@ export default {
         },
         openGetAnnotationsModal() {
             this.annotations.anfisaJsonData = "[{\"chromosome\":\"1\",\"start\":6484880,\"end\":6484880,\"alternative\":\"G\"}]";
+            this.annotations.error.type = false;
+            this.annotations.error.message = "";
             this.processingStart = false;
             this.$store.state.annotations.processingEnd = false;
 
