@@ -236,7 +236,6 @@ export function getAnfisaJson(context, anfisaJsonData) {
     params.append('login', 'admin');
     params.append('password', 'b82nfGl5sdg');
 
-    context.commit('setSelectedVariant', 1);
     axios.post('/annotationservice/logon/login', params, headers).then((response) => {
         const { session } = response.data.data;
 
@@ -246,8 +245,17 @@ export function getAnfisaJson(context, anfisaJsonData) {
 
         axios.post('/annotationservice/GetAnfisaJSON', params, headers).then((resp) => {
             context.commit('setProcessingEnd', true);
-            axios.post('/anfisa-xl/app/single_cnt', resp.data.data[0].result[0], headers).then((res) => {
+
+            params = new URLSearchParams();
+            params.append('record', resp.data.data[0].result[0]);
+
+            axios.post('/anfisa-xl/app/single_cnt', params, headers).then((res) => {
+                context.commit('setSelectedVariant', 1);
                 context.commit('setVariantDetails', res.data);
+            }).catch((error) => {
+                context.commit('setSelectedVariant', null);
+                context.commit('setVariantDetails', {});
+                console.log(error);
             });
         });
     });

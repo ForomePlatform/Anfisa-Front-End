@@ -80,40 +80,11 @@
                     </p>
 
                     <div>
-                        <p class="title-input">Chromosome</p>
+                        <p class="title-input">Anfisa json:</p>
                         <input
                             class="tags-panel_input"
-                            v-model="annotations.anfisaJsonData[0].chromosome"
-                            placeholder="Chromosome"
-                        />
-                    </div>
-
-                    <div>
-                        <p class="title-input">Start</p>
-                        <input
-                            type="number"
-                            class="tags-panel_input"
-                            v-model.number="annotations.anfisaJsonData[0].start"
-                            placeholder="Start"
-                        />
-                    </div>
-
-                    <div>
-                        <p class="title-input">End</p>
-                        <input
-                            type="number"
-                            class="tags-panel_input"
-                            v-model.number="annotations.anfisaJsonData[0].end"
-                            placeholder="End"
-                        />
-                    </div>
-
-                    <div>
-                        <p class="title-input">Alternative</p>
-                        <input
-                            class="tags-panel_input"
-                            v-model="annotations.anfisaJsonData[0].alternative"
-                            placeholder="Alternative"
+                            v-model="annotations.anfisaJsonData"
+                            placeholder="Anfisa json data"
                         />
                     </div>
                 </div>
@@ -154,12 +125,7 @@ export default {
             processingStart: false,
             selectedWorkspace: '',
             annotations: {
-                anfisaJsonData: [{
-                    chromosome: '',
-                    start: 0,
-                    end: 0,
-                    alternative: '',
-                }],
+                anfisaJsonData: "",
             },
         };
     },
@@ -218,10 +184,7 @@ export default {
             this.$refs.exportFileModal.show();
         },
         openGetAnnotationsModal() {
-            this.annotations.anfisaJsonData[0].chromosome = '1';
-            this.annotations.anfisaJsonData[0].start = 6484880;
-            this.annotations.anfisaJsonData[0].end = 6484880;
-            this.annotations.anfisaJsonData[0].alternative = 'G';
+            this.annotations.anfisaJsonData = "[{\"chromosome\":\"1\",\"start\":6484880,\"end\":6484880,\"alternative\":\"G\"}]";
             this.processingStart = false;
             this.$store.state.annotations.processingEnd = false;
 
@@ -229,10 +192,10 @@ export default {
         },
         getAnnotationsData() {
             this.processingStart = true;
-            this.$store.dispatch('getAnfisaJson', JSON.stringify(this.annotations.anfisaJsonData));
+            this.$store.dispatch('getAnfisaJson', this.annotations.anfisaJsonData);
         },
         viewAnnotationsData() {
-            this.$refs.getAnnotationsModal.hide()
+            this.$refs.getAnnotationsModal.hide();
             this.toggleVariantsPanel();
         },
         toggleVariantsPanel() {
@@ -263,6 +226,7 @@ export default {
         margin-bottom: 0;
     }
     .tags-panel_input {
+        width: 100%;
         margin-bottom: 5px;
     }
     .settings-panel {
