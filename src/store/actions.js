@@ -49,21 +49,7 @@ export function getVariantDetails(context, variant) {
     params.append('rec', variant);
     context.commit('setSelectedVariant', variant);
     commonHttp.post('/reccnt', params, headers).then((response) => {
-        const { data } = response;
-        const result = {};
-
-        const getValuesForRow = row => (Array.isArray(row) ? row.map(val => val[0]) : []);
-
-        data.forEach((item) => {
-            if (item.type === 'table') {
-                const tableData = item.rows.map(row => [row[1], ...getValuesForRow(row[2])]);
-                result[item.name] = {
-                    title: item.title,
-                    data: tableData,
-                };
-            }
-        });
-        context.commit('setVariantDetails', result);
+        setVariantsDetails(context, response)
     }).catch((error) => {
         context.commit('setSelectedVariant', null);
         console.log(error);
@@ -245,18 +231,30 @@ export function getAnfisaJson(context, anfisaJsonData) {
 
         axios.post('/annotationservice/GetAnfisaJSON', params, headers).then((resp) => {
             context.commit('setProcessingEnd', true);
-
             params = new URLSearchParams();
-            params.append('record', resp.data.data[0].result[0]);
-
+            const dataReq = resp.data.data[0].result[0];
+            params.append('record', JSON.stringify(dataReq));
             axios.post('/anfisa-xl/app/single_cnt', params, headers).then((res) => {
-                context.commit('setSelectedVariant', 1);
-                context.commit('setVariantDetails', res.data);
-            }).catch((error) => {
-                context.commit('setSelectedVariant', null);
-                context.commit('setVariantDetails', {});
-                console.log(error);
+                setVariantsDetails(context, res);
             });
         });
     });
+}
+
+function setVariantsDetails(context, resp) {
+    const { data } = resp;
+    const result = {};
+
+    const getValuesForRow = row => (Array.isArray(row) ? row.map(val => val[0]) : []);
+
+    data.forEach((item) => {
+        if (item.type === 'table') {
+            const tableData = item.rows.map(row => [row[1], ...getValuesForRow(row[2])]);
+            result[item.name] = {
+                title: item.title,
+                data: tableData,
+            };
+        }
+    });
+    context.commit('setVariantDetails', result);
 }
