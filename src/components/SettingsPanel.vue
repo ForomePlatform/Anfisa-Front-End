@@ -250,7 +250,11 @@ export default {
                 let end = rangeArray.length === 1 ? start : isNaN(Number(rangeArray[1])) ? rangeArray[1] : Number(rangeArray[1]);
                 element['start'] = start;
                 element['end'] = end;
-                element['alternative'] = elementArray[2];
+                let altrernative = elementArray[2];
+                if (altrernative.indexOf(">") !== -1) {
+                    altrernative = altrernative.split(">")[1];
+                }
+                element['alternative'] = altrernative;
 
                 result.push(element);
             }
