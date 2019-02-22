@@ -105,6 +105,10 @@
                 <b-button v-if="!isProcessingEnd" :disabled="processingStart" size="sm" class="float-right" variant="primary" @click="getAnnotationsData">Submit query</b-button>
                 <b-button v-else size="sm" class="float-right" variant="primary" @click="viewAnnotationsData">OK</b-button>
             </div>
+
+            <div v-if="annotations.error.type" class='error-message'>
+                <p>Error in the input data - {{annotations.error.message}}!</p>
+            </div>
         </b-modal>
     </div>
 </template>
@@ -126,6 +130,10 @@ export default {
             selectedWorkspace: '',
             annotations: {
                 anfisaJsonData: "",
+                error: {
+                    type: false,
+                    message: ""
+                }
             },
         };
     },
@@ -191,8 +199,13 @@ export default {
             this.$refs.getAnnotationsModal.show();
         },
         getAnnotationsData() {
-            this.processingStart = true;
-            this.$store.dispatch('getAnfisaJson', this.annotations.anfisaJsonData);
+            if (this.isValidAnfisaInputJsonData(this.annotations.anfisaJsonData)) {
+                this.processingStart = true;
+                this.annotations.error.type = false;
+                this.$store.dispatch('getAnfisaJson', this.annotations.anfisaJsonData);
+            } else {
+                this.annotations.error.type = true;
+            }
         },
         viewAnnotationsData() {
             this.$refs.getAnnotationsModal.hide();
@@ -201,6 +214,68 @@ export default {
         toggleVariantsPanel() {
             this.$store.state.panels.variantsPanelCollapsed = true;
             setTimeout(() => window.dispatchEvent(new Event('resize')));
+        },
+        isValidAnfisaInputJsonData(jsonData) {
+            try {
+                let jsonObject = JSON.parse(jsonData);
+
+                for (let i = 0; i < jsonObject.length; i++) {
+                    for (let key in jsonObject[i]) {
+                        switch(key) {
+                            case 'chromosome': {
+                                if (!this.checkValue(jsonObject[i][key], "string", i, key)) {
+                                    return false;
+                                }
+
+                                break;
+                            }
+                            case 'start': {
+                                if (!this.checkValue(jsonObject[i][key], "number", i, key)) {
+                                    console.log("Error: data[" + i + "]." + key + "!");
+                                    return false;
+                                }
+
+                                break;
+                            }
+                            case 'end': {
+                                if (!this.checkValue(jsonObject[i][key], "number", i, key)) {
+                                    return false;
+                                }
+
+                                break;
+                            }
+                            case 'alternative': {
+                                if (!this.checkValue(jsonObject[i][key], "string", i, key)) {
+                                    return false;
+                                }
+
+                                break;
+                            }
+                            default: {
+                                let errorMessage = "anfisaJsonData[" + i + "]." + key + " is invalid key!";
+                                this.annotations.error.message = errorMessage;
+                                console.log(errorMessage);
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            } catch(error) {
+                console.log(error);
+                return false;
+            }
+        },
+        checkValue(value, type, id, key) {
+            if (typeof(value) !== type) {
+                let errorMessage = "anfisaJsonData[" + id + "]." + key + " not " + type + "!";
+                this.annotations.error.message = errorMessage;
+                console.log(errorMessage);
+                return false;
+            }
+
+            return true;
         },
         changeZoneValue(zone, value) {
             this.$store.dispatch('getListByZone', { zone, value });
@@ -222,6 +297,9 @@ export default {
 </script>
 
 <style  scoped lang="scss">
+    .error-message {
+        color: darkred;
+    }
     .title-input {
         margin-bottom: 0;
     }
