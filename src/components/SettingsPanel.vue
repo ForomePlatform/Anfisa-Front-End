@@ -210,6 +210,7 @@ export default {
             let jsonData = this.generateJsonFromInputData(this.annotations.anfisaInputData);
 
             if (jsonData === null) {
+                this.$store.state.annotations.error.show = true;
                 return;
             }
 
