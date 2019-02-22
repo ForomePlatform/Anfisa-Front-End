@@ -210,15 +210,12 @@ export default {
             let jsonData = this.generateJsonFromInputData(this.annotations.anfisaInputData);
 
             if (jsonData === null) {
-                this.$store.state.annotations.error.show = true;
                 return;
             }
 
             if (this.isValidJsonData(jsonData)) {
                 this.$store.state.annotations.error.show = false;
                 this.$store.dispatch('getAnfisaJson', jsonData);
-            } else {
-                this.$store.state.annotations.error.show = true;
             }
         },
         viewAnnotationsData() {
@@ -304,7 +301,7 @@ export default {
         },
         showErrorGetAnnotations(message) {
             this.$store.state.annotations.error.message = message;
-            this.$store.state.annotations.error.type = true;
+            this.$store.state.annotations.error.show = true;
             this.$store.state.annotations.processingStart = false;
             this.$store.state.annotations.processingEnd = false;
             console.log(message);
