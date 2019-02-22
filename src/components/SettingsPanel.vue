@@ -71,7 +71,7 @@
                 :ok-disabled="false"
         >
             <div v-if="!isProcessingEnd">
-                <div v-if="!processingStart">
+                <div v-if="!isProcessingStart || getErrorsShow">
                     <p>To get annotations for a specific mutation, please insert its description in Forome format in the form below.</p>
                     <p style="font-size: 0.7em;">
                         For example: <br>
@@ -83,7 +83,7 @@
                         <p class="title-input">Anfisa json:</p>
                         <input
                             class="tags-panel_input"
-                            v-model="annotations.anfisaJsonData"
+                            v-model="annotations.anfisaInputData"
                             placeholder="Anfisa json data"
                         />
                     </div>
@@ -102,12 +102,12 @@
             </div>
 
             <div slot="modal-footer" class="w-100">
-                <b-button v-if="!isProcessingEnd" :disabled="processingStart" size="sm" class="float-right" variant="primary" @click="getAnnotationsData">Submit query</b-button>
+                <b-button v-if="!isProcessingEnd" :disabled="isProcessingStart" size="sm" class="float-right" variant="primary" @click="getAnnotationsData">Submit query</b-button>
                 <b-button v-else size="sm" class="float-right" variant="primary" @click="viewAnnotationsData">OK</b-button>
             </div>
 
-            <div v-if="annotations.error.type" class='error-message'>
-                <p>Error in the input data - {{annotations.error.message}}!</p>
+            <div v-if="getErrorsShow" class='error-message'>
+                <p>{{getErrorsMessage}}</p>
             </div>
         </b-modal>
     </div>
@@ -129,11 +129,7 @@ export default {
             processingStart: false,
             selectedWorkspace: '',
             annotations: {
-                anfisaJsonData: "",
-                error: {
-                    type: false,
-                    message: ""
-                }
+                anfisaInputData: ""
             },
         };
     },
@@ -168,8 +164,17 @@ export default {
         isProcessingEnd() {
             return this.$store.state.annotations.processingEnd;
         },
+        isProcessingStart() {
+            return this.$store.state.annotations.processingStart;
+        },
         settingsPanelCollapsed() {
             return this.$store.state.panels.settingsPanelCollapsed;
+        },
+        getErrorsShow() {
+            return this.$store.state.annotations.error.show;
+        },
+        getErrorsMessage() {
+            return this.$store.state.annotations.error.message;
         }
     },
     methods: {
@@ -192,21 +197,28 @@ export default {
             this.$refs.exportFileModal.show();
         },
         openGetAnnotationsModal() {
-            this.annotations.anfisaJsonData = "[{\"chromosome\":\"1\",\"start\":6484880,\"end\":6484880,\"alternative\":\"G\"}]";
-            this.annotations.error.type = false;
-            this.annotations.error.message = "";
-            this.processingStart = false;
+            this.annotations.anfisaInputData = "chr15:89876828-89876836 TTGCTGCTGC>TTGCTGC";
+            this.$store.state.annotations.error.show = false;
+            this.$store.state.annotations.error.message = "";
+            this.$store.state.annotations.processingStart = false;
             this.$store.state.annotations.processingEnd = false;
 
             this.$refs.getAnnotationsModal.show();
         },
         getAnnotationsData() {
-            if (this.isValidAnfisaInputJsonData(this.annotations.anfisaJsonData)) {
-                this.processingStart = true;
-                this.annotations.error.type = false;
-                this.$store.dispatch('getAnfisaJson', this.annotations.anfisaJsonData);
+            this.$store.state.annotations.processingStart = true;
+
+            let jsonData = this.generateJsonFromInputData(this.annotations.anfisaInputData);
+
+            if (jsonData === null) {
+                return;
+            }
+
+            if (this.isValidJsonData(jsonData)) {
+                this.$store.state.annotations.error.show = false;
+                this.$store.dispatch('getAnfisaJson', jsonData);
             } else {
-                this.annotations.error.type = true;
+                this.$store.state.annotations.error.show = true;
             }
         },
         viewAnnotationsData() {
@@ -217,47 +229,56 @@ export default {
             this.$store.state.panels.variantsPanelCollapsed = true;
             setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
-        isValidAnfisaInputJsonData(jsonData) {
+        generateJsonFromInputData(data) {
+            let result = [];
+            let element = {};
+            let dataArray = data.split(",");
+
+            for (let i = 0; i < dataArray.length; i++) {
+                let elementArray = dataArray[i].trim().split(/[\s:]+/);
+
+                if (elementArray.length < 3) {
+                    this.showErrorGetAnnotations("Not enough input!");
+                    return null;
+                }
+
+                let rangeArray = elementArray[1].split(/[-]+/);
+
+                element['chromosome'] = elementArray[0].replace('chr', '');
+
+                let start = isNaN(Number(rangeArray[0])) ? rangeArray[0] : Number(rangeArray[0]);
+                let end = rangeArray.length === 1 ? start : isNaN(Number(rangeArray[1])) ? rangeArray[1] : Number(rangeArray[1]);
+                element['start'] = start;
+                element['end'] = end;
+                element['alternative'] = elementArray[2];
+
+                result.push(element);
+            }
+
+            return JSON.stringify(result);
+        },
+        isValidJsonData(jsonData) {
             try {
                 let jsonObject = JSON.parse(jsonData);
 
                 for (let i = 0; i < jsonObject.length; i++) {
                     for (let key in jsonObject[i]) {
                         switch(key) {
-                            case 'chromosome': {
-                                if (!this.checkValue(jsonObject[i][key], "string", i, key)) {
-                                    return false;
-                                }
-
-                                break;
-                            }
-                            case 'start': {
-                                if (!this.checkValue(jsonObject[i][key], "number", i, key)) {
-                                    console.log("Error: data[" + i + "]." + key + "!");
-                                    return false;
-                                }
-
-                                break;
-                            }
-                            case 'end': {
-                                if (!this.checkValue(jsonObject[i][key], "number", i, key)) {
-                                    return false;
-                                }
-
-                                break;
-                            }
+                            case 'chromosome':
                             case 'alternative': {
-                                if (!this.checkValue(jsonObject[i][key], "string", i, key)) {
+                                if (!this.checkValue(jsonObject[i][key], "string")) {
                                     return false;
                                 }
 
                                 break;
                             }
-                            default: {
-                                let errorMessage = "anfisaJsonData[" + i + "]." + key + " is invalid key!";
-                                this.annotations.error.message = errorMessage;
-                                console.log(errorMessage);
-                                return false;
+                            case 'start':
+                            case 'end': {
+                                if (!this.checkValue(jsonObject[i][key], "number")) {
+                                    return false;
+                                }
+
+                                break;
                             }
                         }
                     }
@@ -265,19 +286,24 @@ export default {
 
                 return true;
             } catch(error) {
-                console.log(error);
+                this.showErrorGetAnnotations(error.message);
                 return false;
             }
         },
-        checkValue(value, type, id, key) {
+        checkValue(value, type) {
             if (typeof(value) !== type) {
-                let errorMessage = "anfisaJsonData[" + id + "]." + key + " not " + type + "!";
-                this.annotations.error.message = errorMessage;
-                console.log(errorMessage);
+                this.showErrorGetAnnotations("Data entry error: " + value + " not " + type + "!");
                 return false;
             }
 
             return true;
+        },
+        showErrorGetAnnotations(message) {
+            this.$store.state.annotations.error.message = message;
+            this.$store.state.annotations.error.type = true;
+            this.$store.state.annotations.processingStart = false;
+            this.$store.state.annotations.processingEnd = false;
+            console.log(message);
         },
         changeZoneValue(zone, value) {
             this.$store.dispatch('getListByZone', { zone, value });

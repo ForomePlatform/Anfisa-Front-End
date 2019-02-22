@@ -27,7 +27,11 @@ export default new Vuex.Store({
         selectedPreset: null,
         annotations: {
             processingEnd: false,
-            anfisaJson: {},
+            processingStart: false,
+            error: {
+                show: false,
+                message: ""
+            }
         },
         panels:{
             settingsPanelCollapsed: false,

@@ -73,10 +73,18 @@ export function setPreset(state, value) {
     state.selectedPreset = value;
 }
 
-export function setAnfisaJson(state, value) {
-    state.annotations.anfisaJson = value;
-}
-
 export function setProcessingEnd(state, value) {
     state.annotations.processingEnd = value;
+}
+
+export function setProcessingStart(state, value) {
+    state.annotations.processingStart = value;
+}
+
+export function setErrorShow(state, value) {
+    state.annotations.error.show = value;
+}
+
+export function setErrorMessage(state, value) {
+    state.annotations.error.message = value;
 }

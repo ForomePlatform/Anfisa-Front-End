@@ -240,9 +240,14 @@ export function getAnfisaJson(context, anfisaJsonData) {
             }).catch((error) => {
                 context.commit('setSelectedVariant', null);
                 context.commit('setVariantDetails', {});
-                console.log(error);
+
+                showError(context, error.message + " - " + error.request.responseURL);
             });
+        }).catch((error) => {
+            showError(context, error.message + " - " + error.request.responseURL);
         });
+    }).catch((error) => {
+        showError(context, error.message + " - " + error.request.responseURL);
     });
 }
 
@@ -263,4 +268,12 @@ function setVariantsDetails(context, resp) {
     });
 
     context.commit('setVariantDetails', result);
+}
+
+function showError(context, message) {
+    context.commit('setErrorShow', true);
+    context.commit('setErrorMessage', message);
+    context.commit('setProcessingEnd', false);
+    context.commit('setProcessingStart', false);
+    console.log(message);
 }
