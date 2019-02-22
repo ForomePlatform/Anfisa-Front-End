@@ -1,5 +1,5 @@
 module.exports = {
-    baseUrl: process.env.NODE_ENV === 'production' ? '/anfisa-dev/' : '/',
+    baseUrl: process.env.NODE_ENV === 'production' ? '/anfisa-annotaion/' : '/',
     devServer: {
         proxy: {
             '/anfisa-dev/*': {
@@ -9,6 +9,12 @@ module.exports = {
                 },
             },
             '/annotationservice/*': {
+                target: 'http://anfisa.forome.org',
+                onProxyReq(request, req, res) {
+                    request.setHeader('Authorization', 'Basic YmdtOmJnbTEh');
+                },
+            },
+            '/anfisa-xl/*': {
                 target: 'http://anfisa.forome.org',
                 onProxyReq(request, req, res) {
                     request.setHeader('Authorization', 'Basic YmdtOmJnbTEh');

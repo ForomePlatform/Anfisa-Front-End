@@ -238,127 +238,17 @@ export function getAnfisaJson(context, anfisaJsonData) {
 
     context.commit('setSelectedVariant', 1);
     axios.post('/annotationservice/logon/login', params, headers).then((response) => {
-        const session = response.data.data.session;
+        const { session } = response.data.data;
 
         params = new URLSearchParams();
         params.append('session', session);
         params.append('data', anfisaJsonData);
 
-        axios.post('/annotationservice/GetAnfisaJSON', params, headers).then((response) => {
+        axios.post('/annotationservice/GetAnfisaJSON', params, headers).then((resp) => {
             context.commit('setProcessingEnd', true);
-
-            let view = response.data.data[0].result[0].view;
-            let data = response.data.data[0].result[0].data;
-
-            var result = {
-                view_gen: {
-                    title: "General",
-                    data: getOtherData(view['general'])
-                },
-                view_qsamples: {
-                    title: "Quality",
-                    data: getOtherData(view['quality_samples'])
-                },
-                view_gnomAD: {
-                    title: "gnomAD",
-                    data: getOtherData(view['gnomAD'][0])
-                },
-                view_db: {
-                    title: "Databases",
-                    data: getOtherData(view['databases'])
-                },
-                view_pred: {
-                    title: "Predictions",
-                    data: getOtherData(view['predictions'])
-                },
-                view_genetics: {
-                    title: "Bioinformatics",
-                    data: getOtherData(view['bioinformatics'])
-                },
-                _main: {
-                    title: "VEP<br/>Data",
-                    data: getMainData(data)
-                },
-                transcripts: {
-                    title: "VEP<br/>Transcripts",
-                    data: getTranscripts(data['transcript_consequences'])
-                },
-                colocated_v: {
-                    title: "Colocated<br/>Variants",
-                    data: getOtherData(data['colocated_variants'][0])
-                }
-            };
-
-            context.commit('setVariantDetails', result);
+            axios.post('/anfisa-xl/app/single_cnt', resp.data.data[0].result[0], headers).then((res) => {
+                context.commit('setVariantDetails', res.data);
+            });
         });
     });
 }
-
-function getTranscripts(data) {
-    let dataArrays = [];
-    let key;
-    for (key in data) {
-        dataArrays.push(Object.values(data[key]));
-    }
-
-    return dataArrays;
-}
-
-
-function getMainData(data) {
-    let dataArrays = [];
-    let key;
-    for (key in data) {
-        if (key === "colocated_variants" || key === "transcript_consequences") {
-            continue;
-        }
-
-        let elemArray = [];
-        elemArray.push(key);
-        elemArray.push(Array.isArray(data[key]) ? (data[key].length === 0 ? "" : data[key]) : data[key]);
-
-        dataArrays.push(elemArray);
-    }
-
-    return dataArrays;
-}
-
-function getOtherData(data) {
-    let dataArrays = [];
-    let key;
-    for (key in data) {
-        let elemArray = [];
-        elemArray.push(key);
-        elemArray.push(Array.isArray(data[key]) ? (data[key].length === 0 ? "" : data[key]) : data[key]);
-
-        dataArrays.push(elemArray);
-    }
-
-    return dataArrays;
-}
-
-/*function getColocated(data) {
-    const aColocatedV = data.colocated_variants[0];
-    const colocatedV = {
-        data: [
-            ['id', aColocatedV.id ],
-            ['start', aColocatedV.start ],
-            ['end', aColocatedV.end ],
-            ['allele_string', aColocatedV.allele_string ],
-            ['strand', aColocatedV.strand ],
-            ['frequencies', getFrequencies(aColocatedV) ],
-            ['seq_region_name', aColocatedV.seq_region_name ],
-            ['minor_allele', aColocatedV.minor_allele ],
-            ['minor_allele_freq', aColocatedV.minor_allele_freq ],
-        ],
-        title: 'Colocated<br/>Variants',
-    };
-
-    return colocatedV;
-}
-
-function getFrequencies(colocated) {
-    const litera = Object.keys(colocated.frequencies)[0];
-    const freq = colocated.frequencies[litera];
-    return `<b>${litera}</b>: <br/>afr:${freq.afr}, amr: ${freq.amr}, eas: ${freq.eas}, eur: ${freq.eur}, sas: ${freq.sas}`;
-}*/
