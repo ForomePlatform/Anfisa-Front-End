@@ -235,7 +235,12 @@ export function getAnfisaJson(context, anfisaJsonData) {
             const dataReq = resp.data.data[0].result[0];
             params.append('record', JSON.stringify(dataReq));
             axios.post('/anfisa-xl/app/single_cnt', params, headers).then((res) => {
+                context.commit('setSelectedVariant', 1);
                 setVariantsDetails(context, res);
+            }).catch((error) => {
+                context.commit('setSelectedVariant', null);
+                context.commit('setVariantDetails', {});
+                console.log(error);
             });
         });
     });
@@ -256,5 +261,6 @@ function setVariantsDetails(context, resp) {
             };
         }
     });
+
     context.commit('setVariantDetails', result);
 }
