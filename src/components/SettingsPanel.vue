@@ -80,11 +80,10 @@
                     </p>
 
                     <div>
-                        <p class="title-input">Anfisa json:</p>
                         <input
                             class="tags-panel_input"
                             v-model="annotations.anfisaInputData"
-                            placeholder="Anfisa json data"
+                            placeholder="Input data"
                         />
                     </div>
                 </div>
@@ -197,7 +196,7 @@ export default {
             this.$refs.exportFileModal.show();
         },
         openGetAnnotationsModal() {
-            this.annotations.anfisaInputData = "chr15:89876828-89876836 TTGCTGCTGC>TTGCTGC";
+            this.annotations.anfisaInputData = "";
             this.$store.state.annotations.error.show = false;
             this.$store.state.annotations.error.message = "";
             this.$store.state.annotations.processingStart = false;

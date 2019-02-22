@@ -26,6 +26,7 @@ export default new Vuex.Store({
         presets: [],
         selectedPreset: null,
         annotations: {
+            title: "Get Annotations Result",
             processingEnd: false,
             processingStart: false,
             error: {

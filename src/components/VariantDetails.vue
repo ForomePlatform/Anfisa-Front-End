@@ -18,6 +18,13 @@
         <NotesPanel v-if="showNotes" />
         <div class="variant-details_tables">
             <CustomTable
+                v-if="isGetAnnotations"
+                :title="getAnnotationsResultTitle"
+                id="result-title"
+                :data="[]"
+            />
+
+            <CustomTable
             v-if="variantDetails.view_gen"
             :title="variantDetails.view_gen.title"
             id="view_gen"
@@ -118,6 +125,12 @@ export default {
         },
         isSelected() {
             return this.$store.state.selectedVariant !== null;
+        },
+        isGetAnnotations() {
+            return this.$store.state.annotations.processingEnd;
+        },
+        getAnnotationsResultTitle() {
+            return this.$store.state.annotations.title;
         },
     },
     methods: {
