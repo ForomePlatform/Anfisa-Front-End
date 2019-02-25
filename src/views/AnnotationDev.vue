@@ -22,6 +22,9 @@
             this.$store.state.workspace = "ANNOTATION SERVICE";
             this.$store.state.panels.variantsPanelCollapsed = true;
         },
+        beforeDestroy() {
+            this.$store.state.workspace = '';
+        }
     };
 </script>
 
