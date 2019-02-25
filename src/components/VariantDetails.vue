@@ -1,6 +1,6 @@
 <template>
     <div class="variant-details">
-        <div v-show="JSON.stringify(variantDetails) !== '{}'">
+        <!--<div v-show="variantDetails.length > 0">-->
             <FixedPanel v-if="isSelected" :data="annotation" />
             <FixedButton v-if="isSelected" :onClick="collapseAllCustomTables" class="fixed-button_collapse-tables">
                 <img src="../assets/collapse.png">
@@ -42,7 +42,7 @@
 
                 <CustomTable v-if="variantDetails.transcripts.data.length > 0" :title="variantDetails.transcripts.title" id="transcripts" :data="variantDetails.transcripts.data" secondary />
             </div>
-        </div>
+        <!--</div>-->
     </div>
 </template>
 

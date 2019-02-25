@@ -21,10 +21,6 @@
         created() {
             this.$store.state.workspace = "ANNOTATION SERVICE";
             this.$store.state.panels.variantsPanelCollapsed = true;
-
-            /*this.$store.dispatch('getList');
-            this.$store.dispatch('getZoneList');
-            this.$store.dispatch('getPresets');*/
         },
     };
 </script>
