@@ -29,6 +29,7 @@ export default new Vuex.Store({
             title: "Get Annotations Result",
             processingEnd: false,
             processingStart: false,
+            isFirstSearch: true,
             error: {
                 show: false,
                 message: ""

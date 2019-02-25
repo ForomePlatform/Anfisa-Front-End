@@ -126,9 +126,9 @@ export default {
             if (jsonData !== "") {
                 this.annotations.anfisaInputData = jsonData;
                 this.getAnnotationsData();
-            } else {
-                this.openGetAnnotationsModal();
             }
+
+            this.openGetAnnotationsModal();
         }
     },
     computed: {
@@ -206,7 +206,9 @@ export default {
             this.$refs.getAnnotationsModal.show();
         },
         getAnnotationsData() {
-            this.$store.state.annotations.processingStart = true;
+            if (this.$store.state.annotations.isFirstSearch) {
+                this.$store.state.annotations.processingStart = true;
+            }
 
             let jsonData = this.generateJsonFromInputData(this.annotations.anfisaInputData);
 

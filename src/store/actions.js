@@ -217,7 +217,7 @@ export function getListByZone(context, { zone, value }) {
     });
 }
 
-export function getAnfisaJson(context, anfisaJsonData) {
+export function getAnfisaJson(context, anfisaJsonData, isFirst) {
     let params = new URLSearchParams();
     params.append('login', 'admin');
     params.append('password', 'b82nfGl5sdg');
@@ -234,7 +234,11 @@ export function getAnfisaJson(context, anfisaJsonData) {
             const dataReq = resp.data.data[0].result[0];
             params.append('record', JSON.stringify(dataReq));
             axios.post('/anfisa-xl/app/single_cnt', params, headers).then((res) => {
-                context.commit('setProcessingEnd', true);
+                if (!context.state.annotations.isFirstSearch) {
+                    context.commit('setProcessingEnd', true);
+                }
+
+                context.commit('setIsFirstSearch', false);
                 context.commit('setSelectedVariant', 1);
                 setVariantsDetails(context, res);
             }).catch((error) => {

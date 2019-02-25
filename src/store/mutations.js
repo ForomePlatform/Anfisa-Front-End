@@ -88,3 +88,7 @@ export function setErrorShow(state, value) {
 export function setErrorMessage(state, value) {
     state.annotations.error.message = value;
 }
+
+export function setIsFirstSearch(state, value) {
+    state.annotations.isFirstSearch = value;
+}
