@@ -24,6 +24,38 @@ export function setVariantDetails(state, variantDetails) {
     state.variantDetails = variantDetails;
 }
 
+export function initVariantDetails(state) {
+    state.variantDetails = {
+        view_gen: {
+            data: [],
+        },
+        view_qsamples: {
+            data: [],
+        },
+        view_genetics: {
+            data: [],
+        },
+        view_gnomAD: {
+            data: [],
+        },
+        view_db: {
+            data: [],
+        },
+        colocated_v: {
+            data: [],
+        },
+        view_pred: {
+            data: [],
+        },
+        _main: {
+            data: [],
+        },
+        transcripts: {
+            data: [],
+        },
+    };
+}
+
 export function setSelectedVariant(state, selectedVariant) {
     state.selectedVariant = selectedVariant;
 }

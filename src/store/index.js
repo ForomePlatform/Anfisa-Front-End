@@ -15,7 +15,35 @@ export default new Vuex.Store({
         filtered: 0,
         listView: true,
         selectedVariant: null,
-        variantDetails: {},
+        variantDetails: {
+            view_gen: {
+                data: [],
+            },
+            view_qsamples: {
+                data: [],
+            },
+            view_genetics: {
+                data: [],
+            },
+            view_gnomAD: {
+                data: [],
+            },
+            view_db: {
+                data: [],
+            },
+            colocated_v: {
+                data: [],
+            },
+            view_pred: {
+                data: [],
+            },
+            _main: {
+                data: [],
+            },
+            transcripts: {
+                data: [],
+            },
+        },
         allTags: [],
         selectedTags: [],
         workspacesList: [],
@@ -26,19 +54,18 @@ export default new Vuex.Store({
         presets: [],
         selectedPreset: null,
         annotations: {
-            title: "Get Annotations Result",
             processingEnd: false,
             processingStart: false,
             isFirstSearch: true,
             error: {
                 show: false,
-                message: ""
-            }
+                message: '',
+            },
         },
-        panels:{
+        panels: {
             settingsPanelCollapsed: false,
-            variantsPanelCollapsed: false
-        }
+            variantsPanelCollapsed: false,
+        },
     },
     actions,
     mutations,

@@ -1,5 +1,5 @@
 module.exports = {
-    baseUrl: process.env.NODE_ENV === 'production' ? '/anfisa-annotation/' : '/',
+    baseUrl: process.env.NODE_ENV === 'production' ? '/annotation-dev/' : '/',
     devServer: {
         proxy: {
             '/anfisa-dev/*': {

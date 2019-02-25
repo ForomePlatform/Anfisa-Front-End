@@ -43,13 +43,32 @@ export function toggleListView(context) {
     context.commit('toggleListView');
 }
 
+function setVariantsDetails(context, resp) {
+    const { data } = resp;
+    const result = {};
+
+    const getValuesForRow = row => (Array.isArray(row) ? row.map(val => val[0]) : []);
+
+    data.forEach((item) => {
+        if (item.type === 'table') {
+            const tableData = item.rows.map(row => [row[1], ...getValuesForRow(row[2])]);
+            result[item.name] = {
+                title: item.title,
+                data: tableData,
+            };
+        }
+    });
+
+    context.commit('setVariantDetails', result);
+}
+
 export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
     params.append('rec', variant);
     context.commit('setSelectedVariant', variant);
     commonHttp.post('/reccnt', params, headers).then((response) => {
-        setVariantsDetails(context, response)
+        setVariantsDetails(context, response);
     }).catch((error) => {
         context.commit('setSelectedVariant', null);
         console.log(error);
@@ -217,7 +236,19 @@ export function getListByZone(context, { zone, value }) {
     });
 }
 
-export function getAnfisaJson(context, anfisaJsonData, isFirst) {
+function showError(context, message) {
+    context.commit('setErrorShow', true);
+    context.commit('setErrorMessage', message);
+    context.commit('setProcessingEnd', false);
+    context.commit('setProcessingStart', false);
+    context.commit('setSelectedVariant', null);
+    context.commit('initVariantDetails');
+    document.cookie = 'annotationJsonInputData = ';
+    console.log(message);
+}
+
+
+export function getAnfisaJson(context, anfisaJsonData) {
     let params = new URLSearchParams();
     params.append('login', 'admin');
     params.append('password', 'b82nfGl5sdg');
@@ -242,42 +273,12 @@ export function getAnfisaJson(context, anfisaJsonData, isFirst) {
                 context.commit('setSelectedVariant', 1);
                 setVariantsDetails(context, res);
             }).catch((error) => {
-                showError(context, error.message + " - " + error.request.responseURL);
+                showError(context, `${error.message} - ${error.request.responseURL}`);
             });
         }).catch((error) => {
-            showError(context, error.message + " - " + error.request.responseURL);
+            showError(context, `${error.message} - ${error.request.responseURL}`);
         });
     }).catch((error) => {
-        showError(context, error.message + " - " + error.request.responseURL);
+        showError(context, `${error.message} - ${error.request.responseURL}`);
     });
-}
-
-function setVariantsDetails(context, resp) {
-    const { data } = resp;
-    const result = {};
-
-    const getValuesForRow = row => (Array.isArray(row) ? row.map(val => val[0]) : []);
-
-    data.forEach((item) => {
-        if (item.type === 'table') {
-            const tableData = item.rows.map(row => [row[1], ...getValuesForRow(row[2])]);
-            result[item.name] = {
-                title: item.title,
-                data: tableData,
-            };
-        }
-    });
-
-    context.commit('setVariantDetails', result);
-}
-
-function showError(context, message) {
-    context.commit('setErrorShow', true);
-    context.commit('setErrorMessage', message);
-    context.commit('setProcessingEnd', false);
-    context.commit('setProcessingStart', false);
-    context.commit('setSelectedVariant', null);
-    context.commit('setVariantDetails', {});
-    document.cookie = "annotationJsonInputData = ";
-    console.log(message);
 }
