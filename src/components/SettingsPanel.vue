@@ -1,75 +1,62 @@
 <template>
     <div :class="[settingsPanelCollapsed ? 'settings-panel__collapsed' : '', 'settings-panel']">
-        <div
-          class="settings-panel_collapse-icon"
-          v-on:click="togglePanel"
-        >
+        <div class="settings-panel_collapse-icon" v-on:click="togglePanel">
             <img :src="panelCollapsedIcon" />
         </div>
+
         <div v-if="!settingsPanelCollapsed">
-        <img class="mb-4" alt="Foreme logo" src="../assets/foromeLogo.svg" />
-        <div class="settings-panel_block">
-            <SettingsHeader global title="PROJECT" :onClick="openWorkspacesModal"/>
-            <div class="settings-panel_text">{{ workspace }}</div>
-        </div>
-        <div class="settings-panel_block">
-            <SettingsHeader title="FILTERS"/>
-            <div class="d-flex justify-content-between mt-3">
-                <DropdownButton :text="selectedPreset" :data="presets" :onChange="changePreset"/>
-                <div class="settings-panel_icon-button">
-                    <img alt="presets icon" src="../assets/presetsIcon.svg" />
-                </div>
+            <img class="mb-4" alt="Foreme logo" src="../assets/foromeLogo.svg" />
+
+            <div class="settings-panel_block">
+                <SettingsHeader global title="PROJECT" :onClick="openWorkspacesModal"/>
+                <div class="settings-panel_text">{{ workspace }}</div>
             </div>
-            <div
-              v-for="zone in Object.keys(zones)"
-              :key="zone"
-              class="d-flex justify-content-between mt-3"
-            >
-                <DropdownButton
-                  :text="getZoneText(zones[zone])"
-                  :data="zones[zone].values"
-                  :onChange="value =>changeZoneValue(zone, value)"
-                />
-                <div class="settings-panel_icon-button">
-                    <img alt="presets icon" src="../assets/tagsIcon.svg" />
+
+            <div class="settings-panel_block">
+                <div v-if="!isAnnotationService">
+                    <SettingsHeader title="FILTERS"/>
+                    <div class="d-flex justify-content-between mt-3">
+                        <DropdownButton :text="selectedPreset" :data="presets" :onChange="changePreset"/>
+                        <div class="settings-panel_icon-button">
+                            <img alt="presets icon" src="../assets/presetsIcon.svg" />
+                        </div>
+                    </div>
+
+                    <div v-for="zone in Object.keys(zones)" :key="zone" class="d-flex justify-content-between mt-3">
+                        <DropdownButton :text="getZoneText(zones[zone])" :data="zones[zone].values" :onChange="value =>changeZoneValue(zone, value)"/>
+                        <div class="settings-panel_icon-button">
+                            <img alt="presets icon" src="../assets/tagsIcon.svg" />
+                        </div>
+                    </div>
                 </div>
+
+                <CustomButton v-if="isAnnotationService" class="mt-3" title="Submit query" :onClick="openGetAnnotationsModal"/>
             </div>
-            <CustomButton class="mt-3" title="Get Annotations" :onClick="openGetAnnotationsModal"/>
+
+            <div class="settings-panel_block">
+                <SettingsHeader title="REPORT"/>
+                <CustomButton title="PUBLISH" />
+                <CustomButton class="mt-3" title="EXPORT" :onClick="openExportFileModal"/>
+            </div>
+
+            <div class="settings-panel_block">
+                <SettingsHeader title="USER" hideIcon />
+                <User />
+            </div>
         </div>
-        <div class="settings-panel_block">
-            <SettingsHeader title="REPORT"/>
-            <CustomButton title="PUBLISH" />
-            <CustomButton class="mt-3" title="EXPORT" :onClick="openExportFileModal"/>
-        </div>
-        <div class="settings-panel_block">
-            <SettingsHeader title="USER" hideIcon />
-            <User />
-        </div>
-        </div>
+
         <b-modal ref="workspaceModal" centered title="Select Workspace" @ok="selectWorkspace">
-            <b-form-select
-              v-model="selectedWorkspace"
-              :options="workspacesList"
-              class="mb-3"
-              :select-size="8">
+            <b-form-select v-model="selectedWorkspace" :options="workspacesList" class="mb-3" :select-size="8">
 
             </b-form-select>
         </b-modal>
-        <b-modal
-          ref="exportFileModal"
-          centered title="Export"
-          @ok="exportFile"
-          :ok-disabled="!exportFileUrl"
-        >
+
+        <b-modal ref="exportFileModal" centered title="Export" @ok="exportFile" :ok-disabled="!exportFileUrl">
             <p v-if="exportFileLoading">Wait please...</p>
             <p v-else>Are you sure you want to download file?</p>
         </b-modal>
-        <b-modal
-                ref="getAnnotationsModal"
-                centered title="Get annotations"
-                @ok="getAnnotationsData"
-                :ok-disabled="false"
-        >
+
+        <b-modal ref="getAnnotationsModal" centered title="Get annotations" @ok="getAnnotationsData" :ok-disabled="false">
             <div v-if="!isProcessingEnd">
                 <div v-if="!isProcessingStart || getErrorsShow">
                     <p>To get annotations for a specific mutation, please insert its description in Forome format in the form below.</p>
@@ -101,7 +88,7 @@
             </div>
 
             <div slot="modal-footer" class="w-100">
-                <b-button v-if="!isProcessingEnd" :disabled="isProcessingStart" size="sm" class="float-right" variant="primary" @click="getAnnotationsData">Submit query</b-button>
+                <b-button v-if="!isProcessingEnd" :disabled="isProcessingStart" size="sm" class="float-right" variant="primary" @click="getAnnotationsData">Submit</b-button>
                 <b-button v-else size="sm" class="float-right" variant="primary" @click="viewAnnotationsData">OK</b-button>
             </div>
 
@@ -126,15 +113,30 @@ export default {
     data() {
         return {
             processingStart: false,
-            selectedWorkspace: '',
+            selectedWorkspace: "",
             annotations: {
                 anfisaInputData: ""
             },
         };
     },
+    mounted() {
+        if (this.isAnnotationService) {
+            let jsonData = this.getCookie("annotationJsonInputData");
+
+            if (jsonData !== "") {
+                this.annotations.anfisaInputData = jsonData;
+                this.getAnnotationsData();
+            } else {
+                this.openGetAnnotationsModal();
+            }
+        }
+    },
     computed: {
         workspace() {
             return this.$store.state.workspace;
+        },
+        isAnnotationService() {
+            return this.$store.state.workspace === "ANNOTATION SERVICE";
         },
         tags() {
             return this.$store.state.tags;
@@ -196,7 +198,6 @@ export default {
             this.$refs.exportFileModal.show();
         },
         openGetAnnotationsModal() {
-            this.annotations.anfisaInputData = "";
             this.$store.state.annotations.error.show = false;
             this.$store.state.annotations.error.message = "";
             this.$store.state.annotations.processingStart = false;
@@ -214,6 +215,7 @@ export default {
             }
 
             if (this.isValidJsonData(jsonData)) {
+                document.cookie = "annotationJsonInputData = " + this.annotations.anfisaInputData;
                 this.$store.state.annotations.error.show = false;
                 this.$store.dispatch('getAnfisaJson', jsonData);
             }
@@ -315,6 +317,14 @@ export default {
         getZoneText(item) {
             return item.selectedValue === null ? item.defaultValue : String(item.selectedValue);
         },
+        getCookie(name) {
+            let value = "; " + document.cookie;
+            let parts = value.split("; " + name + "=");
+
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            }
+        }
     },
     components: {
         DropdownButton,

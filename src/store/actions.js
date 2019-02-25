@@ -230,17 +230,14 @@ export function getAnfisaJson(context, anfisaJsonData) {
         params.append('data', anfisaJsonData);
 
         axios.post('/annotationservice/GetAnfisaJSON', params, headers).then((resp) => {
-            context.commit('setProcessingEnd', true);
             params = new URLSearchParams();
             const dataReq = resp.data.data[0].result[0];
             params.append('record', JSON.stringify(dataReq));
             axios.post('/anfisa-xl/app/single_cnt', params, headers).then((res) => {
+                context.commit('setProcessingEnd', true);
                 context.commit('setSelectedVariant', 1);
                 setVariantsDetails(context, res);
             }).catch((error) => {
-                context.commit('setSelectedVariant', null);
-                context.commit('setVariantDetails', {});
-
                 showError(context, error.message + " - " + error.request.responseURL);
             });
         }).catch((error) => {
@@ -275,5 +272,8 @@ function showError(context, message) {
     context.commit('setErrorMessage', message);
     context.commit('setProcessingEnd', false);
     context.commit('setProcessingStart', false);
+    context.commit('setSelectedVariant', null);
+    context.commit('setVariantDetails', {});
+    document.cookie = "annotationJsonInputData = ";
     console.log(message);
 }
