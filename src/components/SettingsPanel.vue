@@ -113,17 +113,17 @@ export default {
     data() {
         return {
             processingStart: false,
-            selectedWorkspace: "",
+            selectedWorkspace: '',
             annotations: {
-                anfisaInputData: ""
+                anfisaInputData: '',
             },
         };
     },
     mounted() {
         if (this.isAnnotationService) {
-            let jsonData = this.getCookie("annotationJsonInputData");
+            const jsonData = this.getCookie('annotationJsonInputData');
 
-            if (jsonData !== "" && jsonData !== undefined) {
+            if (jsonData !== '' && jsonData !== undefined) {
                 this.annotations.anfisaInputData = jsonData;
                 this.getAnnotationsData();
             }
@@ -136,7 +136,7 @@ export default {
             return this.$store.state.workspace;
         },
         isAnnotationService() {
-            return this.$store.state.workspace === "ANNOTATION SERVICE";
+            return this.$store.state.workspace === 'ANNOTATION SERVICE';
         },
         tags() {
             return this.$store.state.tags;
@@ -176,7 +176,7 @@ export default {
         },
         getErrorsMessage() {
             return this.$store.state.annotations.error.message;
-        }
+        },
     },
     methods: {
         togglePanel() {
@@ -199,7 +199,7 @@ export default {
         },
         openGetAnnotationsModal() {
             this.$store.state.annotations.error.show = false;
-            this.$store.state.annotations.error.message = "";
+            this.$store.state.annotations.error.message = '';
             this.$store.state.annotations.processingStart = false;
             this.$store.state.annotations.processingEnd = false;
 
@@ -210,14 +210,14 @@ export default {
                 this.$store.state.annotations.processingStart = true;
             }
 
-            let jsonData = this.generateJsonFromInputData(this.annotations.anfisaInputData);
+            const jsonData = this.generateJsonFromInputData(this.annotations.anfisaInputData);
 
             if (jsonData === null) {
                 return;
             }
 
             if (this.isValidJsonData(jsonData)) {
-                document.cookie = "annotationJsonInputData = " + this.annotations.anfisaInputData;
+                document.cookie = `annotationJsonInputData = ${this.annotations.anfisaInputData}`;
                 this.$store.state.annotations.error.show = false;
                 this.$store.dispatch('getAnfisaJson', jsonData);
             }
@@ -231,31 +231,39 @@ export default {
             setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
         generateJsonFromInputData(data) {
-            let result = [];
-            let element = {};
-            let dataArray = data.split(",");
+            const result = [];
+            const element = {};
+            const dataArray = data.split(',');
 
             for (let i = 0; i < dataArray.length; i++) {
-                let elementArray = dataArray[i].trim().split(/[\s:]+/);
+                const elementArray = dataArray[i].trim().split(/[\s:]+/);
 
                 if (elementArray.length < 3) {
-                    this.showErrorGetAnnotations("Not enough input!");
+                    this.showErrorGetAnnotations('Not enough input!');
                     return null;
                 }
 
-                let rangeArray = elementArray[1].split(/[-]+/);
+                const rangeArray = elementArray[1].split(/[-]+/);
 
-                element['chromosome'] = elementArray[0].replace('chr', '');
+                element.chromosome = elementArray[0].replace('chr', '');
 
-                let start = isNaN(Number(rangeArray[0])) ? rangeArray[0] : Number(rangeArray[0]);
-                let end = rangeArray.length === 1 ? start : isNaN(Number(rangeArray[1])) ? rangeArray[1] : Number(rangeArray[1]);
-                element['start'] = start;
-                element['end'] = end;
-                let altrernative = elementArray[2];
-                if (altrernative.indexOf(">") !== -1) {
-                    altrernative = altrernative.split(">")[1];
+                const start = Number.isNaN(Number(rangeArray[0])) ?
+                    rangeArray[0] : Number(rangeArray[0]);
+                let end;
+                if (rangeArray.length === 1) {
+                    end = start;
+                } else if (Number.isNaN(Number(rangeArray[1]))) {
+                    end = rangeArray[1];
+                } else {
+                    end = Number(rangeArray[1]);
                 }
-                element['alternative'] = altrernative;
+                element.start = start;
+                element.end = end;
+                let altrernative = elementArray[2];
+                if (altrernative.indexOf('>') !== -1) {
+                    altrernative = altrernative.split('>')[1];
+                }
+                element.alternative = altrernative;
 
                 result.push(element);
             }
@@ -264,40 +272,43 @@ export default {
         },
         isValidJsonData(jsonData) {
             try {
-                let jsonObject = JSON.parse(jsonData);
+                const jsonObject = JSON.parse(jsonData);
 
-                for (let i = 0; i < jsonObject.length; i++) {
-                    for (let key in jsonObject[i]) {
-                        switch(key) {
-                            case 'chromosome':
-                            case 'alternative': {
-                                if (!this.checkValue(jsonObject[i][key], "string")) {
-                                    return false;
-                                }
-
-                                break;
+                for (let i = 0; i < jsonObject.length; i += 1) {
+                    const obj = jsonObject[i];
+                    for (let j = 0; j < obj.length; j += 1) {
+                        const key = obj[j];
+                        switch (key) {
+                        case 'alternative': {
+                            if (!this.checkValue(jsonObject[i][key], 'string')) {
+                                return false;
                             }
-                            case 'start':
-                            case 'end': {
-                                if (!this.checkValue(jsonObject[i][key], "number")) {
-                                    return false;
-                                }
 
-                                break;
+                            break;
+                        }
+                        case 'end': {
+                            if (!this.checkValue(jsonObject[i][key], 'number')) {
+                                return false;
                             }
+
+                            break;
+                        }
+                        default: {
+                            break;
+                        }
                         }
                     }
                 }
 
                 return true;
-            } catch(error) {
+            } catch (error) {
                 this.showErrorGetAnnotations(error.message);
                 return false;
             }
         },
         checkValue(value, type) {
-            if (typeof(value) !== type) {
-                this.showErrorGetAnnotations("Data entry error: " + value + " not " + type + "!");
+            if (typeof (value) !== typeof type) {
+                this.showErrorGetAnnotations(`Data entry error: ${value} not ${type}!`);
                 return false;
             }
 
@@ -320,13 +331,14 @@ export default {
             return item.selectedValue === null ? item.defaultValue : String(item.selectedValue);
         },
         getCookie(name) {
-            let value = "; " + document.cookie;
-            let parts = value.split("; " + name + "=");
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
 
             if (parts.length === 2) {
-                return parts.pop().split(";").shift();
+                return parts.pop().split(';').shift();
             }
-        }
+            return null;
+        },
     },
     components: {
         DropdownButton,
