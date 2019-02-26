@@ -17,32 +17,32 @@ export default new Vuex.Store({
         selectedVariant: null,
         variantDetails: {
             view_gen: {
-                data: []
+                data: [],
             },
             view_qsamples: {
-                data: []
+                data: [],
             },
             view_genetics: {
-                data: []
+                data: [],
             },
             view_gnomAD: {
-                data: []
+                data: [],
             },
             view_db: {
-                data: []
+                data: [],
             },
             colocated_v: {
-                data: []
+                data: [],
             },
             view_pred: {
-                data: []
+                data: [],
             },
             _main: {
-                data: []
+                data: [],
             },
             transcripts: {
-                data: []
-            }
+                data: [],
+            },
         },
         allTags: [],
         selectedTags: [],
@@ -59,13 +59,13 @@ export default new Vuex.Store({
             isFirstSearch: true,
             error: {
                 show: false,
-                message: ""
-            }
+                message: '',
+            },
         },
-        panels:{
+        panels: {
             settingsPanelCollapsed: false,
-            variantsPanelCollapsed: false
-        }
+            variantsPanelCollapsed: false,
+        },
     },
     actions,
     mutations,

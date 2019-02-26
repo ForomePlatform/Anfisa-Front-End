@@ -27,32 +27,32 @@ export function setVariantDetails(state, variantDetails) {
 export function initVariantDetails(state) {
     state.variantDetails = {
         view_gen: {
-            data: []
+            data: [],
         },
         view_qsamples: {
-            data: []
+            data: [],
         },
         view_genetics: {
-            data: []
+            data: [],
         },
         view_gnomAD: {
-            data: []
+            data: [],
         },
         view_db: {
-            data: []
+            data: [],
         },
         colocated_v: {
-            data: []
+            data: [],
         },
         view_pred: {
-            data: []
+            data: [],
         },
         _main: {
-            data: []
+            data: [],
         },
         transcripts: {
-            data: []
-        }
+            data: [],
+        },
     };
 }
 
