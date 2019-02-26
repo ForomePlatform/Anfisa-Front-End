@@ -123,7 +123,7 @@ export default {
         if (this.isAnnotationService) {
             const jsonData = this.getCookie('annotationJsonInputData');
 
-            if (jsonData !== '' && jsonData !== undefined) {
+            if (jsonData !== '' && jsonData !== undefined && jsonData !== null) {
                 this.annotations.anfisaInputData = jsonData;
                 this.getAnnotationsData();
             }
