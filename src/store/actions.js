@@ -242,13 +242,13 @@ function showError(context, message) {
     context.commit('setProcessingEnd', false);
     context.commit('setProcessingStart', false);
     context.commit('setSelectedVariant', null);
-    context.commit('setVariantDetails', {});
+    context.commit('initVariantDetails');
     document.cookie = 'annotationJsonInputData = ';
     console.log(message);
 }
 
 
-export function getAnfisaJson(context, anfisaJsonData, isFirst) {
+export function getAnfisaJson(context, anfisaJsonData) {
     let params = new URLSearchParams();
     params.append('login', 'admin');
     params.append('password', 'b82nfGl5sdg');

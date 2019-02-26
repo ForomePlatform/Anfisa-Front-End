@@ -206,7 +206,7 @@ export default {
             this.$refs.getAnnotationsModal.show();
         },
         getAnnotationsData() {
-            if (this.$store.state.annotations.isFirstSearch) {
+            if (!this.$store.state.annotations.isFirstSearch) {
                 this.$store.state.annotations.processingStart = true;
             }
 
