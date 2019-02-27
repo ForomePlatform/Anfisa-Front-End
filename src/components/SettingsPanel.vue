@@ -13,7 +13,7 @@
             <div class="settings-panel_text">{{ workspace }}</div>
         </div>
         <div class="settings-panel_block">
-            <SettingsHeader title="FILTERS"/>
+            <SettingsHeader title="FILTERS" :onClick="openFilterModal"/>
             <div class="d-flex justify-content-between mt-3">
                 <DropdownButton :text="selectedPreset" :data="presets" :onChange="changePreset"/>
                 <div class="settings-panel_icon-button">
@@ -62,6 +62,7 @@
             <p v-if="exportFileLoading">Wait please...</p>
             <p v-else>Are you sure you want to download file?</p>
         </b-modal>
+        <FilterModal ref="filterModal"/>
     </div>
 </template>
 
@@ -70,6 +71,7 @@ import DropdownButton from './DropdownButton.vue';
 import CustomButton from './CustomButton.vue';
 import User from './User.vue';
 import SettingsHeader from './SettingsHeader.vue';
+import FilterModal from './filterPanel/FilterModal.vue';
 
 const collapseIcon = require('../assets/collapseIcon.svg');
 const expandIcon = require('../assets/expandIcon.svg');
@@ -139,12 +141,16 @@ export default {
         getZoneText(item) {
             return item.selectedValue === null ? item.defaultValue : String(item.selectedValue);
         },
+        openFilterModal() {
+            this.$refs.filterModal.openModal();
+        },
     },
     components: {
         DropdownButton,
         CustomButton,
         User,
         SettingsHeader,
+        FilterModal,
     },
 };
 </script>

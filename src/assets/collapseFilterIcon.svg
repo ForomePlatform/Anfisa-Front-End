@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 9" width="8" height="9">
+	<style>
+		tspan { white-space:pre }
+		.shp0 { fill: #ffffff } 
+	</style>
+	<g id="Filter Panel 2 (Active)">
+		<g id="Collapse all">
+			<path id="Shape 528 copy 7" class="shp0" d="M1,8h7l-3.5,-4z" />
+			<path id="Shape 528 copy 7" class="shp0" d="M4.5,0l3.5,4l-1.75,0l-1.75,-2l-1.75,2h-1.75z" />
+		</g>
+	</g>
+</svg>

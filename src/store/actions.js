@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as utils from '../common/utils';
 
 const commonHttp = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
@@ -233,6 +234,8 @@ export function getPresets(context, ws) {
                 context.commit('setPresets', [null, ...data]);
                 context.commit('setPreset', null);
             }
+            const statList = response.data['stat-list'];
+            context.commit('setStats', utils.prepareStatList(statList));
         })
         .catch((error) => {
             console.log(error);
