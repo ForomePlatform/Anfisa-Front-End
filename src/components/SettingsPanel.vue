@@ -237,14 +237,7 @@ export default {
 
             for (let i = 0; i < dataArray.length; i++) {
                 const elementArray = dataArray[i].trim().split(/[\s:]+/);
-
-                if (elementArray.length < 3) {
-                    this.showErrorGetAnnotations('Not enough input!');
-                    return null;
-                }
-
                 const rangeArray = elementArray[1].split(/[-]+/);
-
                 element.chromosome = elementArray[0].replace('chr', '');
 
                 const start = Number.isNaN(Number(rangeArray[0])) ?
@@ -259,11 +252,14 @@ export default {
                 }
                 element.start = start;
                 element.end = end;
-                let altrernative = elementArray[2];
-                if (altrernative.indexOf('>') !== -1) {
-                    altrernative = altrernative.split('>')[1];
+                const alternative = elementArray[2];
+                if (alternative) {
+                    if (alternative.indexOf('>') !== -1) {
+                        element.alternative = alternative.split('>')[1];
+                    } else {
+                        element.alternative = alternative;
+                    }
                 }
-                element.alternative = altrernative;
 
                 result.push(element);
             }

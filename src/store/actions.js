@@ -263,6 +263,10 @@ export function getAnfisaJson(context, anfisaJsonData) {
         axios.post('/annotationservice/GetAnfisaJSON', params, headers).then((resp) => {
             params = new URLSearchParams();
             const dataReq = resp.data.data[0].result[0];
+            if (!dataReq) {
+                showError(context, `Nothing found`);
+                return;
+            }
             params.append('record', JSON.stringify(dataReq));
             axios.post('/anfisa-xl/app/single_cnt', params, headers).then((res) => {
                 if (!context.state.annotations.isFirstSearch) {
@@ -276,7 +280,7 @@ export function getAnfisaJson(context, anfisaJsonData) {
                 showError(context, `${error.message} - ${error.request.responseURL}`);
             });
         }).catch((error) => {
-            showError(context, `${error.message} - ${error.request.responseURL}`);
+            showError(context, `${error.response.data.error.comment}`);
         });
     }).catch((error) => {
         showError(context, `${error.message} - ${error.request.responseURL}`);
