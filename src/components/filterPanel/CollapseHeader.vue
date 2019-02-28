@@ -42,6 +42,7 @@ export default {
         border-bottom: 1px solid #1a3e6c;
         height: 30px;
         cursor: pointer;
+        overflow: hidden;
         &_title {
             font-size: 12px;
             letter-spacing: 0px;
@@ -89,6 +90,7 @@ export default {
         cursor: pointer;
         margin: 0 30px;
         padding: 0 10px;
+        overflow: hidden;
         &:hover {
             background-color: #fff;
         }

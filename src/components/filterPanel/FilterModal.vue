@@ -12,7 +12,6 @@
             <FiltersList />
             <FilterDetails />
         </div>
-
     </b-modal>
 </template>
 
@@ -43,7 +42,7 @@ export default {
 <style lang="scss" scoped>
 
     /deep/ .modal-dialog {
-        min-width: 1400px !important;
+        min-width: 1224px !important;
     }
     /deep/ .modal-body {
         padding: 0;

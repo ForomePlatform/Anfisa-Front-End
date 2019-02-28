@@ -14,3 +14,6 @@ export const TAGS_COLORS = {
     'Not categorized': '#DDA0DD',
     'Previously categorized': '#66CDAA',
 };
+
+export const ENUM_OPERATORS = ['Any', 'All', 'None'];
+export const ENUM_DEFAULT_OPERATOR = 'Any';

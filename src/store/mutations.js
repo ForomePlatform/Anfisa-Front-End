@@ -1,3 +1,5 @@
+import Vue from "vue";
+
 /* eslint-disable no-param-reassign */
 
 export function setRecords(state, records) {
@@ -75,4 +77,13 @@ export function setPreset(state, filter) {
 
 export function setStats(state, stats) {
     state.stats = stats;
+}
+
+export function setCurrentConditions(state, condition) {
+    const index = state.currentConditions.findIndex(item => item[1] === condition[1]);
+    if (index === -1) {
+        state.currentConditions.push(condition);
+    } else {
+        Vue.set(state.currentConditions, index, condition);
+    }
 }

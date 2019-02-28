@@ -26,6 +26,8 @@ export default new Vuex.Store({
         presets: [],
         selectedPreset: null,
         stats: [],
+        currentConditions: [],
+        filtersConditions: [], //ToDo
     },
     actions,
     mutations,
@@ -64,6 +66,17 @@ export default new Vuex.Store({
                 ];
             }
             return [];
+        },
+        oCurrentConditions: (state) => {
+            const result = {};
+            state.currentConditions.forEach((condition) => {
+                const [type, name, ...data] = condition;
+                result[name] = {
+                    type,
+                    data,
+                };
+            });
+            return result;
         },
     },
 });
