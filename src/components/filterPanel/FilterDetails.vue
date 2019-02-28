@@ -5,30 +5,29 @@
           v-bind:key="condition[1]"
           class="filter-details_item"
         >
-            <FloatView
-              v-if="condition[0] === 'float'"
-              :name="condition[1]"
-              :data="condition.slice(2)"
-            />
-            <IntView
-              v-else-if="condition[0] === 'int'"
-              :name="condition[1]"
-              :data="condition.slice(2)"
-            />
-            <EnumView
-              v-else-if="condition[0] === 'enum'"
-              :name="condition[1]"
-              :operator="condition[2]"
-              :data="condition[3]"
-            />
+            <StatView :onRemove="() => removeHandler(condition[1])">
+                <FloatView
+                  v-if="condition[0] === 'float' || condition[0] === 'int'"
+                  :name="condition[1]"
+                  :data="condition.slice(2)"
+                />
+                <EnumView
+                  v-else-if="condition[0] === 'enum'"
+                  :name="condition[1]"
+                  :operator="condition[2]"
+                  :data="condition[3]"
+                  :changeOperator="changeOperatorHandler"
+                  :removeItem="removeEnumItem"
+                />
+            </StatView>
         </div>
     </div>
 </template>
 
 <script>
 import EnumView from './statView/EnumView.vue';
-import IntView from './statView/IntView.vue';
 import FloatView from './statView/FloatView.vue';
+import StatView from './statView/StatView.vue';
 
 export default {
     computed: {
@@ -37,9 +36,20 @@ export default {
         },
     },
     components: {
+        StatView,
         EnumView,
-        IntView,
         FloatView,
+    },
+    methods: {
+        removeHandler(name) {
+            this.$store.commit('removeCurrentCondition', name);
+        },
+        changeOperatorHandler(name, operator) {
+            this.$store.commit('changeConditionOperator', { name, operator });
+        },
+        removeEnumItem(name, itemIndex) {
+            this.$store.commit('removeConditionItem', { name, itemIndex });
+        },
     },
 };
 </script>
@@ -52,7 +62,7 @@ export default {
         box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
         background-color: #ffffff;
         &_item {
-            padding: 16px 0;
+            padding: 10px 0;
             background-image: linear-gradient(to right, #b9bec5 25%,rgba(39, 63, 89, 0) 0%);
             background-position: bottom;
             background-size: 8px 2px;

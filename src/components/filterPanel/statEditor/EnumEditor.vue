@@ -11,7 +11,7 @@
         <div class="enum-editor_list">
             <b-form-checkbox
               class="enum-editor_list_item"
-              v-for="([prop, count], index) in filteredData"
+              v-for="([prop, count], index) in filteredList"
               v-bind:key="index + '_' + prop"
               @change="changeHandler(prop)"
               :checked="selected.includes(prop)"
@@ -37,16 +37,16 @@ export default {
     data() {
         return {
             query: '',
-            selected: [],
+            selected: this.preselectedData || [],
         };
     },
-    props: ['data', 'onSubmit'],
+    props: ['list', 'onSubmit', 'preselectedData'],
     computed: {
-        filteredData() {
+        filteredList() {
             if (this.query) {
-                return this.data.filter(item => item[0].includes(this.query));
+                return this.list.filter(item => item[0].includes(this.query));
             }
-            return this.data;
+            return this.list;
         },
     },
     methods: {
@@ -60,6 +60,14 @@ export default {
             } else {
                 this.selected.push(prop);
             }
+        },
+    },
+    // Update data if it was changed in the store
+    // (e.g on change filter or on changes data via StatView)
+    watch: {
+        preselectedData(newVal) {
+            // copy array to avoid direct changes in store
+            this.selected = newVal.slice();
         },
     },
 };

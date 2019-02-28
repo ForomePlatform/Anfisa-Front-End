@@ -7,8 +7,11 @@
         class="filter-modal"
     >
         <ModalHeader :onClose="closeModal"/>
-        <ModalSecondHeader />
-        <div class="filter-modal_content">
+        <ModalSecondHeader :onLoadClick="loadViewToggle"/>
+        <div v-if="loadView" class="filter-modal_load-view">
+            <LoadView />
+        </div>
+        <div v-else class="filter-modal_content">
             <FiltersList />
             <FilterDetails />
         </div>
@@ -20,13 +23,20 @@ import ModalHeader from './ModalHeader.vue';
 import ModalSecondHeader from './ModalSecondHeader.vue';
 import FiltersList from './FiltersList.vue';
 import FilterDetails from './FilterDetails.vue';
+import LoadView from './loadView/LoadView.vue';
 
 export default {
+    data() {
+        return {
+            loadView: false,
+        };
+    },
     components: {
         ModalHeader,
         ModalSecondHeader,
         FiltersList,
         FilterDetails,
+        LoadView,
     },
     methods: {
         openModal() {
@@ -34,6 +44,9 @@ export default {
         },
         closeModal() {
             this.$refs.filterModal.hide();
+        },
+        loadViewToggle() {
+            this.loadView = !this.loadView;
         },
     },
 };
@@ -56,6 +69,10 @@ export default {
             display: flex;
             height: 620px;
             overflow: hidden;
+        }
+        &_load-view {
+            height: 620px;
+            overflow: auto;
         }
     }
 </style>

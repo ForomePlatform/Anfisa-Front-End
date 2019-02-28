@@ -1,16 +1,17 @@
 <template>
     <div class="float-view">
         <span class="float-view_text">{{name}}</span>
-        &nbsp;is between&nbsp;
-        <span class="float-view_text"> {{data[0]}} </span>
-        &nbsp;and&nbsp;
-        <span class="float-view_text"> {{data[1]}}</span>
+        &nbsp;=&nbsp;
+        <span v-for="(item, index) in data" v-bind:key="item">
+            <span class="float-view_text"> {{item}}</span>
+            <span v-if="index+1 < data.length">&nbsp;{{operator}}&nbsp;</span>
+        </span>
     </div>
 </template>
 
 <script>
 export default {
-    props: ['name', 'data'],
+    props: ['name', 'operator', 'data'],
 };
 </script>
 

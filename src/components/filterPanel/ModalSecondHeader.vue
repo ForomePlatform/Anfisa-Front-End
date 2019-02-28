@@ -6,17 +6,25 @@
             </div>
         </div>
         <div class="second-header_filters">
-            <b>{{filters || 0}}</b> Active Filters
+            <b>{{conditionsLength || 0}}</b> Active Filters
         </div>
-        <div class="second-header_clear">
-            <img alt="close" src="../../assets/filterCloseIcon.svg"/>
+        <div
+          :class="[
+            !conditionsLength ? 'second-header_clear__disabled' : 'second-header_clear__enabled',
+            'second-header_clear'
+          ]"
+          @click="conditionsLength ? clearAll : null"
+        >
+            <img v-if="conditionsLength" alt="close" src="../../assets/filterCloseIcon.svg"/>
+            <img v-else alt="close" src="../../assets/filterCloseDisabledIcon.png"/>
             CLEAR ALL
         </div>
-        <div class="second-header_save">
-            <img alt="save" src="../../assets/filterSaveIcon.svg"/>
-            SAVE
-        </div>
-        <div class="second-header_load">
+        <SaveFilterDropdown
+          :enabled="Boolean(conditionsLength)"
+          :filterName="currentFilter"
+          :processing="processing"
+        />
+        <div class="second-header_load" @click="onLoadClick">
             <img alt="load" src="../../assets/filterLoadIcon.svg"/>
             LOAD
         </div>
@@ -24,12 +32,37 @@
 </template>
 
 <script>
-export default {
-    props: ['variants'],
-};
+import SaveFilterDropdown from './SaveFilterDropdown.vue';
 
-        // color: #1a3e6c;
-        // background-color: #15263e;
+export default {
+    props: ['onLoadClick'],
+    computed: {
+        variants() {
+            return this.$store.state.filtered;
+        },
+        conditionsLength() {
+            return this.$store.state.currentConditions.length;
+        },
+        currentFilter() {
+            return this.$store.state.preset;
+        },
+        // display status of filter saving
+        processing() {
+            return false;
+        },
+    },
+    methods: {
+        clearAll() {
+
+        },
+        saveFilter() {
+
+        },
+    },
+    components: {
+        SaveFilterDropdown,
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -38,7 +71,7 @@ export default {
         background-color: #1a3e6c;
         display: flex;
         align-items: center;
-        padding: 0 22px;
+        padding: 0 20px;
         &_variants {
             width: 166px;
             height: 33px;
@@ -61,7 +94,7 @@ export default {
             letter-spacing: 0px;
             color: #ffffff;
         }
-        &_clear, &_save, &_load {
+        &_clear, &_load {
             width: 134px;
             height: 33px;
             border-radius: 17px;
@@ -78,23 +111,30 @@ export default {
         }
         &_clear {
             padding: 0 23px 0 13px;
-            &:hover {
-                background-color: #48c3f7;
+            margin-right: 300px;
+            &__disabled {
+                background-color: #15263e;
+                color: #1a3e6c;
+                cursor: default;
             }
-            margin-right: 280px;
+            &__enabled {
+                &:hover {
+                    background-color: #da5959;
+                }
+            }
         }
-        &_save, &_load {
+        &_load {
             width: 103px;
             padding: 0 25px 0 20px;
             background-color: #2bb3ed;
+            margin-left: 22px;
             &:hover {
                 background-color: #48c3f7;
             }
-            margin-left: 22px;
         }
         &_separator {
             height: 33px;
-            width: 332px;
+            width: 334px;
             background-image: linear-gradient(to bottom, #5b7596 25%, rgba(39, 63, 89, 0) 0%);
             background-position: right;
             background-size: 2px 6px;

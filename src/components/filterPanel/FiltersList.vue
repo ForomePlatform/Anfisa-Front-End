@@ -7,7 +7,12 @@
         <div v-for="stat in stats" v-bind:key="stat.name">
             <CollapseHeader :className="className" :name="stat.title || stat.name" primary>
                 <div v-if="stat.type === 'group'">
-                    <CollapseHeader :className="className" v-for="subStat in stat.data" v-bind:key="subStat.name" :name="subStat.title || subStat.name">
+                    <CollapseHeader
+                      :className="className"
+                      v-for="subStat in stat.data"
+                      v-bind:key="subStat.name"
+                      :name="subStat.title || subStat.name"
+                    >
                         <StatEditor :type="subStat.type" :data="subStat.data" :name="subStat.name"/>
                     </CollapseHeader>
                 </div>

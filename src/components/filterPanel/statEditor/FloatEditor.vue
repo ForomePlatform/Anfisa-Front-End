@@ -27,30 +27,30 @@
 
 <script>
 export default {
-    props: ['min', 'max', 'onSubmit'],
+    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax'],
     data() {
         return {
-            selectedMin: this.min,
-            selectedMax: this.max,
+            selectedMin: this.preselectedMin,
+            selectedMax: this.preselectedMax,
         };
     },
     methods: {
-        // onMinBlur() {
-        //     if (this.selectedMin < this.min) {
-        //         this.selectedMin = this.min;
-        //     } else if (this.selectedMin > this.selectedMax) {
-        //         this.selectedMin = this.selectedMax;
-        //     }
-        // },
-        // onMaxBlur() {
-        //     if (this.selectedMax > this.max) {
-        //         this.selectedMax = this.max;
-        //     } else if (this.selectedMax < this.selectedMin) {
-        //         this.selectedMax = this.selectedMin;
-        //     }
-        // },
         addData() {
             this.onSubmit(this.selectedMin, this.selectedMax);
+        },
+    },
+    // Update data if min and max values were changed in the store
+    // (e.g on change filter or on remove data via StatView)
+    watch: {
+        preselectedMin(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                this.selectedMin = newVal;
+            }
+        },
+        preselectedMax(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                this.selectedMax = newVal;
+            }
         },
     },
 };

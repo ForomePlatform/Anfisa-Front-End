@@ -87,3 +87,26 @@ export function setCurrentConditions(state, condition) {
         Vue.set(state.currentConditions, index, condition);
     }
 }
+
+export function removeCurrentCondition(state, name) {
+    const index = state.currentConditions.findIndex(item => item[1] === name);
+    if (index > -1) {
+        state.currentConditions.splice(index, 1);
+    }
+}
+
+export function changeConditionOperator(state, { name, operator }) {
+    const index = state.currentConditions.findIndex(item => item[1] === name);
+    if (index > -1) {
+        state.currentConditions[index][2] = operator;
+        Vue.set(state.currentConditions, index, state.currentConditions[index]);
+    }
+}
+
+export function removeConditionItem(state, { name, itemIndex }) {
+    const index = state.currentConditions.findIndex(item => item[1] === name);
+    if (index > -1) {
+        state.currentConditions[index][3].splice(itemIndex, 1);
+        Vue.set(state.currentConditions, index, state.currentConditions[index]);
+    }
+}
