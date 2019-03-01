@@ -1,6 +1,13 @@
 <template>
     <div>
-        <IntEditor v-if="type === 'int'" />
+        <IntEditor
+          v-if="type === 'int'"
+          :min="data[0]"
+          :max="data[1]"
+          :preselectedMin="preselectedMin"
+          :preselectedMax="preselectedMax"
+          :onSubmit="submitHandler"
+        />
         <FloatEditor
           v-else-if="type === 'float'"
           :min="data[0]"

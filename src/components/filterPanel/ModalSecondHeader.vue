@@ -10,17 +10,17 @@
         </div>
         <div
           :class="[
-            !conditionsLength ? 'second-header_clear__disabled' : 'second-header_clear__enabled',
+            !enableClearAll ? 'second-header_clear__disabled' : 'second-header_clear__enabled',
             'second-header_clear'
           ]"
-          @click="conditionsLength ? clearAll : null"
+          @click="enableClearAll ? clearAll : null"
         >
-            <img v-if="conditionsLength" alt="close" src="../../assets/filterCloseIcon.svg"/>
+            <img v-if="enableClearAll" alt="close" src="../../assets/filterCloseIcon.svg"/>
             <img v-else alt="close" src="../../assets/filterCloseDisabledIcon.png"/>
             CLEAR ALL
         </div>
         <SaveFilterDropdown
-          :enabled="Boolean(conditionsLength)"
+          :enabled="Boolean(enableSave)"
           :filterName="currentFilter"
           :processing="processing"
         />
@@ -35,7 +35,7 @@
 import SaveFilterDropdown from './SaveFilterDropdown.vue';
 
 export default {
-    props: ['onLoadClick'],
+    props: ['onLoadClick', 'enableClearAll', 'enableSave'],
     computed: {
         variants() {
             return this.$store.state.filtered;

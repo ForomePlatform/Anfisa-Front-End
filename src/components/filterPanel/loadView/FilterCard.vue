@@ -55,8 +55,7 @@ export default {
 
 <style lang="scss" scoped>
     .filter-card {
-        margin: 0 8px;
-        padding: 20px 0;
+        padding: 20px 8px;
         background-image: linear-gradient(to right, #b9bec5 25%,rgba(39, 63, 89, 0) 0%);
         background-position: bottom;
         background-size: 8px 2px;

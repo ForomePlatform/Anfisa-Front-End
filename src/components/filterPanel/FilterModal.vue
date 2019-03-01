@@ -7,7 +7,11 @@
         class="filter-modal"
     >
         <ModalHeader :onClose="closeModal"/>
-        <ModalSecondHeader :onLoadClick="loadViewToggle"/>
+        <ModalSecondHeader
+          :onLoadClick="loadViewToggle"
+          :enableClearAll="enableClearAll"
+          :enableSave="enableSave"
+        />
         <div v-if="loadView" class="filter-modal_load-view">
             <LoadView />
         </div>
@@ -30,6 +34,14 @@ export default {
         return {
             loadView: false,
         };
+    },
+    computed: {
+        enableClearAll() {
+            return !this.loadView && this.$store.state.currentConditions.length;
+        },
+        enableSave() {
+            return this.enableClearAll;
+        },
     },
     components: {
         ModalHeader,

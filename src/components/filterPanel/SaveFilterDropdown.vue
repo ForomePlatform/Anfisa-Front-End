@@ -125,6 +125,9 @@ export default {
                 border-width: 8px 8px;
                 border-bottom-color: #2bb3ed;
             }
+            .b-dropdown-form {
+                padding: 0;
+            }
         }
         &_btns {
             display: flex;
@@ -166,6 +169,9 @@ export default {
         }
     }
     .popup-menu {
+        .b-dropdown-form {
+            padding: 0;
+        }
         /deep/ .dropdown-menu {
             top: 26px !important;
             width: 268px;
@@ -223,6 +229,9 @@ export default {
         }
     }
     .popup-processing {
+        .b-dropdown-form {
+            padding: 0;
+        }
         /deep/ .dropdown-menu {
             top: 26px !important;
             width: 259px;

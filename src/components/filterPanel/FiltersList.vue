@@ -16,9 +16,7 @@
                         <StatEditor :type="subStat.type" :data="subStat.data" :name="subStat.name"/>
                     </CollapseHeader>
                 </div>
-                <div v-else>
-                    <StatEditor :type="stat.type" :data="stat.data" :name="stat.name"/>
-                </div>
+                <StatEditor v-else :type="stat.type" :data="stat.data" :name="stat.name"/>
             </CollapseHeader>
         </div>
     </div>
