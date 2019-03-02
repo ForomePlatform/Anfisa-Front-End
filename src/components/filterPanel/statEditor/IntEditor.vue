@@ -14,22 +14,19 @@
                 Range between {{min}} to {{max}}
             </div>
             <vue-slider
-              v-model="radius"
-              :marks="[this.min, this.maxRadius]"
-              :min="min"
-              :max="maxRadius"
-              :interval="1"
-              @change="radiusHandler"
+              v-model ="sliderRadius"
+              :data="marks"
+              :marks="true"
+              @change="sliderRadiusHandler"
               tooltip="none"
               class="int-editor_slider"
+              :lazy="true"
             />
             <b-form-input
               class="int-editor_center_input"
               type="number"
               v-model.number="radius"
               step="1"
-              :min="min"
-              :max="maxRadius"
               @change="radiusHandler"
               placeholder="Coordinates range from center"
             />
@@ -67,15 +64,16 @@
 import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/antd.css';
 
-function getMaxRadius(min, max, center) {
-    if (center) {
-        if (max - center < min + center) {
-            return max - center;
-        }
-        return min + center;
-    }
-    return 0;
-}
+const marksData = {
+    10: 10,
+    30: 30,
+    100: 100,
+    '1kb': 1000,
+    '3kb': 3000,
+    '10kb': 10000,
+    '30kb': 30000,
+    '1mb': 100000,
+};
 
 export default {
     props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax'],
@@ -85,6 +83,9 @@ export default {
             selectedMax: this.preselectedMax,
             center: null,
             radius: null,
+            sliderRadius: null,
+            marksData,
+            marks: Object.keys(marksData),
         };
     },
     methods: {
@@ -92,32 +93,32 @@ export default {
             this.onSubmit(this.selectedMin, this.selectedMax);
         },
         radiusHandler(value) {
-            const maxRadius = getMaxRadius(this.min, this.max, this.center);
-            const newRadiusValue = +value > maxRadius ? maxRadius : +value;
+            const newRadiusValue = Number(value);
             this.radius = newRadiusValue;
-            this.selectedMin = this.center - newRadiusValue;
-            this.selectedMax = this.center + newRadiusValue;
+            this.sliderRadius = null;
+            this.selectedMin = Math.max(this.center - newRadiusValue, this.min);
+            this.selectedMax = Math.min(this.center + newRadiusValue, this.max);
+        },
+        sliderRadiusHandler(selectedKey) {
+            this.sliderRadius = selectedKey;
+            this.radius = marksData[selectedKey];
+            this.selectedMin = Math.max(this.center - marksData[selectedKey], this.min);
+            this.selectedMax = Math.min(this.center + marksData[selectedKey], this.max);
         },
         centerHandler(value) {
-            const newCenterValue = +value;
-            if (!newCenterValue || newCenterValue < this.min) {
-                this.radius = null;
-                this.center = this.min;
-                this.selectedMin = this.min;
-                this.selectedMax = this.max;
-            } else if (newCenterValue > this.max) {
-                this.center = this.max;
-                this.radius = 0;
-                this.selectedMin = this.min;
-                this.selectedMax = this.max;
+            let newCenterValue;
+            if (!value || +value < this.min) {
+                newCenterValue = this.min;
+            } else if (+value > this.max) {
+                newCenterValue = this.max;
             } else {
-                const maxRadius = getMaxRadius(this.min, this.max, newCenterValue);
-                const newRadius = this.radius > maxRadius ? maxRadius : this.radius;
-                this.center = newCenterValue;
-                this.radius = newRadius;
-                this.selectedMin = newCenterValue - +newRadius;
-                this.selectedMax = newCenterValue + +newRadius;
+                newCenterValue = +value;
             }
+            this.center = newCenterValue;
+            this.sliderRadius = null;
+            this.radius = null;
+            this.selectedMin = newCenterValue;
+            this.selectedMax = newCenterValue;
         },
         minHandler(value) {
             if (value < this.min) {
@@ -129,6 +130,7 @@ export default {
             }
             this.center = null;
             this.radius = null;
+            this.sliderRadius = null;
         },
         maxHandler(value) {
             if (value > this.max) {
@@ -140,13 +142,7 @@ export default {
             }
             this.center = null;
             this.radius = null;
-        },
-    },
-    computed: {
-        maxRadius: {
-            get() {
-                return getMaxRadius(this.min, this.max, this.center);
-            },
+            this.sliderRadius = null;
         },
     },
     components: {
