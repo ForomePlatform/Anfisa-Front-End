@@ -154,11 +154,17 @@ export default {
         preselectedMin(newVal, oldVal) {
             if (newVal !== oldVal) {
                 this.selectedMin = newVal;
+                this.center = null;
+                this.sliderRadius = null;
+                this.radius = null;
             }
         },
         preselectedMax(newVal, oldVal) {
             if (newVal !== oldVal) {
                 this.selectedMax = newVal;
+                this.center = null;
+                this.sliderRadius = null;
+                this.radius = null;
             }
         },
     },

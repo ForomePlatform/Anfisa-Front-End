@@ -6,14 +6,27 @@
         centered
         class="filter-modal"
     >
-        <ModalHeader :onClose="closeModal"/>
+        <ModalHeader
+          :onClose="closeModal"
+          :onAdvancedClick="advancedViewToggle"
+          :advancedView="advancedView"
+        />
         <ModalSecondHeader
+          v-if="!advancedView"
           :onLoadClick="loadViewToggle"
           :enableClearAll="enableClearAll"
           :enableSave="enableSave"
+          :onShowClick="closeModal"
         />
-        <div v-if="loadView" class="filter-modal_load-view">
-            <LoadView />
+        <div v-if="advancedView" class="filter-modal_advanced-view">
+            <AdvancedView />
+        </div>
+        <div v-else-if="loadView" class="filter-modal_load-view">
+            <LoadView
+              :onCancel="loadViewToggle"
+              :onLoad="onFilterLoad"
+              :onRemove="removeFilter"
+            />
         </div>
         <div v-else class="filter-modal_content">
             <FiltersList />
@@ -28,16 +41,19 @@ import ModalSecondHeader from './ModalSecondHeader.vue';
 import FiltersList from './FiltersList.vue';
 import FilterDetails from './FilterDetails.vue';
 import LoadView from './loadView/LoadView.vue';
+import AdvancedView from './AdvancedView.vue';
 
 export default {
     data() {
         return {
             loadView: false,
+            advancedView: false,
         };
     },
     computed: {
         enableClearAll() {
-            return !this.loadView && this.$store.state.currentConditions.length;
+            return !this.loadView && !this.advancedView
+              && this.$store.state.currentConditions.length;
         },
         enableSave() {
             return this.enableClearAll;
@@ -49,6 +65,7 @@ export default {
         FiltersList,
         FilterDetails,
         LoadView,
+        AdvancedView,
     },
     methods: {
         openModal() {
@@ -59,6 +76,17 @@ export default {
         },
         loadViewToggle() {
             this.loadView = !this.loadView;
+        },
+        advancedViewToggle() {
+            this.advancedView = !this.advancedView;
+        },
+        onFilterLoad(preset, conditions) {
+            this.$store.commit('setAllCurrentConditions', conditions);
+            this.$store.dispatch('getListByPreset', preset);
+            this.loadView = false;
+        },
+        removeFilter(filterName) {
+            this.$store.dispatch('removeFilter', filterName);
         },
     },
 };
@@ -84,6 +112,10 @@ export default {
         }
         &_load-view {
             height: 620px;
+            overflow: auto;
+        }
+        &_advanced-view {
+            height: 682px;
             overflow: auto;
         }
     }

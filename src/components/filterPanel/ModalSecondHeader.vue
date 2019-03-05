@@ -1,7 +1,7 @@
 <template>
     <div class="second-header">
         <div class="second-header_separator">
-            <div class="second-header_variants">
+            <div class="second-header_variants" @click="onShowClick">
                 SEE {{variants || 0}} VARIANTS
             </div>
         </div>
@@ -13,7 +13,7 @@
             !enableClearAll ? 'second-header_clear__disabled' : 'second-header_clear__enabled',
             'second-header_clear'
           ]"
-          @click="enableClearAll ? clearAll : null"
+          @click="clearAll"
         >
             <img v-if="enableClearAll" alt="close" src="../../assets/filterCloseIcon.svg"/>
             <img v-else alt="close" src="../../assets/filterCloseDisabledIcon.png"/>
@@ -23,6 +23,8 @@
           :enabled="Boolean(enableSave)"
           :filterName="currentFilter"
           :processing="processing"
+          :onSave="saveFilter"
+          :onSaveAs="removeFilterName"
         />
         <div class="second-header_load" @click="onLoadClick">
             <img alt="load" src="../../assets/filterLoadIcon.svg"/>
@@ -35,7 +37,7 @@
 import SaveFilterDropdown from './SaveFilterDropdown.vue';
 
 export default {
-    props: ['onLoadClick', 'enableClearAll', 'enableSave'],
+    props: ['onLoadClick', 'enableClearAll', 'enableSave', 'onShowClick'],
     computed: {
         variants() {
             return this.$store.state.filtered;
@@ -44,7 +46,7 @@ export default {
             return this.$store.state.currentConditions.length;
         },
         currentFilter() {
-            return this.$store.state.preset;
+            return this.$store.state.selectedPreset;
         },
         // display status of filter saving
         processing() {
@@ -53,11 +55,19 @@ export default {
     },
     methods: {
         clearAll() {
-
+            if (this.enableClearAll) {
+                this.$store.commit('removeAllCurrentConditions');
+                this.$store.dispatch('getPresets');
+                this.$store.dispatch('getListByFilters');
+            }
         },
-        saveFilter() {
-
+        saveFilter(filterName) {
+            this.$store.dispatch('updateFilter', filterName);
         },
+        removeFilterName() {
+            this.$store.commit('setPreset', null);
+        },
+
     },
     components: {
         SaveFilterDropdown,

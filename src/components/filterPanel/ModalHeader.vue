@@ -4,7 +4,11 @@
                 FILTER VARIANTS
             </div>
             <div class="modal-header_controls">
-                <div class="modal-header_controls_code">
+                <div
+                  :class="[advancedView ? 'modal-header_controls_code__active' : '',
+                    'modal-header_controls_code']"
+                  @click="onAdvancedClick"
+                >
                     &lt;/&gt;
                 </div>
                 <img
@@ -19,9 +23,7 @@
 
 <script>
 export default {
-    props: {
-        onClose: Function,
-    },
+    props: ['onClose', 'onAdvancedClick', 'advancedView'],
 };
 </script>
 
@@ -53,6 +55,10 @@ export default {
                 padding: 3px 6px 1px 10px;
                 border-radius: 20px;
                 margin-right: 24px;
+                cursor: pointer;
+                &__active, &:hover {
+                    background-color: #e3d989;
+                }
             }
             &_close {
                 cursor: pointer;

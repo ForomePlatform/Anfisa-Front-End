@@ -222,6 +222,7 @@ export function getZoneList(context, ws) {
 export function getPresets(context, ws) {
     const params = new URLSearchParams();
     params.append('ws', ws || context.state.workspace);
+    params.append('conditions', context.state.currentConditions.length ? JSON.stringify(context.state.currentConditions) : null);
     commonHttp.post('/stat', params, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -236,15 +237,20 @@ export function getPresets(context, ws) {
             }
             const statList = response.data['stat-list'];
             context.commit('setStats', utils.prepareStatList(statList));
+            if (response.data.conditions) {
+                context.commit('setAllCurrentConditions', response.data.conditions);
+            }
         })
         .catch((error) => {
             console.log(error);
         });
 }
 
-function getListByFilters(context) {
+export function getListByFilters(context) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
+    params.append('conditions', context.state.currentConditions.length ? JSON.stringify(context.state.currentConditions) : null);
+    params.append('filter', context.state.selectedPreset);
 
     const { zones } = context.state;
     Object.keys(zones).forEach((currentZone) => {
@@ -252,7 +258,6 @@ function getListByFilters(context) {
             params.append('zone', JSON.stringify([currentZone, [zones[currentZone].selectedValue]]));
         }
     });
-    params.append('filter', context.state.selectedPreset);
 
     return commonHttp.post('/list', params, {
         headers: {
@@ -279,5 +284,132 @@ export function getListByZone(context, { zone, value }) {
     getListByFilters(context).catch((error) => {
         console.log(error);
         context.commit('changeZoneValue', [zone, null]);
+    });
+}
+
+export function getRulesData(context) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+
+    commonHttp.post('/rules_data', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => {
+        const { data } = response;
+        context.commit('setRulesData', data.columns);
+        context.commit('setRulesParams', data.params);
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+export function modifyRules(context, payload) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('it', payload.name);
+    params.append('cnt', payload.data);
+
+    commonHttp.post('/rules_modify', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then(() => {
+        console.log('Rules saved');
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+
+function getFilterDetail(context, filter) {
+    return new Promise((resolve, reject) => {
+        const params = new URLSearchParams();
+        params.append('ws', context.state.workspace);
+        params.append('filter', filter);
+        commonHttp.post('/stat', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        }).then((response) => {
+            const { data } = response;
+            resolve({
+                name: filter,
+                date: data.date,
+                conditions: data.conditions,
+            });
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+export function getFilterDetails(context) {
+    const filters = [...context.state.presets];
+    Promise.all(filters.filter(filterName => filterName)
+        .map(filterName => getFilterDetail(context, filterName)))
+        .then((filterDetails) => { context.commit('setFilterDetails', filterDetails); })
+        .catch((error) => { console.log(error); });
+}
+
+export function removeFilter(context, filterName) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('instr', `DELETE/${filterName}`);
+    commonHttp.post('/stat', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => {
+        const filterList = response.data['filter-list'];
+        if (filterList && Array.isArray(filterList)) {
+            const data = filterList.map(item => item[0]);
+            context.commit('setPresets', [null, ...data]);
+            context.commit('setPreset', null);
+        }
+        const statList = response.data['stat-list'];
+        context.commit('setStats', utils.prepareStatList(statList));
+    }).then((error) => {
+        console.log(error);
+    });
+}
+
+export function updateFilter(context, filterName) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('instr', `UPDATE/${filterName}`);
+    params.append('conditions', JSON.stringify(context.state.currentConditions));
+    commonHttp.post('/stat', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => {
+        const filterList = response.data['filter-list'];
+        if (filterList && Array.isArray(filterList)) {
+            const data = filterList.map(item => item[0]);
+            context.commit('setPresets', [null, ...data]);
+            context.commit('setPreset', null);
+        }
+        const statList = response.data['stat-list'];
+        context.commit('setStats', utils.prepareStatList(statList));
+        context.commit('setPreset', utils.prepareStatList(filterName));
+    }).then((error) => {
+        console.log(error);
+    });
+}
+
+export function getConditionsByFilter(context, filter) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('filter', filter);
+    commonHttp.post('/stat', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => {
+        const { data } = response;
+        context.commit('setAllCurrentConditions', data.conditions);
+    }).catch((error) => {
+        console.log(error);
     });
 }

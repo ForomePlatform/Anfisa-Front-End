@@ -22,6 +22,7 @@ export default {
         this.$store.dispatch('getList');
         this.$store.dispatch('getZoneList');
         this.$store.dispatch('getPresets');
+        this.$store.dispatch('getRulesData');
     },
 };
 </script>

@@ -20,8 +20,8 @@
         </div>
         <div class="filter-card_conditions">
             <div
-              v-for="condition in conditions"
-              v-bind:key="condition[1]"
+              v-for="(condition, index) in conditions"
+              v-bind:key="index + '-' + condition[1]"
               class="filter-card_conditions_item"
             >
                 <FlaotView
@@ -72,7 +72,7 @@ export default {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    width: 105px;
+                    padding: 0 10px;
                     height: 33px;
                     border-radius: 3px;
                     background-color: #2bb3ed;

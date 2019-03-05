@@ -6,16 +6,19 @@
                 <div class="load-view_header_sort_btn">Data saved</div>
                 <div class="load-view_header_sort_btn">A-Z</div>
             </div>
-            <div class="load-view_header_cancel">
+            <div class="load-view_header_cancel" @click="onCancel">
                 CANCEL
             </div>
         </div>
         <div class="load-view_cards">
             <FilterCard
-                name="My filter ver 1"
-                :conditions="[['float', 'Allele Frequency (family)', '.01', '.5'],
-                ['enum', 'Gene', 'or', ['ASXG1', 'ASXGF261', 'UKNFF3351']]]"
-                date="12/04/2019"
+                v-for="(filterData, index) in filterDetails"
+                v-bind:key="index + '-' + filterData.name"
+                :name="filterData.name"
+                :conditions="filterData.conditions"
+                :date="filterData.date"
+                :onLoad="() => onLoad(filterData.name, filterData.conditions)"
+                :onRemove="() => onRemove(filterData.name)"
             />
         </div>
     </div>
@@ -25,8 +28,17 @@
 import FilterCard from './FilterCard.vue';
 
 export default {
+    props: ['onCancel', 'onLoad', 'onRemove'],
     components: {
         FilterCard,
+    },
+    computed: {
+        filterDetails() {
+            return this.$store.state.filterDetails;
+        },
+    },
+    mounted() {
+        this.$store.dispatch('getFilterDetails');
     },
 };
 </script>

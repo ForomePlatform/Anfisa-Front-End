@@ -68,13 +68,17 @@ export default {
     methods: {
         // Apply float editor changes: min and max values
         submitHandler(min, max) {
-            const condition = [this.type, this.name, min, max];
+            const condition = [this.type, this.name, min, max, null];
             this.$store.commit('setCurrentConditions', condition);
+            this.$store.dispatch('getPresets');
+            this.$store.dispatch('getListByFilters');
         },
         // Apply  enum editor changes: selected list of items
         submitEnumHandler(data) {
             const condition = [this.type, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
             this.$store.commit('setCurrentConditions', condition);
+            this.$store.dispatch('getPresets');
+            this.$store.dispatch('getListByFilters');
         },
     },
 };

@@ -1,4 +1,4 @@
-const types = ['int', 'float', 'enum'];
+export const types = ['int', 'float', 'enum'];
 
 const prepareStatDataByType = statItem => ({
     name: statItem[1].name,

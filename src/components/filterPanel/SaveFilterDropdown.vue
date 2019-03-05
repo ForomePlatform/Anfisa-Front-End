@@ -3,6 +3,7 @@
   right
   :class="[processing ? 'popup-processing' : filterName ? 'popup-menu' : 'popup-form']"
   :disabled="!enabled"
+  ref="dropdown"
 >
     <template slot="button-content" >
         <div :class="[!enabled ? 'main-btn__disabled' : 'main-btn__enabled', 'main-btn']">
@@ -21,23 +22,28 @@
 
     <b-dropdown-form v-else-if="!filterName">
         <b-form-group label="Filters Name" label-for="filter-name">
-            <b-form-input @click.native.stop="" size="sm" id="filter-name" />
+            <b-form-input @click.native.stop="" size="sm" id="filter-name" v-model="name"/>
         </b-form-group>
         <b-form-group class="popup-form_btns">
-            <b-button class="popup-form_btns_save" variant="primary" size="sm" @click="()=>{}">
+            <b-button
+              class="popup-form_btns_save"
+              variant="primary"
+              size="sm"
+              @click="onSaveHandler"
+            >
                 SAVE FILTER
             </b-button>
-            <b-button class="popup-form_btns_cancel" variant="primary" size="sm" @click="()=>{}">
+            <b-button class="popup-form_btns_cancel" variant="primary" size="sm" @click="onCancel">
                 CANCEL
             </b-button>
         </b-form-group>
     </b-dropdown-form>
 
     <b-dropdown-form v-else-if="filterName">
-        <b-dropdown-item-button class="popup-menu_save">
+        <b-dropdown-item-button class="popup-menu_save" @click="onUpdateHandler">
             Save chaneges to "{{filterName}}"
         </b-dropdown-item-button>
-        <b-dropdown-item-button class="popup-menu_save-as">
+        <b-dropdown-item-button class="popup-menu_save-as" @click="onSaveAsHandler">
             SAVE AS NEW FILTER
         </b-dropdown-item-button>
     </b-dropdown-form>
@@ -47,7 +53,30 @@
 
 <script>
 export default {
-    props: ['enabled', 'filterName', 'processing'],
+    props: ['enabled', 'filterName', 'processing', 'onSave', 'onSaveAs'],
+    data() {
+        return {
+            name: this.filterName || '',
+        };
+    },
+    methods: {
+        onUpdateHandler() {
+            this.$refs.dropdown.hide();
+            this.onSave(this.filterName);
+        },
+        onSaveHandler() {
+            this.$refs.dropdown.hide();
+            this.onSave(this.name);
+        },
+        onSaveAsHandler() {
+            this.onSaveAs();
+            const that = this;
+            setTimeout(() => that.$refs.dropdown.show(), 0);
+        },
+        onCancel() {
+            this.$refs.dropdown.hide();
+        },
+    },
 };
 </script>
 
@@ -105,7 +134,8 @@ export default {
     .popup-form {
         /deep/ .dropdown-menu {
             top: 26px !important;
-            width: 268px;
+            min-width: 268px;
+            width: fit-content;
             border-radius: 3px;
             background-color: #2bb3ed;
             padding: 14px 16px 0 16px;
@@ -174,7 +204,8 @@ export default {
         }
         /deep/ .dropdown-menu {
             top: 26px !important;
-            width: 268px;
+            width: fit-content;
+            min-width: 268px;
             border-radius: 3px;
             background-color: #e7e7e7;
             font-size: 12px;

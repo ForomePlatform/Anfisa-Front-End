@@ -1,4 +1,4 @@
-import Vue from "vue";
+import Vue from 'vue';
 
 /* eslint-disable no-param-reassign */
 
@@ -79,6 +79,10 @@ export function setStats(state, stats) {
     state.stats = stats;
 }
 
+export function setAllCurrentConditions(state, conditions) {
+    state.currentConditions = conditions;
+}
+
 export function setCurrentConditions(state, condition) {
     const index = state.currentConditions.findIndex(item => item[1] === condition[1]);
     if (index === -1) {
@@ -95,6 +99,10 @@ export function removeCurrentCondition(state, name) {
     }
 }
 
+export function removeAllCurrentConditions(state) {
+    state.currentConditions = [];
+}
+
 export function changeConditionOperator(state, { name, operator }) {
     const index = state.currentConditions.findIndex(item => item[1] === name);
     if (index > -1) {
@@ -109,4 +117,16 @@ export function removeConditionItem(state, { name, itemIndex }) {
         state.currentConditions[index][3].splice(itemIndex, 1);
         Vue.set(state.currentConditions, index, state.currentConditions[index]);
     }
+}
+
+export function setRulesData(state, rulesData) {
+    state.rulesData = rulesData;
+}
+
+export function setRulesParams(state, rulesData) {
+    state.rulesParams = rulesData;
+}
+
+export function setFilterDetails(state, filterDetails) {
+    state.filterDetails = filterDetails;
 }

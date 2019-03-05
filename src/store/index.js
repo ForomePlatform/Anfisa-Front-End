@@ -27,7 +27,10 @@ export default new Vuex.Store({
         selectedPreset: null,
         stats: [],
         currentConditions: [],
-        filtersConditions: [], //ToDo
+        filtersConditions: [], // ToDo
+        rulesData: [],
+        rulesParams: '',
+        filterDetails: [],
     },
     actions,
     mutations,

@@ -4,7 +4,8 @@
           v-b-toggle="name"
           :class="[primary ? 'collapse-header_primary' : 'collapse-header_secondary', className]"
         >
-            <div :class="[primary ? 'collapse-header_primary_title' : 'collapse-header_secondary_title']">
+            <div :class="[primary ? 'collapse-header_primary_title'
+              : 'collapse-header_secondary_title']">
                 {{title}}
             </div>
             <div v-if="primary" class="collapse-header_primary_icon"/>

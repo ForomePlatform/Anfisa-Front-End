@@ -1,8 +1,8 @@
 <template>
     <div class="filter-details">
         <div
-          v-for="condition in currentConditions"
-          v-bind:key="condition[1]"
+          v-for="(condition, index) in currentConditions"
+          v-bind:key="index + '-' + condition[1]"
           class="filter-details_item"
         >
             <StatView :onRemove="() => removeHandler(condition[1])">
@@ -43,12 +43,18 @@ export default {
     methods: {
         removeHandler(name) {
             this.$store.commit('removeCurrentCondition', name);
+            this.$store.dispatch('getPresets');
+            this.$store.dispatch('getListByFilters');
         },
         changeOperatorHandler(name, operator) {
             this.$store.commit('changeConditionOperator', { name, operator });
+            this.$store.dispatch('getPresets');
+            this.$store.dispatch('getListByFilters');
         },
         removeEnumItem(name, itemIndex) {
             this.$store.commit('removeConditionItem', { name, itemIndex });
+            this.$store.dispatch('getPresets');
+            this.$store.dispatch('getListByFilters');
         },
     },
 };

@@ -137,6 +137,7 @@ export default {
         },
         changePreset(preset) {
             this.$store.dispatch('getListByPreset', preset);
+            this.$store.dispatch('getConditionsByFilter', preset);
         },
         getZoneText(item) {
             return item.selectedValue === null ? item.defaultValue : String(item.selectedValue);
