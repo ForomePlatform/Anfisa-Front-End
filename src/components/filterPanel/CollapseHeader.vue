@@ -1,5 +1,5 @@
 <template>
-    <div class="collapse-header">
+    <div :class="[filled ? 'collapse-header__filled' : '','collapse-header']">
         <div
           v-b-toggle="name"
           :class="[primary ? 'collapse-header_primary' : 'collapse-header_secondary', className]"
@@ -23,6 +23,7 @@ export default {
         name: String,
         primary: Boolean,
         className: String,
+        filled: Boolean,
     },
     computed: {
         title() {
@@ -34,6 +35,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    .collapse-header {
+        position: relative;
+    }
+    .collapse-header__filled:before {
+        position: absolute;
+        content: '';
+        display: block;
+        top: 6px;
+        left: 6px;
+        width: 17px;
+        height: 17px;
+        background-image: url('./../../assets/selectedConditionIcon.svg');
+        background-position: center;
+    }
     .collapse-header_primary {
         white-space: nowrap;
         display: flex;

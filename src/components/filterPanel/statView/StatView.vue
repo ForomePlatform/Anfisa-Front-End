@@ -22,6 +22,7 @@ export default {
         letter-spacing: 0px;
         color: #627490;
         &_right {
+            flex: 0 0 auto;
             width: 30px;
             height: 30px;
             background-image: url('../../../assets/statRemoveIcon.png');
@@ -31,6 +32,9 @@ export default {
             &:hover {
                 background-image: url('../../../assets/statRemoveHoverIcon.png');
             }
+        }
+        &_left {
+            flex: 1 1 auto;
         }
 
     }

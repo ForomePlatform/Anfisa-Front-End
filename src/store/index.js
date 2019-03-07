@@ -27,10 +27,11 @@ export default new Vuex.Store({
         selectedPreset: null,
         stats: [],
         currentConditions: [],
-        filtersConditions: [], // ToDo
         rulesData: [],
         rulesParams: '',
         filterDetails: [],
+        version: '',
+        listMounting: false,
     },
     actions,
     mutations,

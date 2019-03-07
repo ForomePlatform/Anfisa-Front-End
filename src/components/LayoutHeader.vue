@@ -1,21 +1,20 @@
 <template>
     <div class="settings-header">
         <div class="settings-header_title">
-            {{title}}
+            LAYOUT
         </div>
         <div>
             <img
-              v-if="!hideIcon"
               class="settings-header_icon"
               alt="settings icon"
-              src="../assets/settingsIcon.svg"
-              @click="onClick"
+              src="../assets/expandLayout.svg"
+              @click="expand"
             />
             <img
-              v-if="!hideIcon && global"
               class="settings-header_icon  ml-2"
               alt="open site"
-              src="../assets/projectIcon.svg"
+              src="../assets/collapseLayout.svg"
+              @click="collapse"
             />
         </div>
     </div>
@@ -24,13 +23,22 @@
 <script>
 export default {
     name: 'SettingsHeader',
-    props: {
-        title: String,
-        hideIcon: Boolean,
-        global: Boolean,
-        onClick: {
-            type: Function,
-            default: () => {},
+    methods: {
+        expand() {
+            const elements = document.getElementsByClassName('js-table_header');
+            Array.from(elements).forEach((element) => {
+                if (element.getAttribute('aria-expanded') === 'false') {
+                    element.click();
+                }
+            });
+        },
+        collapse() {
+            const elements = document.getElementsByClassName('js-table_header');
+            Array.from(elements).forEach((element) => {
+                if (element.getAttribute('aria-expanded') === 'true') {
+                    element.click();
+                }
+            });
         },
     },
 };
@@ -41,7 +49,6 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 16px;
         &_title {
             font-size: 14px;
             line-height: 14px;

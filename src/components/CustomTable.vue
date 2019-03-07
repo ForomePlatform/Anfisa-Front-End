@@ -2,12 +2,13 @@
     <div class="custom-table">
         <div
           v-b-toggle="'table_'+id"
-          :class="['custom-table_header', secondary ? 'custom-table_header-secondary' : '']"
+          :class="['custom-table_header', 'js-table_header',
+            secondary ? 'custom-table_header-secondary' : '']"
         >
             {{title.toUpperCase()}}
             <div class="custom-table_header_icon" />
         </div>
-        <b-collapse visible :id="'table_'+id" class="custom-table_collapse">
+        <b-collapse :id="'table_'+id" class="custom-table_collapse">
             <div class="custom-table_table-wrapper">
                 <CustomHScroll :id="id">
                     <table class="custom-table_table">

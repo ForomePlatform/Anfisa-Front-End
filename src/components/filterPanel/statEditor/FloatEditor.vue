@@ -44,8 +44,8 @@ export default {
     props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax'],
     data() {
         return {
-            selectedMin: this.preselectedMin,
-            selectedMax: this.preselectedMax,
+            selectedMin: this.preselectedMin || this.min,
+            selectedMax: this.preselectedMax || this.max,
             marks: Array(5).fill('').map((item, index) => (this.max * (index)) / 4),
         };
     },

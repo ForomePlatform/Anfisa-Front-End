@@ -7,10 +7,21 @@
             <img :src="panelCollapsedIcon" />
         </div>
         <div v-if="!panelCollapsed">
-        <img class="mb-4" alt="Foreme logo" src="../assets/foromeLogo.svg" />
+        <img class="mb-1 settings-panel_logo" alt="Foreme logo" src="../assets/foromeLogo.png" />
+        <div class="mb-2 settings-panel_title">
+            Anfisa
+        </div>
+        <div class="mb-3 settings-panel_menu">
+            <span>ver {{version.slice(7)}}</span> |
+            <span> Help</span> |
+            <span> About</span>
+        </div>
         <div class="settings-panel_block">
             <SettingsHeader global title="PROJECT" :onClick="openWorkspacesModal"/>
             <div class="settings-panel_text">{{ workspace }}</div>
+        </div>
+        <div class="settings-panel_block">
+            <LayoutHeader />
         </div>
         <div class="settings-panel_block">
             <SettingsHeader title="FILTERS" :onClick="openFilterModal"/>
@@ -45,7 +56,14 @@
             <User />
         </div>
         </div>
-        <b-modal ref="workspaceModal" centered title="Select Workspace" @ok="selectWorkspace">
+        <b-modal
+          class="custom-popup"
+          ref="workspaceModal"
+          centered
+          title="SELECT WORKSPACE"
+          @ok="selectWorkspace"
+          cancel-title="CANCEL"
+        >
             <b-form-select
               v-model="selectedWorkspace"
               :options="workspacesList"
@@ -54,10 +72,12 @@
             />
         </b-modal>
         <b-modal
+          class="custom-popup"
           ref="exportFileModal"
-          centered title="Export"
+          centered title="EXPORT"
           @ok="exportFile"
           :ok-disabled="!exportFileUrl"
+          cancel-title="CANCEL"
         >
             <p v-if="exportFileLoading">Wait please...</p>
             <p v-else>Are you sure you want to download file?</p>
@@ -72,6 +92,7 @@ import CustomButton from './CustomButton.vue';
 import User from './User.vue';
 import SettingsHeader from './SettingsHeader.vue';
 import FilterModal from './filterPanel/FilterModal.vue';
+import LayoutHeader from './LayoutHeader.vue';
 
 const collapseIcon = require('../assets/collapseIcon.svg');
 const expandIcon = require('../assets/expandIcon.svg');
@@ -111,6 +132,9 @@ export default {
         },
         selectedPreset() {
             return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'Presets';
+        },
+        version() {
+            return this.$store.state.version;
         },
     },
     methods: {
@@ -152,6 +176,7 @@ export default {
         User,
         SettingsHeader,
         FilterModal,
+        LayoutHeader,
     },
 };
 </script>
@@ -170,6 +195,27 @@ export default {
             letter-spacing: 0px;
             color: #597a96;
             font-family: "Arial";
+        }
+        &_menu {
+            font-size: 11px;
+            letter-spacing: 0px;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            span {
+                cursor: pointer;
+                &:hover {
+                    text-decoration: underline;
+                    color: #2bb3ed;
+                }
+            }
+        }
+        &_title {
+            font-size: 12px;
+            letter-spacing: 0px;
+            color: #fff9e4;
+            font-weight: bold;
         }
         &_icon-button {
             height: 33px;
@@ -205,6 +251,80 @@ export default {
         &__collapsed {
             width: 34px;
             padding: 0;
+        }
+    }
+    /deep/ .custom-popup .modal-content {
+        border-radius: 12px 12px 10px 10px;
+        border: none;
+        .modal-header {
+            height: 54px;
+            background-color: #0a1c34;
+            border-radius: 10px 10px 0 0;
+            border-bottom: 0;
+            button {
+                color: #fff;
+                text-shadow: none;
+                opacity: 1;
+            }
+            .modal-title {
+                font-size: 14px;
+                letter-spacing: 0px;
+                color: #ffffff;
+                font-weight: 800;
+            }
+        }
+        .modal-body {
+            padding: 0;
+            margin-bottom: 0;
+            select {
+                outline: none;
+                border: none;
+                margin-bottom: 0 !important;
+                padding: 0;
+                border-radius: 0;
+                &:focus {
+                    box-shadow: none;
+                }
+                option {
+                    font-size: 16px;
+                    letter-spacing: 0px;
+                    color: #1a3e6c;
+                    padding: 10px 20px;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: #e7e7e7;
+                    }
+                }
+            }
+        }
+        .modal-footer {
+            button {
+                padding: 5px 18px;
+                height: 25px;
+                border-radius: 12px;
+                background-color: #e7e7e7;
+                font-size: 11px;
+                letter-spacing: 0px;
+                color: #0a1c34;
+                font-weight: 800;
+                text-align: center;
+                border: none;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .btn-secondary {
+                &:hover {
+                    background-color: #ededed;
+                }
+            }
+            .btn-primary {
+                color: #fff;
+                background-color: #2bb3ed;
+                &:hover {
+                    background-color: #48c3f7;
+                }
+            }
         }
     }
 </style>

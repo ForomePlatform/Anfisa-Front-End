@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" width="15" height="15">
+	<defs>
+		<image width="16" height="15" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAPCAMAAADarb8dAAAAAXNSR0IB2cksfwAAAD9QTFRFAAAAAA0pCBoyCRszCRozCRozAAAACBkyCBsyCBsyAAAAAAAACRozCRszCBoyCRsyBxouCBszBRgvCBozBxkyD//ZRgAAABV0Uk5TABP//+z/AVyj/wQDr+Oo7yf3NvxIB0FD3gAAAFVJREFUeJxjYGBkYmJGAgwMzKiAgYGFlZUBDkACbCACWYAdpAKhH8xGFeDg5CRgBlgFRAOaGSi2QAEXmhncPMy8yC5l42PmF0D1i6AQUBzJt8IiDAwAAOYCYwilkgcAAAAASUVORK5CYII="/>
+	</defs>
+	<style>
+		tspan { white-space:pre }
+	</style>
+	<g id="Index">
+		<g id="Notepad">
+			<use id="Rectangle 668 copy" href="#img1" transform="matrix(1,0,0,1,-1,0)"/>
+		</g>
+	</g>
+</svg>

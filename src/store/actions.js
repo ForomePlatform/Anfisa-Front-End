@@ -42,10 +42,6 @@ export function getListByTag(context, tag) {
         });
 }
 
-export function toggleListView(context) {
-    context.commit('toggleListView');
-}
-
 export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
@@ -158,6 +154,7 @@ export function getWorkspaces(context) {
         .then((response) => {
             const { data } = response;
             context.commit('setWorkspacesList', data.workspaces);
+            context.commit('setVersion', data.version);
         });
 }
 
@@ -233,7 +230,6 @@ export function getPresets(context, ws) {
             if (filterList && Array.isArray(filterList)) {
                 const data = filterList.map(item => item[0]);
                 context.commit('setPresets', [null, ...data]);
-                context.commit('setPreset', null);
             }
             const statList = response.data['stat-list'];
             context.commit('setStats', utils.prepareStatList(statList));
@@ -392,7 +388,6 @@ export function updateFilter(context, filterName) {
         }
         const statList = response.data['stat-list'];
         context.commit('setStats', utils.prepareStatList(statList));
-        context.commit('setPreset', utils.prepareStatList(filterName));
     }).then((error) => {
         console.log(error);
     });
@@ -408,7 +403,7 @@ export function getConditionsByFilter(context, filter) {
         },
     }).then((response) => {
         const { data } = response;
-        context.commit('setAllCurrentConditions', data.conditions);
+        context.commit('setAllCurrentConditions', data.conditions || []);
     }).catch((error) => {
         console.log(error);
     });

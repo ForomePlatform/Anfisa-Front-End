@@ -7,7 +7,18 @@
               placeholder="Search"
             />
         </div>
-         <div class="separator"/>
+
+            <b-form-checkbox
+              class="enum-editor_select-all"
+              @change="selectAll"
+              :checked="list.length === selected.length"
+            >
+                <span class="enum-editor_select-all_title">
+                    Select all
+                </span>
+            </b-form-checkbox>
+
+        <div class="separator"/>
         <div class="enum-editor_list">
             <b-form-checkbox
               class="enum-editor_list_item"
@@ -61,6 +72,13 @@ export default {
                 this.selected.push(prop);
             }
         },
+        selectAll(value) {
+            let result = [];
+            if (value) {
+                result = this.list.map(item => item[0]);
+            }
+            this.selected = result;
+        },
     },
     // Update data if it was changed in the store
     // (e.g on change filter or on changes data via StatView)
@@ -106,6 +124,16 @@ export default {
                     color:#77869f;
                     align-content: center;
                 }
+            }
+        }
+        &_select-all {
+            margin: 4px 16px 6px 16px;
+            font-size: 13px;
+            letter-spacing: 0px;
+            color:#77869f;
+            align-content: center;
+            &_title {
+                padding-left: 4px;
             }
         }
         &_button {

@@ -62,6 +62,7 @@ export default {
 
 <style lang="scss" scoped>
     .filter-details {
+        overflow-y: auto;
         padding: 0 21px;
         width: 866px;
         max-height: 730px;

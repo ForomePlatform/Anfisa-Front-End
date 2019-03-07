@@ -26,8 +26,12 @@
           :onSave="saveFilter"
           :onSaveAs="removeFilterName"
         />
-        <div class="second-header_load" @click="onLoadClick">
-            <img alt="load" src="../../assets/filterLoadIcon.svg"/>
+        <div
+          :class="[loadView ? 'second-header_load__active' : '', 'second-header_load']"
+          @click="onLoadClick"
+        >
+            <img v-if="loadView" alt="load" src="../../assets/filterLoadActiveIcon.png"/>
+            <img v-else alt="load" src="../../assets/filterLoadIcon.svg"/>
             LOAD
         </div>
     </div>
@@ -37,7 +41,7 @@
 import SaveFilterDropdown from './SaveFilterDropdown.vue';
 
 export default {
-    props: ['onLoadClick', 'enableClearAll', 'enableSave', 'onShowClick'],
+    props: ['onLoadClick', 'enableClearAll', 'enableSave', 'onShowClick', 'loadView'],
     computed: {
         variants() {
             return this.$store.state.filtered;
@@ -140,6 +144,10 @@ export default {
             margin-left: 22px;
             &:hover {
                 background-color: #48c3f7;
+            }
+            &__active {
+                color: #0a1c34;
+                background-color: #fff;
             }
         }
         &_separator {

@@ -17,6 +17,7 @@
           :enableClearAll="enableClearAll"
           :enableSave="enableSave"
           :onShowClick="closeModal"
+          :loadView="loadView"
         />
         <div v-if="advancedView" class="filter-modal_advanced-view">
             <AdvancedView />

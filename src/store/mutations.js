@@ -130,3 +130,11 @@ export function setRulesParams(state, rulesData) {
 export function setFilterDetails(state, filterDetails) {
     state.filterDetails = filterDetails;
 }
+
+export function setVersion(state, version) {
+    state.version = version;
+}
+
+export function setListMounting(state, value) {
+    state.listMounting = value;
+}

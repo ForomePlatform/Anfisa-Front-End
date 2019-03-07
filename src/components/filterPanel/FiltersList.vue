@@ -5,13 +5,19 @@
             <ExpandButton collapse :onClick="toggleFilters.bind(null, 'false')" class="ml-3"/>
         </div>
         <div v-for="stat in stats" v-bind:key="stat.name">
-            <CollapseHeader :className="className" :name="stat.title || stat.name" primary>
+            <CollapseHeader
+              :className="className"
+              :name="stat.title || stat.name"
+              primary
+              :filled="Boolean(oCurrentConditions[stat.name])"
+            >
                 <div v-if="stat.type === 'group'">
                     <CollapseHeader
                       :className="className"
                       v-for="subStat in stat.data"
                       v-bind:key="subStat.name"
                       :name="subStat.title || subStat.name"
+                      :filled="Boolean(oCurrentConditions[subStat.name])"
                     >
                         <StatEditor :type="subStat.type" :data="subStat.data" :name="subStat.name"/>
                     </CollapseHeader>
@@ -36,6 +42,9 @@ export default {
     computed: {
         stats() {
             return this.$store.state.stats;
+        },
+        oCurrentConditions() {
+            return this.$store.getters.oCurrentConditions;
         },
     },
     components: {
