@@ -20,6 +20,12 @@ module.exports = {
                     request.setHeader('Authorization', 'Basic YmdtOmJnbTEh');
                 },
             },
+            '/anfisa-anno/*': {
+                target: 'http://anfisa.forome.org',
+                onProxyReq(request, req, res) {
+                    request.setHeader('Authorization', 'Basic YmdtOmJnbTEh');
+                },
+            },
         },
         port: 3000,
     },

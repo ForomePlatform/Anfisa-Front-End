@@ -268,7 +268,7 @@ export function getAnfisaJson(context, anfisaJsonData) {
                 return;
             }
             params.append('record', JSON.stringify(dataReq));
-            axios.post('/anfisa-xl/app/single_cnt', params, headers).then((res) => {
+            axios.post('/anfisa-anno/app/single_cnt', params, headers).then((res) => {
                 if (!context.state.annotations.isFirstSearch) {
                     context.commit('setProcessingEnd', true);
                 }
