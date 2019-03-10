@@ -14,7 +14,7 @@
                 <EnumView
                   v-else-if="condition[0] === 'enum'"
                   :name="condition[1]"
-                  :operator="condition[2]"
+                  :selectedOperator="condition[2]"
                   :data="condition[3]"
                   :changeOperator="changeOperatorHandler"
                   :removeItem="removeEnumItem"

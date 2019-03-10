@@ -3,13 +3,13 @@
         <div class="enum-view_descr">
             <span class="enum-view_descr_text">{{name}} </span>
             is
-            <b-dropdown :text="operator" class="m-md-2" size="sm">
+            <b-dropdown :text="operators[this.selectedOperator]" class="m-md-2" size="sm">
                 <b-dropdown-item
-                  v-for="operator in operators"
-                  v-bind:key="operator"
-                  @click="() => changeOperator(name, operator)"
+                  v-for="operator in Object.entries(operators)"
+                  :key="operator[1]"
+                  @click="() => changeOperator(name, operator[0])"
                 >
-                    {{operator}}
+                    {{operator[1]}}
                 </b-dropdown-item>
             </b-dropdown>
             of the following:
@@ -27,15 +27,15 @@
 </template>
 
 <script>
-import { ENUM_OPERATORS } from '../../../common/constants';
+import { LOGICAL_OPERATORS } from '../../../common/constants';
 
 export default {
     data() {
         return {
-            operators: ENUM_OPERATORS,
+            operators: LOGICAL_OPERATORS,
         };
     },
-    props: ['name', 'operator', 'data', 'remove', 'changeOperator', 'removeItem'],
+    props: ['name', 'selectedOperator', 'data', 'remove', 'changeOperator', 'removeItem'],
 };
 </script>
 

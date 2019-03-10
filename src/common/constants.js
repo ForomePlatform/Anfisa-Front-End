@@ -15,5 +15,11 @@ export const TAGS_COLORS = {
     'Previously categorized': '#66CDAA',
 };
 
-export const ENUM_OPERATORS = ['Any', 'All', 'None'];
-export const ENUM_DEFAULT_OPERATOR = 'Any';
+export const LOGICAL_OPERATORS = {
+    OR: 'Any',
+    AND: 'All',
+    NOT: 'None',
+    ONLY: 'Only',
+};
+
+export const ENUM_DEFAULT_OPERATOR = Object.keys(LOGICAL_OPERATORS)[0];

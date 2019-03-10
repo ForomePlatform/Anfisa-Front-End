@@ -56,43 +56,32 @@
             <User />
         </div>
         </div>
-        <b-modal
-          class="custom-popup"
-          ref="workspaceModal"
-          centered
-          title="SELECT WORKSPACE"
-          @ok="selectWorkspace"
-          cancel-title="CANCEL"
-        >
+        <CustomPopup ref="workspaceModal" title="SELECT WORKSPACE" :onSubmit="selectWorkspace">
             <b-form-select
               v-model="selectedWorkspace"
               :options="workspacesList"
               class="mb-3"
               :select-size="8"
             />
-        </b-modal>
-        <b-modal
-          class="custom-popup"
-          ref="exportFileModal"
-          centered title="EXPORT"
-          @ok="exportFile"
-          :ok-disabled="!exportFileUrl"
-          cancel-title="CANCEL"
-        >
+        </CustomPopup>
+        <CustomPopup ref="exportFileModal" title="EXPORT" :onSubmit="exportFile"
+          :okDisabled="!exportFileUrl">
             <p v-if="exportFileLoading">Wait please...</p>
             <p v-else>Are you sure you want to download file?</p>
-        </b-modal>
+        </CustomPopup>
         <FilterModal ref="filterModal"/>
     </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import DropdownButton from './DropdownButton.vue';
 import CustomButton from './CustomButton.vue';
 import User from './User.vue';
 import SettingsHeader from './SettingsHeader.vue';
 import FilterModal from './filterPanel/FilterModal.vue';
 import LayoutHeader from './LayoutHeader.vue';
+import CustomPopup from './CustomPopup.vue';
 
 const collapseIcon = require('../assets/collapseIcon.svg');
 const expandIcon = require('../assets/expandIcon.svg');
@@ -106,35 +95,15 @@ export default {
         };
     },
     computed: {
+        ...mapState(['tags', 'workspacesList', 'exportFileUrl', 'exportFileLoading', 'zones', 'presets', 'version']),
         workspace() {
             return this.$store.state.workspace;
-        },
-        tags() {
-            return this.$store.state.tags;
         },
         panelCollapsedIcon() {
             return this.panelCollapsed ? expandIcon : collapseIcon;
         },
-        workspacesList() {
-            return this.$store.state.workspacesList;
-        },
-        exportFileUrl() {
-            return this.$store.state.exportFileUrl;
-        },
-        exportFileLoading() {
-            return this.$store.state.exportFileLoading;
-        },
-        zones() {
-            return this.$store.state.zones;
-        },
-        presets() {
-            return this.$store.state.presets;
-        },
         selectedPreset() {
             return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'Presets';
-        },
-        version() {
-            return this.$store.state.version;
         },
     },
     methods: {
@@ -150,11 +119,11 @@ export default {
         },
         openWorkspacesModal() {
             this.$store.dispatch('getWorkspaces');
-            this.$refs.workspaceModal.show();
+            this.$refs.workspaceModal.openModal();
         },
         openExportFileModal() {
             this.$store.dispatch('getExportFile');
-            this.$refs.exportFileModal.show();
+            this.$refs.exportFileModal.openModal();
         },
         changeZoneValue(zone, value) {
             this.$store.dispatch('getListByZone', { zone, value });
@@ -177,6 +146,7 @@ export default {
         SettingsHeader,
         FilterModal,
         LayoutHeader,
+        CustomPopup,
     },
 };
 </script>
@@ -251,80 +221,6 @@ export default {
         &__collapsed {
             width: 34px;
             padding: 0;
-        }
-    }
-    /deep/ .custom-popup .modal-content {
-        border-radius: 12px 12px 10px 10px;
-        border: none;
-        .modal-header {
-            height: 54px;
-            background-color: #0a1c34;
-            border-radius: 10px 10px 0 0;
-            border-bottom: 0;
-            button {
-                color: #fff;
-                text-shadow: none;
-                opacity: 1;
-            }
-            .modal-title {
-                font-size: 14px;
-                letter-spacing: 0px;
-                color: #ffffff;
-                font-weight: 800;
-            }
-        }
-        .modal-body {
-            padding: 0;
-            margin-bottom: 0;
-            select {
-                outline: none;
-                border: none;
-                margin-bottom: 0 !important;
-                padding: 0;
-                border-radius: 0;
-                &:focus {
-                    box-shadow: none;
-                }
-                option {
-                    font-size: 16px;
-                    letter-spacing: 0px;
-                    color: #1a3e6c;
-                    padding: 10px 20px;
-                    cursor: pointer;
-                    &:hover {
-                        background-color: #e7e7e7;
-                    }
-                }
-            }
-        }
-        .modal-footer {
-            button {
-                padding: 5px 18px;
-                height: 25px;
-                border-radius: 12px;
-                background-color: #e7e7e7;
-                font-size: 11px;
-                letter-spacing: 0px;
-                color: #0a1c34;
-                font-weight: 800;
-                text-align: center;
-                border: none;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-            .btn-secondary {
-                &:hover {
-                    background-color: #ededed;
-                }
-            }
-            .btn-primary {
-                color: #fff;
-                background-color: #2bb3ed;
-                &:hover {
-                    background-color: #48c3f7;
-                }
-            }
         }
     }
 </style>
