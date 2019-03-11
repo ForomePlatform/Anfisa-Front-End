@@ -27,15 +27,19 @@
 </template>
 
 <script>
-import { LOGICAL_OPERATORS } from '../../../common/constants';
+import {
+    STAT_TYPE_ENUM,
+    LOGICAL_OPERATORS,
+    LOGICAL_OPERATORS_STATUS,
+} from '../../../common/constants';
 
 export default {
     data() {
         return {
-            operators: LOGICAL_OPERATORS,
+            operators: this.type === STAT_TYPE_ENUM ? LOGICAL_OPERATORS : LOGICAL_OPERATORS_STATUS,
         };
     },
-    props: ['name', 'selectedOperator', 'data', 'remove', 'changeOperator', 'removeItem'],
+    props: ['name', 'selectedOperator', 'data', 'remove', 'changeOperator', 'removeItem', 'type'],
 };
 </script>
 

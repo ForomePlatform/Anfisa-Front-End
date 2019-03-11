@@ -22,4 +22,18 @@ export const LOGICAL_OPERATORS = {
     ONLY: 'Only',
 };
 
+export const LOGICAL_OPERATORS_STATUS = {
+    OR: 'Any',
+    NOT: 'None',
+};
+
 export const ENUM_DEFAULT_OPERATOR = Object.keys(LOGICAL_OPERATORS)[0];
+
+export const STAT_TYPE_INT = 'int';
+export const STAT_TYPE_FLOAT = 'float';
+export const STAT_TYPE_ENUM = 'enum';
+export const STAT_TYPE_STATUS = 'status';
+export const STAT_GROUP = 'group';
+export const STAT_NUMERIC = 'numeric';
+
+export const STAT_TYPES = [STAT_TYPE_INT, STAT_TYPE_FLOAT, STAT_TYPE_ENUM, STAT_TYPE_STATUS];

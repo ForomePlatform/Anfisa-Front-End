@@ -1,10 +1,16 @@
-export const types = ['int', 'float', 'enum'];
+import {
+    STAT_TYPE_ENUM,
+    STAT_TYPE_STATUS,
+    STAT_TYPES,
+    STAT_GROUP,
+} from './constants';
 
-const prepareStatDataByType = statItem => ({
+export const prepareStatDataByType = statItem => ({
     name: statItem[1].name,
     title: statItem[1].title,
     type: statItem[0],
-    data: statItem[0] === 'enum' ? statItem[2] : statItem.splice(2),
+    data: statItem[0] === STAT_TYPE_ENUM || statItem[0] === STAT_TYPE_STATUS
+        ? statItem[2] : statItem.splice(2),
 });
 
 export function prepareStatList(statList) {
@@ -13,13 +19,13 @@ export function prepareStatList(statList) {
     let result = [];
 
     if (statList && Array.isArray(statList)) {
-        statList.filter(statItem => types.includes(statItem[0])).forEach((statItem) => {
+        statList.filter(statItem => STAT_TYPES.includes(statItem[0])).forEach((statItem) => {
             const groupName = statItem[1].vgroup;
             if (groupName) {
                 if (!Object.keys(groupsData).includes(statItem[1].vgroup)) {
                     tmpResult.push({
                         title: groupName,
-                        type: 'group',
+                        type: STAT_GROUP,
                     });
                     groupsData[groupName] = [];
                 }
@@ -31,7 +37,7 @@ export function prepareStatList(statList) {
     }
 
     result = tmpResult.map((item) => {
-        if (item.type === 'group') {
+        if (item.type === STAT_GROUP) {
             return ({
                 ...item,
                 data: groupsData[item.title],

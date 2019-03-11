@@ -7,12 +7,13 @@
         >
             <StatView :onRemove="() => removeHandler(condition[1])">
                 <FloatView
-                  v-if="condition[0] === 'float' || condition[0] === 'int'"
+                  v-if="condition[0] === statTypes.numeric"
                   :name="condition[1]"
                   :data="condition.slice(2)"
                 />
                 <EnumView
-                  v-else-if="condition[0] === 'enum'"
+                  v-else-if="condition[0] === statTypes.enum || condition[0] === statTypes.status"
+                  :type="condition[0]"
                   :name="condition[1]"
                   :selectedOperator="condition[2]"
                   :data="condition[3]"
@@ -28,11 +29,23 @@
 import EnumView from './statView/EnumView.vue';
 import FloatView from './statView/FloatView.vue';
 import StatView from './statView/StatView.vue';
+import {
+    STAT_TYPE_ENUM,
+    STAT_TYPE_STATUS,
+    STAT_NUMERIC,
+} from './../../common/constants';
 
 export default {
     computed: {
         currentConditions() {
             return this.$store.state.currentConditions;
+        },
+        statTypes() {
+            return {
+                enum: STAT_TYPE_ENUM,
+                status: STAT_TYPE_STATUS,
+                numeric: STAT_NUMERIC,
+            };
         },
     },
     components: {
@@ -43,17 +56,14 @@ export default {
     methods: {
         removeHandler(name) {
             this.$store.commit('removeCurrentCondition', name);
-            this.$store.dispatch('getPresets');
             this.$store.dispatch('getListByFilters');
         },
         changeOperatorHandler(name, operator) {
             this.$store.commit('changeConditionOperator', { name, operator });
-            this.$store.dispatch('getPresets');
             this.$store.dispatch('getListByFilters');
         },
         removeEnumItem(name, itemIndex) {
             this.$store.commit('removeConditionItem', { name, itemIndex });
-            this.$store.dispatch('getPresets');
             this.$store.dispatch('getListByFilters');
         },
     },

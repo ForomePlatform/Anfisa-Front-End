@@ -1,7 +1,7 @@
 <template>
     <div>
         <IntEditor
-          v-if="type === 'int'"
+          v-if="type === statTypes.int"
           :min="data[0]"
           :max="data[1]"
           :preselectedMin="preselectedMin"
@@ -9,7 +9,7 @@
           :onSubmit="submitHandler"
         />
         <FloatEditor
-          v-else-if="type === 'float'"
+          v-else-if="type === statTypes.float"
           :min="data[0]"
           :max="data[1]"
           :preselectedMin="preselectedMin"
@@ -17,7 +17,7 @@
           :onSubmit="submitHandler"
         />
         <EnumEditor
-          v-else-if="type === 'enum'"
+          v-else-if="type === statTypes.enum || type === statTypes.status"
           :list="data"
           :preselectedData="preselectedData"
           :onSubmit="submitEnumHandler"
@@ -29,7 +29,14 @@
 import IntEditor from './IntEditor.vue';
 import FloatEditor from './FloatEditor.vue';
 import EnumEditor from './EnumEditor.vue';
-import { ENUM_DEFAULT_OPERATOR } from '../../../common/constants';
+import {
+    STAT_TYPE_INT,
+    STAT_TYPE_FLOAT,
+    STAT_TYPE_ENUM,
+    STAT_TYPE_STATUS,
+    ENUM_DEFAULT_OPERATOR,
+    STAT_NUMERIC,
+} from '../../../common/constants';
 
 export default {
     props: ['type', 'data', 'name'],
@@ -64,20 +71,26 @@ export default {
             }
             return [];
         },
+        statTypes() {
+            return {
+                int: STAT_TYPE_INT,
+                float: STAT_TYPE_FLOAT,
+                enum: STAT_TYPE_ENUM,
+                status: STAT_TYPE_STATUS,
+            };
+        },
     },
     methods: {
         // Apply float editor changes: min and max values
         submitHandler(min, max) {
-            const condition = [this.type, this.name, min, max, null];
+            const condition = [STAT_NUMERIC, this.name, min, max, null];
             this.$store.commit('setCurrentConditions', condition);
-            this.$store.dispatch('getPresets');
             this.$store.dispatch('getListByFilters');
         },
         // Apply  enum editor changes: selected list of items
         submitEnumHandler(data) {
             const condition = [this.type, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
             this.$store.commit('setCurrentConditions', condition);
-            this.$store.dispatch('getPresets');
             this.$store.dispatch('getListByFilters');
         },
     },

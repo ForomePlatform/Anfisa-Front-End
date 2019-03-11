@@ -25,12 +25,12 @@
               class="filter-card_conditions_item"
             >
                 <FlaotView
-                  v-if="condition[0] === 'float'"
+                  v-if="condition[0] === constants.numeric"
                   :name="condition[1]"
                   :data="[condition[2], condition[3]]"
                 />
                 <EnumBasicView
-                  v-if="condition[0] === 'enum'"
+                  v-if="condition[0] === constants.enum || condition[0] === constants.status"
                   :name="condition[1]"
                   :operator="condition[2]"
                   :data="condition[3]"
@@ -43,9 +43,23 @@
 <script>
 import FlaotView from '../statView/FloatView.vue';
 import EnumBasicView from './EnumBasicView.vue';
+import {
+    STAT_NUMERIC,
+    STAT_TYPE_ENUM,
+    STAT_TYPE_STATUS,
+} from '../../../common/constants';
 
 export default {
     props: ['name', 'conditions', 'onLoad', 'onRemove', 'date'],
+    computed: {
+        constants() {
+            return {
+                numeric: STAT_NUMERIC,
+                enum: STAT_TYPE_ENUM,
+                status: STAT_TYPE_STATUS,
+            };
+        },
+    },
     components: {
         FlaotView,
         EnumBasicView,

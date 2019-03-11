@@ -14,8 +14,6 @@ export function getList(context, ws) {
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
-            context.dispatch('getZoneList', ws);
-            context.dispatch('getPresets', ws);
         })
         .catch((error) => {
             console.log(error);
@@ -363,8 +361,8 @@ export function removeFilter(context, filterName) {
             context.commit('setPresets', [null, ...data]);
             context.commit('setPreset', null);
         }
-        const statList = response.data['stat-list'];
-        context.commit('setStats', utils.prepareStatList(statList));
+        // const statList = response.data['stat-list'];
+        // context.commit('setStats', utils.prepareStatList(statList));
     }).then((error) => {
         console.log(error);
     });
@@ -386,8 +384,8 @@ export function updateFilter(context, filterName) {
             context.commit('setPresets', [null, ...data]);
             context.commit('setPreset', null);
         }
-        const statList = response.data['stat-list'];
-        context.commit('setStats', utils.prepareStatList(statList));
+        // const statList = response.data['stat-list'];
+        // context.commit('setStats', utils.prepareStatList(statList));
     }).then((error) => {
         console.log(error);
     });
