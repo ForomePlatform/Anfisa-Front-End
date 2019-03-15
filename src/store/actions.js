@@ -6,8 +6,13 @@ const commonHttp = axios.create({
 });
 
 export function getList(context, ws) {
-    const url = ws ? `/list?ws=${ws}` : '/list';
-    commonHttp.get(url)
+    const params = new URLSearchParams();
+    params.append('ws', ws || context.state.workspace);
+    commonHttp.post('/list', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    })
         .then((response) => {
             const { data } = response;
             context.commit('setRecords', data.records);
@@ -63,6 +68,11 @@ export function getVariantDetails(context, variant) {
                         title: item.title,
                         data: tableData,
                     };
+                } else if (item.type === 'pre') {
+                    result[item.title] = {
+                        title: item.title,
+                        content: item.content,
+                    };
                 }
             });
             context.commit('setVariantDetails', result);
@@ -84,10 +94,12 @@ export function getVariantTags(context, variant) {
     })
         .then((response) => {
             const { data } = response;
+            const NOTE_TAG = '_note';
             const selectedTags = Object.keys(data['rec-tags'])
-                .filter(item => data['rec-tags'][item]);
+                .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
             context.commit('setAllTags', data['check-tags']);
             context.commit('setSelectedTags', selectedTags);
+            context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
         })
         .catch((error) => {
             context.commit('setAllTags', []);
@@ -96,26 +108,34 @@ export function getVariantTags(context, variant) {
         });
 }
 
-export function saveNotes(context) {
+export function saveNote(context) {
+    const tagsObject = {
+        _note: context.state.note,
+    };
+    context.state.selectedTags.forEach((item) => {
+        tagsObject[item] = true;
+    });
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
     params.append('rec', context.state.selectedVariant);
-    params.append('_notes', context.state.notes);
+    params.append('tags', JSON.stringify(tagsObject));
     commonHttp.post('/tags', params, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-    })
-        .then(() => {
-            console.log('notes are saved');
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    }).then(() => {
+        console.log('Note is saved');
+    }).catch((error) => {
+        console.log(error);
+    });
 }
 
 export function toggleVariantTag(context, tag) {
+    const NOTE_TAG = '_note';
     const tagsObject = {};
+    if (context.state.note) {
+        tagsObject[NOTE_TAG] = context.state.note;
+    }
     context.state.selectedTags.forEach((item) => {
         tagsObject[item] = true;
     });
@@ -136,9 +156,10 @@ export function toggleVariantTag(context, tag) {
         .then((response) => {
             const { data } = response;
             const selectedTags = Object.keys(data['rec-tags'])
-                .filter(item => data['rec-tags'][item]);
+                .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
             context.commit('setAllTags', data['check-tags']);
             context.commit('setSelectedTags', selectedTags);
+            context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
         })
         .catch((error) => {
             context.commit('setAllTags', []);

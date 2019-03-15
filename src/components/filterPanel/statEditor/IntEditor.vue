@@ -19,7 +19,8 @@
               :marks="true"
               @change="sliderRadiusHandler"
               tooltip="none"
-              class="int-editor_slider"
+              :class="[sliderRadius === null ? 'int-editor_slider__default' : '',
+                'int-editor_slider']"
               :lazy="true"
             />
             <b-form-input
@@ -287,6 +288,26 @@ export default {
                 }
                 &-process {
                     display: none;
+                }
+            }
+            &__default {
+                /deep/ .vue-slider {
+                    &-marks {
+                        background-image: url('./../../../assets/sliderDefaultBg.svg');
+                    }
+                    &-mark {
+                        &-label {
+                            color: #afafaf;
+                        }
+                    }
+                    &-dot {
+                        &-handle {
+                            background-color: #cbd1d9;
+                            &:after {
+                                border-top-color: #cbd1d9;
+                            }
+                        }
+                    }
                 }
             }
         }

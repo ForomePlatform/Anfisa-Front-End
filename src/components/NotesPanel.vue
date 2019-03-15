@@ -16,15 +16,15 @@
 export default {
     computed: {
         notes() {
-            return this.$store.state.notes;
+            return this.$store.state.note;
         },
     },
     methods: {
         changeNotes(value) {
-            this.$store.commit('changeNotes', value);
+            this.$store.commit('changeNote', value);
         },
         saveNotes() {
-            this.$store.dispatch('saveNotes');
+            this.$store.dispatch('saveNote');
         },
     },
 };

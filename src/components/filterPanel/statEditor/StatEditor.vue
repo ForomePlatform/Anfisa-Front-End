@@ -10,6 +10,7 @@
         />
         <FloatEditor
           v-else-if="type === statTypes.float"
+          :logScale="logEditorFields.includes(name)"
           :min="data[0]"
           :max="data[1]"
           :preselectedMin="preselectedMin"
@@ -36,6 +37,7 @@ import {
     STAT_TYPE_STATUS,
     ENUM_DEFAULT_OPERATOR,
     STAT_NUMERIC,
+    LOG_EDITOR_FIELDS,
 } from '../../../common/constants';
 
 export default {
@@ -71,6 +73,12 @@ export default {
             }
             return [];
         },
+        preselectedValue() {
+            if (this.oCurrentCondition && this.oCurrentCondition.data) {
+                return this.oCurrentCondition.data[1];
+            }
+            return null;
+        },
         statTypes() {
             return {
                 int: STAT_TYPE_INT,
@@ -79,11 +87,14 @@ export default {
                 status: STAT_TYPE_STATUS,
             };
         },
+        logEditorFields() {
+            return LOG_EDITOR_FIELDS;
+        },
     },
     methods: {
         // Apply float editor changes: min and max values
         submitHandler(min, max) {
-            const condition = [STAT_NUMERIC, this.name, min, max, null];
+            const condition = [STAT_NUMERIC, this.name, [min, max], null];
             this.$store.commit('setCurrentConditions', condition);
             this.$store.dispatch('getListByFilters');
         },

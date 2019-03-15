@@ -3,8 +3,8 @@
         <div class="float-editor_inputs">
             <b-form-input
               type="number"
-              v-model="selectedMin"
-              step="0.01"
+              v-model.number="selectedMin"
+              :step="logScale ? 0.0001 : 0.01"
               :min="min"
               :max="selectedMax"
               class="mr-2"
@@ -12,23 +12,24 @@
             &mdash;
             <b-form-input
               type="number"
-              v-model="selectedMax"
-              step="0.01"
+              v-model.number="selectedMax"
+              :step="logScale ? 0.0001 : 0.01"
               :min="selectedMin"
               :max="max"
               class="ml-2"
             />
         </div>
         <vue-slider
-          :value="[selectedMin, selectedMax]"
+          :value="sliderValues"
           :enable-cross="false"
-          :marks="marks"
+          :marks="logScale ? true : marks"
+          :data="logScale ? marks : null"
           :min="min"
           :max="max"
-          :interval="0.01"
+          :interval="logScale ? 0.0001 : 0.01"
           @change="changeValues"
           tooltip="none"
-          class="float-editor_slider"
+          :class="[defaultSlider ? 'float-editor_slider__default' : '', 'float-editor_slider']"
         />
         <div class="float-editor_button" @click="addData">
             ADD
@@ -39,14 +40,14 @@
 <script>
 import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/antd.css';
+import { LOG_EDITOR_MARKS } from '../../../common/constants';
 
 export default {
-    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax'],
+    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax', 'logScale'],
     data() {
         return {
             selectedMin: this.preselectedMin || this.min,
             selectedMax: this.preselectedMax || this.max,
-            marks: Array(5).fill('').map((item, index) => (this.max * (index)) / 4),
         };
     },
     methods: {
@@ -56,6 +57,23 @@ export default {
         changeValues([min, max]) {
             this.selectedMin = min;
             this.selectedMax = max;
+        },
+    },
+    computed: {
+        marks() {
+            return this.logScale ? LOG_EDITOR_MARKS
+                : Array(5).fill('').map((item, index) => (this.max * (index)) / 4);
+        },
+        sliderValues() {
+            if (this.logScale && !(LOG_EDITOR_MARKS.includes(+this.selectedMin)
+                && (LOG_EDITOR_MARKS.includes(+this.selectedMax)))
+            ) {
+                return [this.min, this.max];
+            }
+            return [this.selectedMin, this.selectedMax];
+        },
+        defaultSlider() {
+            return this.min === this.sliderValues[0] && this.max === this.sliderValues[1];
         },
     },
     components: {
@@ -89,7 +107,7 @@ export default {
             align-items: center;
             padding: 10px;
             input {
-                width: 69px;
+                width: 86px;
                 height: 33px;
                 color: #0a1c34;
                 border-radius: 3px;
@@ -178,6 +196,32 @@ export default {
                     border-radius: 0;
                     height: 24px !important;
                     background-color: #bfe8fa;
+                }
+            }
+            &__default {
+                /deep/ .vue-slider {
+                    &-marks {
+                        background-color: #cbd1d9;
+                    }
+                    &-mark {
+                        &-step {
+                            background-color: #cbd1d9;
+                        }
+                        &-label {
+                            color: #afafaf;
+                        }
+                    }
+                    &-dot {
+                        &-handle {
+                            background-color: #cbd1d9;
+                            &:after {
+                                border-top-color: #cbd1d9;
+                            }
+                        }
+                    }
+                    &-process {
+                        background-color: #e7e7e7;
+                    }
                 }
             }
         }

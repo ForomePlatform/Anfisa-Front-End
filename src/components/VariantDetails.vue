@@ -81,6 +81,13 @@
             :data="variantDetails.transcripts.data"
             secondary
             />
+            <CustomTable
+            v-if="variantDetails.VCF"
+            :title="variantDetails.VCF.title"
+            id="vcf"
+            :content="variantDetails.VCF.content"
+            secondary
+            />
         </div>
     </div>
 </template>

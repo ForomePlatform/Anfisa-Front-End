@@ -19,7 +19,7 @@ export default new Vuex.Store({
         allTags: [],
         selectedTags: [],
         workspacesList: [],
-        notes: '',
+        note: '',
         exportFileUrl: null,
         exportFileLoading: false,
         zones: {},
@@ -74,7 +74,7 @@ export default new Vuex.Store({
         oCurrentConditions: (state) => {
             const result = {};
             state.currentConditions.forEach((condition) => {
-                const [type, name, ...data] = condition;
+                const [type, name, data] = condition;
                 result[name] = {
                     type,
                     data,

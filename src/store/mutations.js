@@ -47,8 +47,8 @@ export function setExportFileUrl(state, exportFileUrl) {
     state.exportFileUrl = exportFileUrl;
 }
 
-export function changeNotes(state, notes) {
-    state.notes = notes;
+export function changeNote(state, note) {
+    state.note = note;
 }
 
 export function setExportFileLoading(state, value) {

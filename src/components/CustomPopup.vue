@@ -24,7 +24,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .custom-popup .modal-content {
+    /deep/ .modal-content {
         border-radius: 12px 12px 10px 10px;
         border: none;
         .modal-header {

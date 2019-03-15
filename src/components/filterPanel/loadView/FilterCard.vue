@@ -27,7 +27,7 @@
                 <FlaotView
                   v-if="condition[0] === constants.numeric"
                   :name="condition[1]"
-                  :data="[condition[2], condition[3]]"
+                  :data="condition[2]"
                 />
                 <EnumBasicView
                   v-if="condition[0] === constants.enum || condition[0] === constants.status"

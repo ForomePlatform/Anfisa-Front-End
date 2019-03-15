@@ -66,8 +66,8 @@
         </CustomPopup>
         <CustomPopup ref="exportFileModal" title="EXPORT" :onSubmit="exportFile"
           :okDisabled="!exportFileUrl">
-            <p v-if="exportFileLoading">Wait please...</p>
-            <p v-else>Are you sure you want to download file?</p>
+            <p v-if="exportFileLoading" class="mt-3 ml-3">Wait please...</p>
+            <p v-else class="mt-3 ml-3" >Are you sure you want to download file?</p>
         </CustomPopup>
         <FilterModal ref="filterModal"/>
     </div>
@@ -115,7 +115,11 @@ export default {
             window.open(this.exportFileUrl);
         },
         selectWorkspace() {
-            this.$store.dispatch('getList', this.selectedWorkspace);
+            this.$store.commit('setWorkspace', this.selectedWorkspace);
+            this.$store.dispatch('getList');
+            this.$store.dispatch('getZoneList');
+            this.$store.dispatch('getPresets');
+            this.$store.dispatch('getRulesData');
         },
         openWorkspacesModal() {
             this.$store.dispatch('getWorkspaces');

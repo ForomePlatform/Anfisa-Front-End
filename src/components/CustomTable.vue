@@ -11,6 +11,7 @@
         <b-collapse :id="'table_'+id" class="custom-table_collapse">
             <div class="custom-table_table-wrapper">
                 <CustomHScroll :id="id">
+                    <div v-if="content" v-html="content" class="custom-table_html"/>
                     <table class="custom-table_table">
                         <tr v-for="(row, index) in data" v-bind:key="index">
                             <td v-for="(cell, index) in row" v-html="cell" v-bind:key="index"/>
@@ -31,6 +32,7 @@ export default {
         id: String,
         data: Array,
         secondary: Boolean,
+        content: String,
     },
     components: {
         CustomHScroll,
@@ -106,6 +108,9 @@ export default {
                     }
                 }
             }
+        }
+        &_html {
+            white-space: pre-line;
         }
         &_table {
             width: 100%;

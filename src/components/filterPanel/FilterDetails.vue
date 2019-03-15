@@ -9,7 +9,7 @@
                 <FloatView
                   v-if="condition[0] === statTypes.numeric"
                   :name="condition[1]"
-                  :data="condition.slice(2)"
+                  :data="condition[2]"
                 />
                 <EnumView
                   v-else-if="condition[0] === statTypes.enum || condition[0] === statTypes.status"
