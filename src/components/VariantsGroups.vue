@@ -37,7 +37,9 @@ export default {
     components: {
         VariantsList,
     },
-
+    mounted() {
+        this.$store.commit('setListMounting', false);
+    },
 };
 </script>
 

@@ -23,9 +23,9 @@ export default {
     computed: {
         text() {
             if (this.type === 'primary') {
-                return `${this.title} &#10006;`;
+                return `${this.title} <span>&#10006;</span>`;
             } else if (this.type === 'secondary') {
-                return `${this.title} &#10010;`;
+                return `${this.title} <span>&#128933;</span>`;
             }
             return this.title;
         },
@@ -38,24 +38,28 @@ export default {
 
 <style lang="scss" scoped>
     .tag-button {
-        border-radius: 12px;
-        background-color: #C0C0C0;
-        color: #000;
-        padding: 2px 10px;
+        height: 18px;
+        line-height: 18px;
+        border-radius: 2px;
+        background-color: #959595;
+        color: #fff;
+        padding: 0 6px;
         display: inline-block;
-        margin: 0 2px;
+        margin: 2px 2px;
         cursor: pointer;
         user-select: none;
+        font-size: 12px;
+        /deep/ span {
+            font-size: 10px;
+        }
         &:hover {
             opacity: .8;
         }
         &-primary {
-            font-size: 12px;
-            line-height: 12px;
+            opacity: 1;
         }
         &-secondary {
-            font-size: 10px;
-            line-height: 12px;
+            font-size: 12px;
             background-color: #DCDCDC;
             opacity: .4;
         }

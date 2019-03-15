@@ -1,20 +1,24 @@
 import axios from 'axios';
+import * as utils from '../common/utils';
 
 const commonHttp = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
 });
 
 export function getList(context, ws) {
-    const url = ws ? `/list?ws=${ws}` : '/list';
-    commonHttp.get(url)
+    const params = new URLSearchParams();
+    params.append('ws', ws || context.state.workspace);
+    commonHttp.post('/list', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    })
         .then((response) => {
             const { data } = response;
             context.commit('setRecords', data.records);
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
-            context.dispatch('getZoneList', ws);
-            context.dispatch('getPresets', ws);
         })
         .catch((error) => {
             console.log(error);
@@ -41,10 +45,6 @@ export function getListByTag(context, tag) {
         });
 }
 
-export function toggleListView(context) {
-    context.commit('toggleListView');
-}
-
 export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
@@ -68,6 +68,11 @@ export function getVariantDetails(context, variant) {
                         title: item.title,
                         data: tableData,
                     };
+                } else if (item.type === 'pre') {
+                    result[item.title] = {
+                        title: item.title,
+                        content: item.content,
+                    };
                 }
             });
             context.commit('setVariantDetails', result);
@@ -89,10 +94,12 @@ export function getVariantTags(context, variant) {
     })
         .then((response) => {
             const { data } = response;
+            const NOTE_TAG = '_note';
             const selectedTags = Object.keys(data['rec-tags'])
-                .filter(item => data['rec-tags'][item]);
+                .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
             context.commit('setAllTags', data['check-tags']);
             context.commit('setSelectedTags', selectedTags);
+            context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
         })
         .catch((error) => {
             context.commit('setAllTags', []);
@@ -101,26 +108,34 @@ export function getVariantTags(context, variant) {
         });
 }
 
-export function saveNotes(context) {
+export function saveNote(context) {
+    const tagsObject = {
+        _note: context.state.note,
+    };
+    context.state.selectedTags.forEach((item) => {
+        tagsObject[item] = true;
+    });
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
     params.append('rec', context.state.selectedVariant);
-    params.append('_notes', context.state.notes);
+    params.append('tags', JSON.stringify(tagsObject));
     commonHttp.post('/tags', params, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-    })
-        .then(() => {
-            console.log('notes are saved');
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    }).then(() => {
+        console.log('Note is saved');
+    }).catch((error) => {
+        console.log(error);
+    });
 }
 
 export function toggleVariantTag(context, tag) {
+    const NOTE_TAG = '_note';
     const tagsObject = {};
+    if (context.state.note) {
+        tagsObject[NOTE_TAG] = context.state.note;
+    }
     context.state.selectedTags.forEach((item) => {
         tagsObject[item] = true;
     });
@@ -141,9 +156,10 @@ export function toggleVariantTag(context, tag) {
         .then((response) => {
             const { data } = response;
             const selectedTags = Object.keys(data['rec-tags'])
-                .filter(item => data['rec-tags'][item]);
+                .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
             context.commit('setAllTags', data['check-tags']);
             context.commit('setSelectedTags', selectedTags);
+            context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
         })
         .catch((error) => {
             context.commit('setAllTags', []);
@@ -157,6 +173,7 @@ export function getWorkspaces(context) {
         .then((response) => {
             const { data } = response;
             context.commit('setWorkspacesList', data.workspaces);
+            context.commit('setVersion', data.version);
         });
 }
 
@@ -221,6 +238,7 @@ export function getZoneList(context, ws) {
 export function getPresets(context, ws) {
     const params = new URLSearchParams();
     params.append('ws', ws || context.state.workspace);
+    params.append('conditions', context.state.currentConditions.length ? JSON.stringify(context.state.currentConditions) : null);
     commonHttp.post('/stat', params, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -231,7 +249,11 @@ export function getPresets(context, ws) {
             if (filterList && Array.isArray(filterList)) {
                 const data = filterList.map(item => item[0]);
                 context.commit('setPresets', [null, ...data]);
-                context.commit('setPreset', null);
+            }
+            const statList = response.data['stat-list'];
+            context.commit('setStats', utils.prepareStatList(statList));
+            if (response.data.conditions) {
+                context.commit('setAllCurrentConditions', response.data.conditions);
             }
         })
         .catch((error) => {
@@ -239,9 +261,11 @@ export function getPresets(context, ws) {
         });
 }
 
-function getListByFilters(context) {
+export function getListByFilters(context) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
+    params.append('conditions', context.state.currentConditions.length ? JSON.stringify(context.state.currentConditions) : null);
+    params.append('filter', context.state.selectedPreset);
 
     const { zones } = context.state;
     Object.keys(zones).forEach((currentZone) => {
@@ -249,7 +273,6 @@ function getListByFilters(context) {
             params.append('zone', JSON.stringify([currentZone, [zones[currentZone].selectedValue]]));
         }
     });
-    params.append('filter', context.state.selectedPreset);
 
     return commonHttp.post('/list', params, {
         headers: {
@@ -276,5 +299,131 @@ export function getListByZone(context, { zone, value }) {
     getListByFilters(context).catch((error) => {
         console.log(error);
         context.commit('changeZoneValue', [zone, null]);
+    });
+}
+
+export function getRulesData(context) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+
+    commonHttp.post('/rules_data', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => {
+        const { data } = response;
+        context.commit('setRulesData', data.columns);
+        context.commit('setRulesParams', data.params);
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+export function modifyRules(context, payload) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('it', payload.name);
+    params.append('cnt', payload.data);
+
+    commonHttp.post('/rules_modify', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then(() => {
+        console.log('Rules saved');
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+
+function getFilterDetail(context, filter) {
+    return new Promise((resolve, reject) => {
+        const params = new URLSearchParams();
+        params.append('ws', context.state.workspace);
+        params.append('filter', filter);
+        commonHttp.post('/stat', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        }).then((response) => {
+            const { data } = response;
+            resolve({
+                name: filter,
+                date: data.date,
+                conditions: data.conditions,
+            });
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+export function getFilterDetails(context) {
+    const filters = [...context.state.presets];
+    Promise.all(filters.filter(filterName => filterName)
+        .map(filterName => getFilterDetail(context, filterName)))
+        .then((filterDetails) => { context.commit('setFilterDetails', filterDetails); })
+        .catch((error) => { console.log(error); });
+}
+
+export function removeFilter(context, filterName) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('instr', `DELETE/${filterName}`);
+    commonHttp.post('/stat', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => {
+        const filterList = response.data['filter-list'];
+        if (filterList && Array.isArray(filterList)) {
+            const data = filterList.map(item => item[0]);
+            context.commit('setPresets', [null, ...data]);
+            context.commit('setPreset', null);
+        }
+        // const statList = response.data['stat-list'];
+        // context.commit('setStats', utils.prepareStatList(statList));
+    }).then((error) => {
+        console.log(error);
+    });
+}
+
+export function updateFilter(context, filterName) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('instr', `UPDATE/${filterName}`);
+    params.append('conditions', JSON.stringify(context.state.currentConditions));
+    commonHttp.post('/stat', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => {
+        const filterList = response.data['filter-list'];
+        if (filterList && Array.isArray(filterList)) {
+            const data = filterList.map(item => item[0]);
+            context.commit('setPresets', [null, ...data]);
+            context.commit('setPreset', null);
+        }
+        // const statList = response.data['stat-list'];
+        // context.commit('setStats', utils.prepareStatList(statList));
+    }).then((error) => {
+        console.log(error);
+    });
+}
+
+export function getConditionsByFilter(context, filter) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('filter', filter);
+    commonHttp.post('/stat', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => {
+        const { data } = response;
+        context.commit('setAllCurrentConditions', data.conditions || []);
+    }).catch((error) => {
+        console.log(error);
     });
 }

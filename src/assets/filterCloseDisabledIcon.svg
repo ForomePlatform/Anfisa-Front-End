@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 17" width="17" height="17">
+	<defs>
+		<image width="17" height="17" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAMAAAAMs7fIAAAAAXNSR0IB2cksfwAAANJQTFRFAAAA////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////hovIawAAAEZ0Uk5TABGGsdj3hDzm/2791mYzDGnU/GuRBgiUL9yPUtec24xvcIvHN9k5xPULDvLQMDHOoGBjndNs544QPv4Hk/tnKcsBTIrFSxicqyoAAAC+SURBVHicTU8HDsIwEHPZpiWsFihQdtl7783/v0TSUglL0cn2nS8HSGihcCQaCcc0/BBP0Eci7gtJnUZKpEUmy1xeCUKnaXlWoUi9JIvNcjAOk4aFCqsWbEdSp6bsCupsSELHe2iyhTY7yqerBHTZQ58DleDSVWXIEcac/PVMOcOci7+cJVcyax3ssmFluYG2lfEBdtzugcOR5sn/85m6d1nywvVVDETG4GXj997uv9vbt2D88Xy9R+/X56HIF0STEdeGNTfPAAAAAElFTkSuQmCC"/>
+	</defs>
+	<style>
+		tspan { white-space:pre }
+	</style>
+	<g id="Load">
+		<g id="CLEAR">
+			<use id="Rectangle 682 copy 3" href="#img1" transform="matrix(1,0,0,1,0,0)"/>
+		</g>
+	</g>
+</svg>
