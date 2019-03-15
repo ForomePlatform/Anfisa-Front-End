@@ -3,17 +3,11 @@
         <FixedPanel v-if="isSelected" :data="annotation" />
         <FixedButton
           v-if="isSelected"
-          :onClick="collapseAllCustomTables"
-          class="fixed-button_collapse-tables"
-        >
-            <img src="../assets/collapse.png">
-        </FixedButton>
-        <FixedButton
-          v-if="isSelected"
           :onClick="openNote"
           :class="['fixed-button_form', showNotes ? 'fixed-button_form__active' : '']"
         >
-            <img src="../assets/formIcon.svg">
+            <img v-if="showNotes" src="../assets/crossIcon.svg"/>
+            <img v-else src="../assets/bookIcon.svg"/>
         </FixedButton>
         <NotesPanel v-if="showNotes" />
         <div class="variant-details_tables">
@@ -87,6 +81,13 @@
             :data="variantDetails.transcripts.data"
             secondary
             />
+            <CustomTable
+            v-if="variantDetails.VCF"
+            :title="variantDetails.VCF.title"
+            id="vcf"
+            :content="variantDetails.VCF.content"
+            secondary
+            />
         </div>
     </div>
 </template>
@@ -121,14 +122,6 @@ export default {
         },
     },
     methods: {
-        collapseAllCustomTables() {
-            const elements = document.getElementsByClassName('custom-table_header');
-            Array.from(elements).forEach((element) => {
-                if (element.getAttribute('aria-expanded') === 'true') {
-                    element.click();
-                }
-            });
-        },
         openNote() {
             this.showNotes = !this.showNotes;
         },
@@ -147,17 +140,12 @@ export default {
         }
     }
     .fixed-button {
-        &_collapse-tables {
-            top: 160px;
-            right: 0;
-            background-color: #cfebfd;
-        }
         &_form {
-            top: 220px;
+            top: 180px;
             right: 0;
-            background-color: #c2ebdd;
+            background-image: url('./../assets/fixedBtnBg.svg');
+            background-position: center -14px;
             &__active {
-                background-color: #deefde;
                 opacity: 1;
                 right: 299px;
             }

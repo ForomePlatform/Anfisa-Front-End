@@ -31,9 +31,15 @@ export default {
         data: Array,
         selectedItem: Number,
         selectItem: Function,
+        root: Boolean,
     },
     components: {
         VariantIcon,
+    },
+    mounted() {
+        if (this.root) {
+            this.$store.commit('setListMounting', false);
+        }
     },
 };
 </script>

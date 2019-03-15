@@ -7,13 +7,24 @@
             <img :src="panelCollapsedIcon" />
         </div>
         <div v-if="!panelCollapsed">
-        <img class="mb-4" alt="Foreme logo" src="../assets/foromeLogo.svg" />
+        <img class="mb-1 settings-panel_logo" alt="Foreme logo" src="../assets/foromeLogo.png" />
+        <div class="mb-2 settings-panel_title">
+            Anfisa
+        </div>
+        <div class="mb-3 settings-panel_menu">
+            <span>ver {{version.slice(7)}}</span> |
+            <span> Help</span> |
+            <span> About</span>
+        </div>
         <div class="settings-panel_block">
             <SettingsHeader global title="PROJECT" :onClick="openWorkspacesModal"/>
             <div class="settings-panel_text">{{ workspace }}</div>
         </div>
         <div class="settings-panel_block">
-            <SettingsHeader title="FILTERS"/>
+            <LayoutHeader />
+        </div>
+        <div class="settings-panel_block">
+            <SettingsHeader title="FILTERS" :onClick="openFilterModal"/>
             <div class="d-flex justify-content-between mt-3">
                 <DropdownButton :text="selectedPreset" :data="presets" :onChange="changePreset"/>
                 <div class="settings-panel_icon-button">
@@ -45,31 +56,32 @@
             <User />
         </div>
         </div>
-        <b-modal ref="workspaceModal" centered title="Select Workspace" @ok="selectWorkspace">
+        <CustomPopup ref="workspaceModal" title="SELECT WORKSPACE" :onSubmit="selectWorkspace">
             <b-form-select
               v-model="selectedWorkspace"
               :options="workspacesList"
               class="mb-3"
               :select-size="8"
             />
-        </b-modal>
-        <b-modal
-          ref="exportFileModal"
-          centered title="Export"
-          @ok="exportFile"
-          :ok-disabled="!exportFileUrl"
-        >
-            <p v-if="exportFileLoading">Wait please...</p>
-            <p v-else>Are you sure you want to download file?</p>
-        </b-modal>
+        </CustomPopup>
+        <CustomPopup ref="exportFileModal" title="EXPORT" :onSubmit="exportFile"
+          :okDisabled="!exportFileUrl">
+            <p v-if="exportFileLoading" class="mt-3 ml-3">Wait please...</p>
+            <p v-else class="mt-3 ml-3" >Are you sure you want to download file?</p>
+        </CustomPopup>
+        <FilterModal ref="filterModal"/>
     </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import DropdownButton from './DropdownButton.vue';
 import CustomButton from './CustomButton.vue';
 import User from './User.vue';
 import SettingsHeader from './SettingsHeader.vue';
+import FilterModal from './filterPanel/FilterModal.vue';
+import LayoutHeader from './LayoutHeader.vue';
+import CustomPopup from './CustomPopup.vue';
 
 const collapseIcon = require('../assets/collapseIcon.svg');
 const expandIcon = require('../assets/expandIcon.svg');
@@ -83,29 +95,12 @@ export default {
         };
     },
     computed: {
+        ...mapState(['tags', 'workspacesList', 'exportFileUrl', 'exportFileLoading', 'zones', 'presets', 'version']),
         workspace() {
             return this.$store.state.workspace;
         },
-        tags() {
-            return this.$store.state.tags;
-        },
         panelCollapsedIcon() {
             return this.panelCollapsed ? expandIcon : collapseIcon;
-        },
-        workspacesList() {
-            return this.$store.state.workspacesList;
-        },
-        exportFileUrl() {
-            return this.$store.state.exportFileUrl;
-        },
-        exportFileLoading() {
-            return this.$store.state.exportFileLoading;
-        },
-        zones() {
-            return this.$store.state.zones;
-        },
-        presets() {
-            return this.$store.state.presets;
         },
         selectedPreset() {
             return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'Presets';
@@ -120,24 +115,32 @@ export default {
             window.open(this.exportFileUrl);
         },
         selectWorkspace() {
-            this.$store.dispatch('getList', this.selectedWorkspace);
+            this.$store.commit('setWorkspace', this.selectedWorkspace);
+            this.$store.dispatch('getList');
+            this.$store.dispatch('getZoneList');
+            this.$store.dispatch('getPresets');
+            this.$store.dispatch('getRulesData');
         },
         openWorkspacesModal() {
             this.$store.dispatch('getWorkspaces');
-            this.$refs.workspaceModal.show();
+            this.$refs.workspaceModal.openModal();
         },
         openExportFileModal() {
             this.$store.dispatch('getExportFile');
-            this.$refs.exportFileModal.show();
+            this.$refs.exportFileModal.openModal();
         },
         changeZoneValue(zone, value) {
             this.$store.dispatch('getListByZone', { zone, value });
         },
         changePreset(preset) {
             this.$store.dispatch('getListByPreset', preset);
+            this.$store.dispatch('getConditionsByFilter', preset);
         },
         getZoneText(item) {
             return item.selectedValue === null ? item.defaultValue : String(item.selectedValue);
+        },
+        openFilterModal() {
+            this.$refs.filterModal.openModal();
         },
     },
     components: {
@@ -145,6 +148,9 @@ export default {
         CustomButton,
         User,
         SettingsHeader,
+        FilterModal,
+        LayoutHeader,
+        CustomPopup,
     },
 };
 </script>
@@ -163,6 +169,27 @@ export default {
             letter-spacing: 0px;
             color: #597a96;
             font-family: "Arial";
+        }
+        &_menu {
+            font-size: 11px;
+            letter-spacing: 0px;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            span {
+                cursor: pointer;
+                &:hover {
+                    text-decoration: underline;
+                    color: #2bb3ed;
+                }
+            }
+        }
+        &_title {
+            font-size: 12px;
+            letter-spacing: 0px;
+            color: #fff9e4;
+            font-weight: bold;
         }
         &_icon-button {
             height: 33px;

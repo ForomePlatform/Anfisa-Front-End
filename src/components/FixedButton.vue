@@ -15,9 +15,8 @@ export default {
 <style lang="scss" scoped>
     .fixed_button {
         position: fixed;
-        width: 80px;
-        height: 50px;
-        border: 1px solid #dadada;
+        width: 44px;
+        height: 94px;
         border-radius: 8px 0 0 8px;
         margin-top: 0;
         display: flex;

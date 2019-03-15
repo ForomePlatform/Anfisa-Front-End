@@ -61,25 +61,24 @@ export default {
         margin-left: 10px;
         padding-left: 10px;
         border-left: dotted 1px #DCDCDC;
-        line-height: 20px;
-        &_selected {
-            padding-bottom: 4px;
-        }
+        line-height: 18px;
         &_input {
             flex: 1;
             border: none;
-            font-size: 14px;
+            font-size: 12px;
             line-height: 16px;
             margin-left: 4px;
             width: 80px;
+            font-size: 12px;
+            letter-spacing: 0px;
             &:focus {
                 border: none;
                 outline: none;
             }
-            &::-webkit-input-placeholder {color:#A9A9A9; font-size: 14px;}
-            &::-moz-placeholder          {color:#A9A9A9; font-size: 14px;}
-            &:-moz-placeholder           {color:#A9A9A9; font-size: 14px;}
-            &:-ms-input-placeholder      {color:#A9A9A9; font-size: 14px;}
+            &::-webkit-input-placeholder {color: #babfc3; font-size: 12px;}
+            &::-moz-placeholder          {color: #babfc3; font-size: 12px;}
+            &:-moz-placeholder           {color: #babfc3; font-size: 12px;}
+            &:-ms-input-placeholder      {color: #babfc3; font-size: 12px;}
         }
     }
 </style>

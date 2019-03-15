@@ -5,17 +5,17 @@
         </div>
         <div>
             <img
-              v-if="!hideIcon && global"
-              class="settings-header_icon"
-              alt="open site"
-              src="../assets/earthIcon.svg"
-            />
-            <img
               v-if="!hideIcon"
-              class="settings-header_icon ml-2"
+              class="settings-header_icon"
               alt="settings icon"
               src="../assets/settingsIcon.svg"
               @click="onClick"
+            />
+            <img
+              v-if="!hideIcon && global"
+              class="settings-header_icon  ml-2"
+              alt="open site"
+              src="../assets/projectIcon.svg"
             />
         </div>
     </div>
