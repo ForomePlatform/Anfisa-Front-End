@@ -1,16 +1,16 @@
 <template>
     <div>
-        <IntEditor
-          v-if="type === statTypes.int"
+        <FloatEditor
+          v-if="type === statTypes.float || logEditorFields.includes(name)"
+          :logScale="logEditorFields.includes(name)"
           :min="data[0]"
           :max="data[1]"
           :preselectedMin="preselectedMin"
           :preselectedMax="preselectedMax"
           :onSubmit="submitHandler"
         />
-        <FloatEditor
-          v-else-if="type === statTypes.float"
-          :logScale="logEditorFields.includes(name)"
+        <IntEditor
+          v-else-if="type === statTypes.int"
           :min="data[0]"
           :max="data[1]"
           :preselectedMin="preselectedMin"
@@ -69,15 +69,9 @@ export default {
         // For enum type, this.oCurrentCondition.data = [operator, selectedItemsArray]
         preselectedData() {
             if (this.oCurrentCondition && this.oCurrentCondition.data) {
-                return this.oCurrentCondition.data[1];
+                return this.oCurrentCondition.list;
             }
             return [];
-        },
-        preselectedValue() {
-            if (this.oCurrentCondition && this.oCurrentCondition.data) {
-                return this.oCurrentCondition.data[1];
-            }
-            return null;
         },
         statTypes() {
             return {
@@ -96,13 +90,13 @@ export default {
         submitHandler(min, max) {
             const condition = [STAT_NUMERIC, this.name, [min, max], null];
             this.$store.commit('setCurrentConditions', condition);
-            this.$store.dispatch('getListByFilters');
+            this.$store.dispatch('getListByConditions');
         },
         // Apply  enum editor changes: selected list of items
         submitEnumHandler(data) {
-            const condition = [this.type, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
+            const condition = [STAT_TYPE_ENUM, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
             this.$store.commit('setCurrentConditions', condition);
-            this.$store.dispatch('getListByFilters');
+            this.$store.dispatch('getListByConditions');
         },
     },
 };
