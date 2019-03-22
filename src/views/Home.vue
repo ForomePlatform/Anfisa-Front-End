@@ -21,7 +21,7 @@ export default {
     created() {
         this.$store.dispatch('getList');
         this.$store.dispatch('getZoneList');
-        this.$store.dispatch('getPresets');
+        this.$store.dispatch('getFilters');
         this.$store.dispatch('getRulesData');
         this.$store.dispatch('getWorkspaces');
     },

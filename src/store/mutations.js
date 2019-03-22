@@ -67,6 +67,10 @@ export function changeZoneValue(state, aZone) {
     state.zones[zone].selectedValue = value;
 }
 
+export function resetZones(state) {
+    Object.keys(state.zones).forEach((zone) => { state.zones[zone].selectedValue = null; });
+}
+
 export function setPresets(state, filters) {
     state.presets = filters;
 }

@@ -61,8 +61,7 @@ export default {
         clearAll() {
             if (this.enableClearAll) {
                 this.$store.commit('removeAllCurrentConditions');
-                this.$store.dispatch('getPresets');
-                this.$store.dispatch('getListByFilters');
+                this.$store.dispatch('getListByConditions');
             }
         },
         saveFilter(filterName) {

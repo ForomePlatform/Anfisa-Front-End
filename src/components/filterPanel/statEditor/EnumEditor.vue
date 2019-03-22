@@ -48,7 +48,7 @@ export default {
     data() {
         return {
             query: '',
-            selected: this.preselectedData || [],
+            selected: this.preselectedData.slice() || [],
         };
     },
     props: ['list', 'onSubmit', 'preselectedData'],

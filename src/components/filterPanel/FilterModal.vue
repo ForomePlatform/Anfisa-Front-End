@@ -82,8 +82,9 @@ export default {
             this.advancedView = !this.advancedView;
         },
         onFilterLoad(preset, conditions) {
+            this.$store.commit('setPreset', preset);
             this.$store.commit('setAllCurrentConditions', conditions);
-            this.$store.dispatch('getListByPreset', preset);
+            this.$store.dispatch('getListByFilter');
             this.loadView = false;
         },
         removeFilter(filterName) {
