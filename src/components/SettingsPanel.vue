@@ -118,7 +118,7 @@ export default {
             this.$store.commit('setWorkspace', this.selectedWorkspace);
             this.$store.dispatch('getList');
             this.$store.dispatch('getZoneList');
-            this.$store.dispatch('getPresets');
+            this.$store.dispatch('getFilters');
             this.$store.dispatch('getRulesData');
         },
         openWorkspacesModal() {
@@ -130,16 +130,20 @@ export default {
             this.$refs.exportFileModal.openModal();
         },
         changeZoneValue(zone, value) {
-            this.$store.dispatch('getListByZone', { zone, value });
+            this.$store.commit('changeZoneValue', [zone, value]);
+            this.$store.dispatch('getListByConditions');
         },
         changePreset(preset) {
-            this.$store.dispatch('getListByPreset', preset);
+            this.$store.commit('setPreset', preset);
+            this.$store.commit('resetZones');
+            this.$store.dispatch('getListByFilter');
             this.$store.dispatch('getConditionsByFilter', preset);
         },
         getZoneText(item) {
             return item.selectedValue === null ? item.defaultValue : String(item.selectedValue);
         },
         openFilterModal() {
+            this.$store.commit('resetZones');
             this.$refs.filterModal.openModal();
         },
     },

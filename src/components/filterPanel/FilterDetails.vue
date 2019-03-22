@@ -56,15 +56,15 @@ export default {
     methods: {
         removeHandler(name) {
             this.$store.commit('removeCurrentCondition', name);
-            this.$store.dispatch('getListByFilters');
+            this.$store.dispatch('getListByConditions');
         },
         changeOperatorHandler(name, operator) {
             this.$store.commit('changeConditionOperator', { name, operator });
-            this.$store.dispatch('getListByFilters');
+            this.$store.dispatch('getListByConditions');
         },
         removeEnumItem(name, itemIndex) {
             this.$store.commit('removeConditionItem', { name, itemIndex });
-            this.$store.dispatch('getListByFilters');
+            this.$store.dispatch('getListByConditions');
         },
     },
 };

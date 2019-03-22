@@ -74,10 +74,11 @@ export default new Vuex.Store({
         oCurrentConditions: (state) => {
             const result = {};
             state.currentConditions.forEach((condition) => {
-                const [type, name, data] = condition;
+                const [type, name, data, list] = condition;
                 result[name] = {
                     type,
                     data,
+                    list,
                 };
             });
             return result;
