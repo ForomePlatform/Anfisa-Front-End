@@ -3,7 +3,7 @@
         <div class="int-editor_center">
             <b-form-input
               class="int-editor_center_input"
-              v-model.number="center"
+              :value="center"
               type="number"
               placeholder="Center coordinate"
               @change="centerHandler"
@@ -26,7 +26,7 @@
             <b-form-input
               class="int-editor_center_input"
               type="number"
-              v-model.number="radius"
+              :value="radius"
               step="1"
               @change="radiusHandler"
               placeholder="Coordinates range from center"
@@ -35,7 +35,7 @@
         <div class="int-editor_inputs">
             <b-form-input
               type="number"
-              v-model.number="selectedMin"
+              :value="selectedMin"
               step="1"
               :min="min"
               :max="selectedMax"
@@ -46,7 +46,7 @@
             &mdash;
             <b-form-input
               type="number"
-              v-model.number="selectedMax"
+              :value="selectedMax"
               step="1"
               :min="selectedMin"
               :max="max"
@@ -95,25 +95,32 @@ export default {
         },
         radiusHandler(value) {
             const newRadiusValue = Number(value);
+            if (this.center === null) {
+                this.center = this.min;
+            }
             this.radius = newRadiusValue;
             this.sliderRadius = null;
             this.selectedMin = Math.max(this.center - newRadiusValue, this.min);
             this.selectedMax = Math.min(this.center + newRadiusValue, this.max);
         },
         sliderRadiusHandler(selectedKey) {
+            if (this.center === null) {
+                this.center = this.min;
+            }
             this.sliderRadius = selectedKey;
             this.radius = marksData[selectedKey];
             this.selectedMin = Math.max(this.center - marksData[selectedKey], this.min);
             this.selectedMax = Math.min(this.center + marksData[selectedKey], this.max);
         },
-        centerHandler(value) {
+        centerHandler(data) {
+            const value = Number(data);
             let newCenterValue;
-            if (!value || +value < this.min) {
+            if (!value || value < this.min) {
                 newCenterValue = this.min;
-            } else if (+value > this.max) {
+            } else if (value > this.max) {
                 newCenterValue = this.max;
             } else {
-                newCenterValue = +value;
+                newCenterValue = value;
             }
             this.center = newCenterValue;
             this.sliderRadius = null;
@@ -121,7 +128,8 @@ export default {
             this.selectedMin = newCenterValue;
             this.selectedMax = newCenterValue;
         },
-        minHandler(value) {
+        minHandler(data) {
+            const value = Number(data);
             if (value < this.min) {
                 this.selectedMin = this.min;
             } else if (value > this.selectedMax) {
@@ -133,7 +141,8 @@ export default {
             this.radius = null;
             this.sliderRadius = null;
         },
-        maxHandler(value) {
+        maxHandler(data) {
+            const value = Number(data);
             if (value > this.max) {
                 this.selectedMin = this.max;
             } else if (value < this.selectedMin) {
@@ -152,16 +161,16 @@ export default {
     // Update data if min and max values were changed in the store
     // (e.g on change filter or on remove data via StatView)
     watch: {
-        preselectedMin(newVal, oldVal) {
-            if (newVal !== oldVal) {
+        preselectedMin(newVal) {
+            if (newVal !== this.selectedMin) {
                 this.selectedMin = newVal;
                 this.center = null;
                 this.sliderRadius = null;
                 this.radius = null;
             }
         },
-        preselectedMax(newVal, oldVal) {
-            if (newVal !== oldVal) {
+        preselectedMax(newVal) {
+            if (newVal !== this.selectedMax) {
                 this.selectedMax = newVal;
                 this.center = null;
                 this.sliderRadius = null;
