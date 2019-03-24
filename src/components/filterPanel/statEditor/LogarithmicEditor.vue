@@ -4,7 +4,7 @@
             <b-form-input
               type="number"
               v-model.number="selectedMin"
-              :step="logScale ? 0.0001 : 0.01"
+              :step="0.0001"
               :min="min"
               :max="selectedMax"
               class="mr-2"
@@ -13,7 +13,7 @@
             <b-form-input
               type="number"
               v-model.number="selectedMax"
-              :step="logScale ? 0.0001 : 0.01"
+              :step="0.0001"
               :min="selectedMin"
               :max="max"
               class="ml-2"
@@ -22,11 +22,11 @@
         <vue-slider
           :value="sliderValues"
           :enable-cross="false"
-          :marks="logScale ? true : marks"
-          :data="logScale ? marks : null"
+          :marks="true"
+          :data="marks"
           :min="min"
           :max="max"
-          :interval="logScale ? 0.0001 : 0.01"
+          :interval="0.0001"
           @change="changeValues"
           tooltip="none"
           :class="[defaultSlider ? 'float-editor_slider__default' : '', 'float-editor_slider']"
@@ -42,12 +42,17 @@ import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/antd.css';
 import { LOG_EDITOR_MARKS } from '../../../common/constants';
 
+const MIN = 0;
+const MAX = 1;
+
 export default {
-    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax', 'logScale'],
+    props: ['onSubmit', 'preselectedMin', 'preselectedMax'],
     data() {
         return {
-            selectedMin: this.preselectedMin || this.min,
-            selectedMax: this.preselectedMax || this.max,
+            min: MIN,
+            max: MAX,
+            selectedMin: this.preselectedMin || MIN,
+            selectedMax: this.preselectedMax || MAX,
         };
     },
     methods: {
@@ -61,16 +66,14 @@ export default {
     },
     computed: {
         marks() {
-            return this.logScale ? LOG_EDITOR_MARKS
-                : Array(5).fill('').map((item, index) => (this.max * (index)) / 4);
+            return LOG_EDITOR_MARKS;
         },
         sliderValues() {
-            if (this.logScale && !(LOG_EDITOR_MARKS.includes(+this.selectedMin)
-                && (LOG_EDITOR_MARKS.includes(+this.selectedMax)))
-            ) {
-                return [this.min, this.max];
+            if (LOG_EDITOR_MARKS.includes(this.selectedMin)
+              && LOG_EDITOR_MARKS.includes(this.selectedMax)) {
+                return [this.selectedMin, this.selectedMax];
             }
-            return [this.selectedMin, this.selectedMax];
+            return [this.min, this.max];
         },
         defaultSlider() {
             return this.min === this.sliderValues[0] && this.max === this.sliderValues[1];

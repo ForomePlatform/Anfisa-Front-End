@@ -1,20 +1,27 @@
 <template>
     <div>
-        <FloatEditor
-          v-if="type === statTypes.float || logEditorFields.includes(name)"
-          :logScale="logEditorFields.includes(name)"
+        <LinearEditor
+          v-if="render === statTypes.linear || name === 'Dist_from_Exon'"
+          :simple="name === 'Dist_from_Exon'"
           :min="data[0]"
           :max="data[1]"
-          :preselectedMin="preselectedMin"
-          :preselectedMax="preselectedMax"
+          :preselectedMin="preselectedLinearMin"
+          :preselectedMax="preselectedLinearMax"
+          :onSubmit="submitHandler"
+          :active="Boolean(oCurrentCondition)"
+        />
+        <LogarithmicEditor
+          v-else-if="render === statTypes.logarithmic"
+          :preselectedMin="preselectedLogMin"
+          :preselectedMax="preselectedLogMax"
           :onSubmit="submitHandler"
         />
-        <IntEditor
-          v-else-if="type === statTypes.int"
+        <CoordinateEditor
+          v-else-if="render === statTypes.coordinate"
           :min="data[0]"
           :max="data[1]"
-          :preselectedMin="preselectedMin"
-          :preselectedMax="preselectedMax"
+          :preselectedMin="preselectedCoordMin"
+          :preselectedMax="preselectedCoordMax"
           :onSubmit="submitHandler"
         />
         <EnumEditor
@@ -27,44 +34,53 @@
 </template>
 
 <script>
-import IntEditor from './IntEditor.vue';
-import FloatEditor from './FloatEditor.vue';
+import CoordinateEditor from './CoordinateEditor.vue';
+import LogarithmicEditor from './LogarithmicEditor.vue';
+import LinearEditor from './LinearEditor.vue';
 import EnumEditor from './EnumEditor.vue';
 import {
-    STAT_TYPE_INT,
-    STAT_TYPE_FLOAT,
     STAT_TYPE_ENUM,
     STAT_TYPE_STATUS,
     ENUM_DEFAULT_OPERATOR,
     STAT_NUMERIC,
-    LOG_EDITOR_FIELDS,
+    NUMERIC_RENDER_TYPES,
 } from '../../../common/constants';
 
 export default {
-    props: ['type', 'data', 'name'],
+    props: ['type', 'data', 'name', 'render'],
     components: {
-        IntEditor,
-        FloatEditor,
+        CoordinateEditor,
+        LogarithmicEditor,
         EnumEditor,
+        LinearEditor,
     },
     computed: {
         // return data for current condition, {data: ..., type: ...}
         oCurrentCondition() {
             return this.$store.getters.oCurrentConditions[this.name];
         },
-        // for flaot type,  this.oCurrentCondition.data = [min, max, ...]
-        preselectedMin() {
-            if (this.oCurrentCondition && this.oCurrentCondition.data) {
-                return this.oCurrentCondition.data[0];
-            }
-            return this.data[0];
+        // for numeric type,  this.oCurrentCondition.data = [min, max, ...]
+        preselectedLinearMin() {
+            const condition = this.conditionByIndex(0);
+            const [min, max] = this.data;
+            return condition ? Math.max(Math.min(condition, max), min) : min;
         },
-        // for flaot type,  this.oCurrentCondition.data = [min, max, ...]
-        preselectedMax() {
-            if (this.oCurrentCondition && this.oCurrentCondition.data) {
-                return this.oCurrentCondition.data[1];
-            }
-            return this.data[1];
+        preselectedLinearMax() {
+            const condition = this.conditionByIndex(1);
+            const [min, max] = this.data;
+            return condition ? Math.min(Math.max(condition, min), max) : max;
+        },
+        preselectedLogMin() {
+            return this.conditionByIndex(0) || 0;
+        },
+        preselectedLogMax() {
+            return this.conditionByIndex(1) || 1;
+        },
+        preselectedCoordMin() {
+            return this.conditionByIndex(0) || this.data[0];
+        },
+        preselectedCoordMax() {
+            return this.conditionByIndex(1) || this.data[1];
         },
         // For enum type, this.oCurrentCondition.data = [operator, selectedItemsArray]
         preselectedData() {
@@ -75,17 +91,19 @@ export default {
         },
         statTypes() {
             return {
-                int: STAT_TYPE_INT,
-                float: STAT_TYPE_FLOAT,
                 enum: STAT_TYPE_ENUM,
                 status: STAT_TYPE_STATUS,
+                linear: NUMERIC_RENDER_TYPES.LINEAR,
+                coordinate: NUMERIC_RENDER_TYPES.COORDINATE,
+                logarithmic: NUMERIC_RENDER_TYPES.LOGARITHMIC,
             };
-        },
-        logEditorFields() {
-            return LOG_EDITOR_FIELDS;
         },
     },
     methods: {
+        conditionByIndex(index) {
+            return this.oCurrentCondition && this.oCurrentCondition.data
+                && this.oCurrentCondition.data[index];
+        },
         // Apply float editor changes: min and max values
         submitHandler(min, max) {
             const condition = [STAT_NUMERIC, this.name, [min, max], null];

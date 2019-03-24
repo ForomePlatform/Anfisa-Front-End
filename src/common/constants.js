@@ -36,15 +36,12 @@ export const STAT_TYPE_STATUS = 'status';
 export const STAT_GROUP = 'group';
 export const STAT_NUMERIC = 'numeric';
 
-export const STAT_TYPES = [STAT_TYPE_INT, STAT_TYPE_FLOAT, STAT_TYPE_ENUM, STAT_TYPE_STATUS];
+export const NUMERIC_RENDER_TYPES = {
+    COORDINATE: 'neighborhood',
+    LOGARITHMIC: 'log',
+    LINEAR: 'linear',
+};
 
-export const LOG_EDITOR_FIELDS = [
-    'gnomAD_AF',
-    'gnomAD_AF_Exomes',
-    'gnomAD_AF_Genomes',
-    'gnomAD_AF_Proband',
-    'gnomAD_PopMax_AF',
-    'gnomAD_PopMax_AN',
-];
+export const STAT_TYPES = [STAT_TYPE_INT, STAT_TYPE_FLOAT, STAT_TYPE_ENUM, STAT_TYPE_STATUS];
 
 export const LOG_EDITOR_MARKS = [0, 0.0001, 0.001, 0.01, 0.05, 0.5, 1];

@@ -19,7 +19,12 @@
                       :name="subStat.title || subStat.name"
                       :filled="Boolean(oCurrentConditions[subStat.name])"
                     >
-                        <StatEditor :type="subStat.type" :data="subStat.data" :name="subStat.name"/>
+                        <StatEditor
+                          :type="subStat.type"
+                          :data="subStat.data"
+                          :name="subStat.name"
+                          :render="subStat.render"
+                        />
                     </CollapseHeader>
                 </div>
                 <StatEditor v-else :type="stat.type" :data="stat.data" :name="stat.name"/>
