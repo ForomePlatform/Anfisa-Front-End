@@ -1,6 +1,8 @@
 import {
     STAT_TYPE_ENUM,
     STAT_TYPE_STATUS,
+    STAT_TYPE_INT,
+    STAT_TYPE_FLOAT,
     STAT_TYPES,
     STAT_GROUP,
 } from './constants';
@@ -8,6 +10,8 @@ import {
 export const prepareStatDataByType = statItem => ({
     name: statItem[1].name,
     title: statItem[1].title,
+    render: statItem[0] === STAT_TYPE_INT || statItem[0] === STAT_TYPE_FLOAT ?
+        statItem[1].render.split(',')[0] : null,
     type: statItem[0],
     data: statItem[0] === STAT_TYPE_ENUM || statItem[0] === STAT_TYPE_STATUS
         ? statItem[2] : statItem.splice(2),
