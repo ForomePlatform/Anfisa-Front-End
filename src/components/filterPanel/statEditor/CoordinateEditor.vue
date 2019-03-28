@@ -212,6 +212,7 @@ export default {
             padding: 10px;
             padding-top: 13px;
             input {
+                width: 112px;
                 height: 33px;
                 color: #0a1c34;
                 border-radius: 3px;

@@ -17,19 +17,24 @@
             <span> About</span>
         </div>
         <div class="settings-panel_block">
-            <SettingsHeader global title="PROJECT" :onClick="openWorkspacesModal"/>
+            <p class="settings-panel_demo-status">
+                {{demoText}}
+            </p>
+        </div>
+        <div class="settings-panel_block">
+            <SettingsHeader title="PROJECT" :onClick="openWorkspacesModal" type="project"/>
             <div class="settings-panel_text">{{ workspace }}</div>
         </div>
         <div class="settings-panel_block">
             <LayoutHeader />
         </div>
         <div class="settings-panel_block">
-            <SettingsHeader title="FILTERS" :onClick="openFilterModal"/>
+            <SettingsHeader title="FILTERS" :onClick="openFilterModal" type="filter"/>
             <div class="d-flex justify-content-between mt-3">
                 <DropdownButton :text="selectedPreset" :data="presets" :onChange="changePreset"/>
-                <div class="settings-panel_icon-button">
+                <!-- <div class="settings-panel_icon-button">
                     <img alt="presets icon" src="../assets/presetsIcon.svg" />
-                </div>
+                </div> -->
             </div>
             <div
               v-for="zone in Object.keys(zones)"
@@ -41,18 +46,18 @@
                   :data="zones[zone].values"
                   :onChange="value =>changeZoneValue(zone, value)"
                 />
-                <div class="settings-panel_icon-button">
+                <!-- <div class="settings-panel_icon-button">
                     <img alt="presets icon" src="../assets/tagsIcon.svg" />
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="settings-panel_block">
-            <SettingsHeader title="REPORT"/>
-            <CustomButton title="PUBLISH" />
+            <SettingsHeader title="REPORT" />
+            <!-- <CustomButton title="PUBLISH" /> -->
             <CustomButton class="mt-3" title="EXPORT" :onClick="openExportFileModal"/>
         </div>
         <div class="settings-panel_block">
-            <SettingsHeader title="USER" hideIcon />
+            <SettingsHeader title="USER" />
             <User />
         </div>
         </div>
@@ -82,6 +87,7 @@ import SettingsHeader from './SettingsHeader.vue';
 import FilterModal from './filterPanel/FilterModal.vue';
 import LayoutHeader from './LayoutHeader.vue';
 import CustomPopup from './CustomPopup.vue';
+import { DEMO_NOTIFICATION } from '../common/constants';
 
 const collapseIcon = require('../assets/collapseIcon.svg');
 const expandIcon = require('../assets/expandIcon.svg');
@@ -104,6 +110,9 @@ export default {
         },
         selectedPreset() {
             return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'Presets';
+        },
+        demoText() {
+            return DEMO_NOTIFICATION;
         },
     },
     methods: {
@@ -168,6 +177,11 @@ export default {
         padding: 18px;
         box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
         background-color: #091b34;
+        &_demo-status {
+            font-size: 12px;
+            color: #b01f28;
+            margin-bottom: 0;
+        }
         &_text {
             font-size: 14px;
             letter-spacing: 0px;
@@ -196,6 +210,8 @@ export default {
             font-weight: bold;
         }
         &_icon-button {
+            flex: 1 0 auto;
+            margin-left: 6px;
             height: 33px;
             width: 33px;
             border-radius: 3px;

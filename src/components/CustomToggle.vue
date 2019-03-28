@@ -1,10 +1,10 @@
 <template>
     <div @click="toggle" class="custom-toggle mr-3">
         <div v-bind:class="{'custom-toggle_item': true, 'custom-toggle_item__active': isActive}">
-            GROUPS
+            GENE
         </div>
         <div v-bind:class="{'custom-toggle_item': true, 'custom-toggle_item__active': !isActive}">
-            LIST
+            VARIANT
         </div>
         <div ref="toggle" v-bind:class="[isActive ? 'custom-toggle_slider__active'
             : 'custom-toggle_slider__inactive', 'custom-toggle_slider']"
@@ -49,11 +49,11 @@ export default {
             height: 20px;
             &__active {
                 left: 0;
-                width: 71px;
+                width: 58px;
             }
             &__inactive {
-                left: 76px;
-                width: 52px;
+                left: 54px;
+                width: 74px;
             }
         }
         &_item {
