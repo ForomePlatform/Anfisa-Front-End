@@ -6,7 +6,10 @@
           :title="title"
           @ok="onSubmit"
           :ok-disabled="okDisabled"
-          cancel-title="CANCEL"
+          :cancel-title="cancelTitle || 'CANCEL'"
+          :ok-title="okTitle || 'OK'"
+          @hide="hideHandler"
+          :no-close-on-backdrop="noBgClose || false"
         >
             <slot />
         </b-modal>
@@ -14,10 +17,15 @@
 
 <script>
 export default {
-    props: ['refName', 'title', 'onSubmit', 'okDisabled'],
+    props: ['refName', 'title', 'onSubmit', 'okDisabled', 'onHide', 'cancelTitle', 'ok-title', 'noBgClose'],
     methods: {
         openModal() {
             this.$refs.customPopup.show();
+        },
+        hideHandler(e) {
+            if (this.onHide && e.trigger !== 'ok') {
+                this.onHide(e);
+            }
         },
     },
 };

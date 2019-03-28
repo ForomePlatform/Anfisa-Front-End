@@ -152,6 +152,7 @@ export default {
         }
         .float-view {
             margin: 0;
+            flex-wrap: wrap;
         }
     }
 </style>

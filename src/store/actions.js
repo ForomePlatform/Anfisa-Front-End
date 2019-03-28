@@ -303,6 +303,8 @@ export function removeFilter(context, filterName) {
         const statList = response.data['stat-list'];
         context.commit('setStats', utils.prepareStatList(statList));
         context.commit('removeAllCurrentConditions');
+        context.dispatch('getFilterDetails');
+        context.dispatch('getListByFilter');
     }).catch((error) => {
         console.log(error);
     });
@@ -315,8 +317,13 @@ export function updateFilter(context, filterName) {
     if (context.state.currentConditions.length) {
         params.append('conditions', JSON.stringify(context.state.currentConditions));
     }
-    commonHttp.post('/stat', params).then(() => {
-
+    commonHttp.post('/stat', params).then((response) => {
+        const filterList = response.data['filter-list'];
+        if (filterList && Array.isArray(filterList)) {
+            const data = filterList.map(item => item[0]);
+            context.commit('setPresets', [null, ...data]);
+        }
+        context.dispatch('getFilterDetails');
     }).catch((error) => {
         console.log(error);
     });

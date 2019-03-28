@@ -5,17 +5,24 @@
         </div>
         <div>
             <img
-              v-if="!hideIcon"
+              v-if="type === 'project'"
               class="settings-header_icon"
               alt="settings icon"
-              src="../assets/settingsIcon.svg"
+              src="../assets/selectProjectIcon.svg"
               @click="onClick"
             />
             <img
-              v-if="!hideIcon && global"
+              v-if="type === 'project'"
               class="settings-header_icon  ml-2"
               alt="open site"
               src="../assets/projectIcon.svg"
+            />
+            <img
+              v-if="type === 'filter'"
+              class="settings-header_icon  ml-2"
+              alt="open site"
+              src="../assets/filterIcon.svg"
+              @click="onClick"
             />
         </div>
     </div>
@@ -26,8 +33,7 @@ export default {
     name: 'SettingsHeader',
     props: {
         title: String,
-        hideIcon: Boolean,
-        global: Boolean,
+        type: String,
         onClick: {
             type: Function,
             default: () => {},
