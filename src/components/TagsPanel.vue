@@ -21,11 +21,15 @@
           type="secondary"
           :onClick="toggleTag"
         />
+        <p v-if="notFoundTag" class="tags-panel_not-found">
+            {{notFoundTagText}}
+        </p>
     </div>
 </template>
 
 <script>
 import TagButton from './TagButton.vue';
+import { NOT_FOUND_TAG } from '../common/constants';
 
 export default {
     data() {
@@ -36,13 +40,19 @@ export default {
     computed: {
         filteredList() {
             return this.allTags.filter(tag => this.selectedTags.indexOf(tag) === -1
-              && tag.indexOf(this.filterValue) >= 0);
+              && tag.toLowerCase().indexOf(this.filterValue.toLowerCase()) >= 0);
         },
         allTags() {
             return this.$store.state.allTags;
         },
         selectedTags() {
             return this.$store.state.selectedTags;
+        },
+        notFoundTag() {
+            return this.filterValue && !this.filteredList.length;
+        },
+        notFoundTagText() {
+            return NOT_FOUND_TAG;
         },
     },
     components: {
@@ -79,6 +89,10 @@ export default {
             &::-moz-placeholder          {color: #babfc3; font-size: 12px;}
             &:-moz-placeholder           {color: #babfc3; font-size: 12px;}
             &:-ms-input-placeholder      {color: #babfc3; font-size: 12px;}
+        }
+        &_not-found {
+            color: #babfc3;
+            font-size: 12px;
         }
     }
 </style>

@@ -5,6 +5,7 @@ import {
     STAT_TYPE_FLOAT,
     STAT_TYPES,
     STAT_GROUP,
+    EXPIRED_TIME,
 } from './constants';
 
 export const prepareStatDataByType = statItem => ({
@@ -93,4 +94,10 @@ export function prepareVariantDetails(data) {
         }
     });
     return result;
+}
+
+export function expired(date) {
+    const currentDate = new Date();
+    const diffSeconds = (currentDate - date) / 1000;
+    return diffSeconds > EXPIRED_TIME;
 }

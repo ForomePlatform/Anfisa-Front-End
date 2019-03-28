@@ -29,6 +29,8 @@ export default{
 
 <style scoped lang="scss">
     .dropdown {
+        flex: 0 1 auto;
+        width: 100%;
         min-width: 133px;
         .dropdown-item {
             font-size: 14px;
@@ -41,7 +43,7 @@ export default{
         overflow-y: auto;
     }
     /deep/ .dropdown-toggle  {
-        width: 133px;
+        width: 100%;
         height: 33px;
         border-radius: 3px;
         background-color: #15263e;

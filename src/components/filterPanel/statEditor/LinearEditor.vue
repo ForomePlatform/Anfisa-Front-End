@@ -4,7 +4,7 @@
             <b-form-input
               type="number"
               v-model.number="selectedMin"
-              :step="0.01"
+              :step="1"
               :min="min"
               :max="selectedMax"
               class="mr-2"
@@ -13,7 +13,7 @@
             <b-form-input
               type="number"
               v-model.number="selectedMax"
-              :step="0.01"
+              :step="1"
               :min="selectedMin"
               :max="max"
               class="ml-2"
@@ -26,7 +26,7 @@
           :marks="marks"
           :min="min"
           :max="max"
-          :interval="0.01"
+          :interval="1"
           @change="changeValues"
           tooltip="none"
           :class="[active || activeSlider ? '': 'float-editor_slider__default',
