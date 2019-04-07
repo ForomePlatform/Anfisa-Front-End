@@ -62,12 +62,14 @@
         </div>
         </div>
         <CustomPopup ref="workspaceModal" title="SELECT WORKSPACE" :onSubmit="selectWorkspace">
-            <b-form-select
-              v-model="selectedWorkspace"
-              :options="workspacesList"
-              class="mb-3"
-              :select-size="8"
-            />
+            <div v-on:dblclick="selectWorkspaceByDblClick">
+                <b-form-select
+                  v-model="selectedWorkspace"
+                  :options="workspacesList"
+                  class="mb-3"
+                  :select-size="8"
+                />
+            </div>
         </CustomPopup>
         <CustomPopup ref="exportFileModal" title="EXPORT" :onSubmit="exportFile"
           :okDisabled="!exportFileUrl">
@@ -154,6 +156,12 @@ export default {
         openFilterModal() {
             this.$store.commit('resetZones');
             this.$refs.filterModal.openModal();
+        },
+        selectWorkspaceByDblClick(e) {
+            if (e.target.nodeName === 'OPTION' && e.target.value) {
+                this.selectWorkspace();
+                this.$refs.workspaceModal.closeModal();
+            }
         },
     },
     components: {

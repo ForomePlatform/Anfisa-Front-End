@@ -22,6 +22,9 @@ export default {
         openModal() {
             this.$refs.customPopup.show();
         },
+        closeModal() {
+            this.$refs.customPopup.hide();
+        },
         hideHandler(e) {
             if (this.onHide && e.trigger !== 'ok') {
                 this.onHide(e);
