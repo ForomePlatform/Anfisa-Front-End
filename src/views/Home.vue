@@ -48,6 +48,10 @@ export default {
         },
     },
     created() {
+        const { ws } = this.$route.query;
+        if (ws) {
+            this.$store.commit('setWorkspace', ws);
+        }
         this.$store.dispatch('getList');
         this.$store.dispatch('getZoneList');
         this.$store.dispatch('getFilters');
