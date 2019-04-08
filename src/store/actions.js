@@ -18,6 +18,7 @@ export function getList(context) {
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.commit('clearSelectedVariant');
         })
         .catch((error) => {
             console.log(error);
@@ -36,6 +37,7 @@ export function getListByFilter(context) {
         context.commit('setRecords', data.records);
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
+        context.commit('clearSelectedVariant');
     }).catch((error) => {
         console.log(error);
     });
@@ -53,6 +55,7 @@ export function getListByConditions(context) {
         context.commit('setRecords', data.records);
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
+        context.commit('clearSelectedVariant');
     }).catch((error) => {
         console.log(error);
     });
@@ -68,6 +71,7 @@ export function getListByTag(context, tag) {
             context.commit('setRecords', data.records);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.commit('clearSelectedVariant');
         })
         .catch((error) => {
             console.log(error);

@@ -30,6 +30,11 @@ export function setSelectedVariant(state, selectedVariant) {
     state.selectedVariant = selectedVariant;
 }
 
+export function clearSelectedVariant(state) {
+    state.selectedVariant = null;
+    state.variantDetails = {};
+}
+
 export function setSelectedTags(state, tags) {
     state.selectedTags = tags;
 }
