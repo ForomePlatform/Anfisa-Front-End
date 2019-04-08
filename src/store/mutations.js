@@ -142,3 +142,11 @@ export function setVersion(state, version) {
 export function setListMounting(state, value) {
     state.listMounting = value;
 }
+
+export function setTagFilterValue(state, value) {
+    state.tagFilterValue = value;
+}
+
+export function clearTagFilterValue(state) {
+    state.tagFilterValue = '';
+}

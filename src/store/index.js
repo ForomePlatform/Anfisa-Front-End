@@ -32,6 +32,7 @@ export default new Vuex.Store({
         filterDetails: [],
         version: '',
         listMounting: false,
+        tagFilterValue: '',
     },
     actions,
     mutations,

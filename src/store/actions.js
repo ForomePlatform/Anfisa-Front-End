@@ -128,6 +128,35 @@ export function saveNote(context) {
         });
 }
 
+export function addNewTag(context, newTagTitle) {
+    const NOTE_TAG = '_note';
+    const tagsObject = {
+        [newTagTitle.trim()]: true,
+        _note: context.state.note,
+    };
+    context.state.selectedTags.forEach((item) => {
+        tagsObject[item] = true;
+    });
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('rec', context.state.selectedVariant);
+    params.append('tags', JSON.stringify(tagsObject));
+    commonHttp.post('/tags', params)
+        .then((response) => {
+            const { data } = response;
+            const selectedTags = Object.keys(data['rec-tags'])
+                .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
+            context.commit('setAllTags', data['check-tags']);
+            context.commit('setSelectedTags', selectedTags);
+            context.commit('clearTagFilterValue');
+        })
+        .catch((error) => {
+            context.commit('setAllTags', []);
+            context.commit('setSelectedTags', []);
+            console.log(error);
+        });
+}
+
 export function toggleVariantTag(context, tag) {
     const NOTE_TAG = '_note';
     const tagsObject = {};

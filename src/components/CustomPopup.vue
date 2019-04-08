@@ -1,5 +1,6 @@
 <template>
         <b-modal
+          :id="id ? id : ''"
           ref="customPopup"
           class="custom-popup"
           centered
@@ -17,7 +18,7 @@
 
 <script>
 export default {
-    props: ['refName', 'title', 'onSubmit', 'okDisabled', 'onHide', 'cancelTitle', 'ok-title', 'noBgClose'],
+    props: ['id', 'title', 'onSubmit', 'okDisabled', 'onHide', 'cancelTitle', 'ok-title', 'noBgClose'],
     methods: {
         openModal() {
             this.$refs.customPopup.show();

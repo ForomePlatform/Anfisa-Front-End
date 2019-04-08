@@ -11,6 +11,7 @@
           {{ disclaymer.text }}
         </p>
     </CustomPopup>
+    <NewTagPopup/>
   </div>
 </template>
 
@@ -19,6 +20,7 @@ import SettingsPanel from '@/components/SettingsPanel.vue';
 import VariantsPanel from '@/components/VariantsPanel.vue';
 import VariantDetails from '@/components/VariantDetails.vue';
 import CustomPopup from '@/components/CustomPopup.vue';
+import NewTagPopup from '@/components/NewTagPopup.vue';
 import { DISCLAIMER } from '@/common/constants';
 import { expired } from '@/common/utils';
 
@@ -29,6 +31,7 @@ export default {
         VariantsPanel,
         VariantDetails,
         CustomPopup,
+        NewTagPopup,
     },
     methods: {
         openDisclaymerModal() {

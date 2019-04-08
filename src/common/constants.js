@@ -48,7 +48,7 @@ export const LOG_EDITOR_MARKS = [0, 0.0001, 0.001, 0.01, 0.05, 0.5, 1];
 
 export const DEMO_NOTIFICATION = 'Demo Instance. Use at your own risk. Instance resets every night at 00:00 EDT';
 
-export const NOT_FOUND_TAG = 'Tag not found';
+export const NOT_FOUND_TAG = 'Tag not found, to create a new tag continue typing new tag name and press Enter';
 
 export const DISCLAIMER = {
     title: 'DISCLAIMER',

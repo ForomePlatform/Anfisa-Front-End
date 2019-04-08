@@ -9,9 +9,11 @@
               :onClick="toggleTag"
             />
             <input
-                class="tags-panel_input"
-                v-model="filterValue"
-                placeholder="Search"
+              class="tags-panel_input"
+              :value="tagFilterValue"
+              @input="setTagFilterValue"
+              placeholder="Search"
+              @keyup.enter="openNewTagPopup"
             />
         </div>
         <TagButton
@@ -29,18 +31,17 @@
 
 <script>
 import TagButton from './TagButton.vue';
+import CustomPopup from './CustomPopup.vue';
 import { NOT_FOUND_TAG } from '../common/constants';
 
 export default {
-    data() {
-        return {
-            filterValue: '',
-        };
-    },
     computed: {
+        tagFilterValue() {
+            return this.$store.state.tagFilterValue;
+        },
         filteredList() {
             return this.allTags.filter(tag => this.selectedTags.indexOf(tag) === -1
-              && tag.toLowerCase().indexOf(this.filterValue.toLowerCase()) >= 0);
+              && tag.toLowerCase().indexOf(this.tagFilterValue.trim().toLowerCase()) >= 0);
         },
         allTags() {
             return this.$store.state.allTags;
@@ -49,7 +50,8 @@ export default {
             return this.$store.state.selectedTags;
         },
         notFoundTag() {
-            return this.filterValue && !this.filteredList.length;
+            const value = this.tagFilterValue.trim();
+            return value && !this.filteredList.length && !this.selectedTags.includes(value);
         },
         notFoundTagText() {
             return NOT_FOUND_TAG;
@@ -57,10 +59,21 @@ export default {
     },
     components: {
         TagButton,
+        CustomPopup,
     },
     methods: {
         toggleTag(tag) {
             this.$store.dispatch('toggleVariantTag', tag);
+        },
+        // open 'newTagModal' modal in Home.vue
+        openNewTagPopup() {
+            const value = this.tagFilterValue.trim();
+            if (value && !this.filteredList.length && !this.selectedTags.includes(value)) {
+                this.$root.$emit('bv::show::modal', 'newTagModal', '.tags-panel_input');
+            }
+        },
+        setTagFilterValue(e) {
+            this.$store.commit('setTagFilterValue', e.target.value);
         },
     },
 };
