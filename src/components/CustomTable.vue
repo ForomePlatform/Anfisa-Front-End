@@ -2,14 +2,16 @@
     <div class="custom-table">
         <div
           v-b-toggle="'table_'+id"
-          :class="['custom-table_header', secondary ? 'custom-table_header-secondary' : '']"
+          :class="['custom-table_header', 'js-table_header',
+            secondary ? 'custom-table_header-secondary' : '']"
         >
             {{title.toUpperCase()}}
             <div v-if="data.length > 0" class="custom-table_header_icon"></div>
         </div>
-        <b-collapse v-if="data.length > 0" visible :id="'table_'+id" class="custom-table_collapse">
+        <b-collapse :id="'table_'+id" class="custom-table_collapse">
             <div class="custom-table_table-wrapper">
                 <CustomHScroll :id="id">
+                    <div v-if="content" v-html="content" class="custom-table_html"/>
                     <table class="custom-table_table">
                         <tr v-for="(row, index) in data" v-bind:key="index">
                             <td v-for="(cell, index) in row" v-html="cell" v-bind:key="index"/>
@@ -29,20 +31,22 @@ export default {
         title: String,
         id: String,
         data: Array,
-        secondary: Boolean
+        secondary: Boolean,
+        content: String,
     },
     components: {
         CustomHScroll,
-    }
+    },
 };
 </script>
 
 <style lang="scss" scoped>
     .custom-table {
-        border-radius: 5px;
-        box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
-        background-color: #ffffff;
-        margin: 0 10px 20px 10px;
+            border-radius: 5px;
+            box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
+            background-color: #ffffff;
+            margin: 0 10px 20px 10px;
+
         &_header {
             display: flex;
             justify-content: space-between;
@@ -105,6 +109,9 @@ export default {
                 }
             }
         }
+        &_html {
+            white-space: pre-line;
+        }
         &_table {
             width: 100%;
             tr {
@@ -130,4 +137,5 @@ export default {
             }
         }
     }
+
 </style>

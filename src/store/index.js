@@ -47,12 +47,19 @@ export default new Vuex.Store({
         allTags: [],
         selectedTags: [],
         workspacesList: [],
-        notes: '',
+        note: '',
         exportFileUrl: null,
         exportFileLoading: false,
         zones: {},
         presets: [],
         selectedPreset: null,
+        stats: [],
+        currentConditions: [],
+        rulesData: [],
+        rulesParams: '',
+        filterDetails: [],
+        version: '',
+        listMounting: false,
         annotations: {
             processingEnd: false,
             processingStart: false,
@@ -104,6 +111,18 @@ export default new Vuex.Store({
                 ];
             }
             return [];
+        },
+        oCurrentConditions: (state) => {
+            const result = {};
+            state.currentConditions.forEach((condition) => {
+                const [type, name, data, list] = condition;
+                result[name] = {
+                    type,
+                    data,
+                    list,
+                };
+            });
+            return result;
         },
     },
 });

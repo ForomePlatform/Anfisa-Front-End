@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 /* eslint-disable no-param-reassign */
 
 export function setRecords(state, records) {
@@ -77,8 +79,8 @@ export function setExportFileUrl(state, exportFileUrl) {
     state.exportFileUrl = exportFileUrl;
 }
 
-export function changeNotes(state, notes) {
-    state.notes = notes;
+export function changeNote(state, note) {
+    state.note = note;
 }
 
 export function setExportFileLoading(state, value) {
@@ -95,6 +97,10 @@ export function setZone(state, oZone) {
 export function changeZoneValue(state, aZone) {
     const [zone, value] = aZone;
     state.zones[zone].selectedValue = value;
+}
+
+export function resetZones(state) {
+    Object.keys(state.zones).forEach((zone) => { state.zones[zone].selectedValue = null; });
 }
 
 export function setPresets(state, filters) {
@@ -123,4 +129,68 @@ export function setErrorMessage(state, value) {
 
 export function setIsFirstSearch(state, value) {
     state.annotations.isFirstSearch = value;
+}
+
+export function setStats(state, stats) {
+    state.stats = stats;
+}
+
+export function setAllCurrentConditions(state, conditions) {
+    state.currentConditions = conditions;
+}
+
+export function setCurrentConditions(state, condition) {
+    const index = state.currentConditions.findIndex(item => item[1] === condition[1]);
+    if (index === -1) {
+        state.currentConditions.push(condition);
+    } else {
+        Vue.set(state.currentConditions, index, condition);
+    }
+}
+
+export function removeCurrentCondition(state, name) {
+    const index = state.currentConditions.findIndex(item => item[1] === name);
+    if (index > -1) {
+        state.currentConditions.splice(index, 1);
+    }
+}
+
+export function removeAllCurrentConditions(state) {
+    state.currentConditions = [];
+}
+
+export function changeConditionOperator(state, { name, operator }) {
+    const index = state.currentConditions.findIndex(item => item[1] === name);
+    if (index > -1) {
+        state.currentConditions[index][2] = operator;
+        Vue.set(state.currentConditions, index, state.currentConditions[index]);
+    }
+}
+
+export function removeConditionItem(state, { name, itemIndex }) {
+    const index = state.currentConditions.findIndex(item => item[1] === name);
+    if (index > -1) {
+        state.currentConditions[index][3].splice(itemIndex, 1);
+        Vue.set(state.currentConditions, index, state.currentConditions[index]);
+    }
+}
+
+export function setRulesData(state, rulesData) {
+    state.rulesData = rulesData;
+}
+
+export function setRulesParams(state, rulesData) {
+    state.rulesParams = rulesData;
+}
+
+export function setFilterDetails(state, filterDetails) {
+    state.filterDetails = filterDetails;
+}
+
+export function setVersion(state, version) {
+    state.version = version;
+}
+
+export function setListMounting(state, value) {
+    state.listMounting = value;
 }

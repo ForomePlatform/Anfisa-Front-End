@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" width="15" height="15">
+	<defs>
+		<image width="15" height="15" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAMAAAAMCGV4AAAAAXNSR0IB2cksfwAAAHJQTFRFAAAAWHmUWXmVWXmVWXmVWXmVWXmVWXmUWHiUVXeRVW2SWHiTWHmUWXmVWXmVWHiTWXeUWXiVWHiUQECAWXiUWXmVWHaUWXiVVXaQWHmUVnaRVXGOWHiUWXmVWHiVWXmUWHmVWHiUWHiVUnCPWXmVV3eUwlSDeAAAACZ0Uk5TAA+f3++vIA+GHhVo3jCggivc2QTVsEPdJ99BEpnwH8jXD2AZ4H7mQ8e+AAAAaklEQVR4nFXMVxKAIAwE0KjYEBAL9l7uf0VFgw77kVCSB+C4HvEDMAlJFNOEcXMXqa4yMw958TTJcKUEO6rS9UeDurFRXkscRZS3HfTDGH7opOZFrPq0KRun5O0Pemc/8APRU5jJH8UgegE7TAXpn4j88wAAAABJRU5ErkJggg=="/>
+	</defs>
+	<style>
+		tspan { white-space:pre }
+	</style>
+	<g id="Index">
+		<g id="Menu">
+			<g id="Project">
+				<use id="Rectangle 650 copy" href="#img1" transform="matrix(1,0,0,1,0,0)"/>
+			</g>
+		</g>
+	</g>
+</svg>

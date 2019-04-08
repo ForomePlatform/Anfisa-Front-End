@@ -28,14 +28,20 @@
                 <img src="../assets/collapseIcon.svg" />
             </div>
         </div>
-        <CustomScroll v-if="!settingsPanelCollapsed" className="variants-panel_list">
+        <CustomScroll v-if="!panelCollapsed" className="variants-panel_list">
+            <div v-if="mounting" class="variants-panel_list_status">
+                Loading...
+            </div>
             <VariantsList
+              :class="[mounting ? 'variants-panel_list__hidden' : '']"
               v-if="listView"
               :data="list"
               :selectedItem="selectedItem"
               :selectItem="selectItem"
+              root
             />
             <VariantsGroups
+              :class="[mounting ? 'variants-panel_list__hidden' : '']"
               v-else :data="groups"
               :selectedItem="selectedItem"
               :selectItem="selectItem"
@@ -46,6 +52,8 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
+
 import CustomToggle from './CustomToggle.vue';
 import VariantsList from './VariantsList.vue';
 import VariantsGroups from './VariantsGroups.vue';
@@ -61,27 +69,17 @@ export default {
         };
     },
     computed: {
-        countCurrent() {
-            return this.$store.state.filtered;
-        },
-        countAmount() {
-            return this.$store.state.total;
-        },
-        list() {
-            return this.$store.getters.list;
-        },
-        groups() {
-            return this.$store.getters.groups;
-        },
-        listView() {
-            return this.$store.state.listView;
-        },
-        selectedItem() {
-            return this.$store.state.selectedVariant;
-        },
-        settingsPanelCollapsed() {
-            return this.$store.state.panels.variantsPanelCollapsed;
-        }
+        ...mapState({
+            countCurrent: 'filtered',
+            countAmount: 'total',
+            listView: 'listView',
+            selectedItem: 'selectedVariant',
+            mounting: 'listMounting',
+        }),
+        ...mapGetters([
+            'list',
+            'groups',
+        ]),
     },
     methods: {
         selectItem(id) {
@@ -89,10 +87,11 @@ export default {
             this.$store.dispatch('getVariantTags', id);
         },
         toggleView() {
+            this.$store.commit('setListMounting', true);
+            setTimeout(() => this.$store.commit('toggleListView'), 0);
             if (this.listView) {
                 this.collapseAllStatus = true;
             }
-            this.$store.dispatch('toggleListView');
         },
         toggleAllGroups() {
             const elements = document.getElementsByClassName(this.className);
@@ -104,9 +103,29 @@ export default {
             this.collapseAllStatus = !this.collapseAllStatus;
         },
         togglePanel() {
-            this.$store.state.panels.variantsPanelCollapsed = !this.$store.state.panels.variantsPanelCollapsed;
+            this.panelCollapsed = !this.panelCollapsed;
             setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
+    },
+    mounted() {
+        const keydownHandler = (e) => {
+            const { selectedVariant, filtered } = this.$store.state;
+            if ((e.keyCode === 38 || e.keyCode === 40) && selectedVariant !== null) {
+                e.preventDefault();
+                let newIndex = 0;
+                const { list } = this.$store.getters;
+                const index = list.findIndex(item => item.id === selectedVariant);
+                if (index === -1) {
+                    newIndex = 0;
+                } else if (e.keyCode === 38) {
+                    newIndex = index === 0 ? 0 : index - 1;
+                } else if (e.keyCode === 40) {
+                    newIndex = filtered - 1 === index ? index : index + 1;
+                }
+                this.selectItem(list[newIndex].id);
+            }
+        };
+        window.addEventListener('keydown', keydownHandler);
     },
     components: {
         CustomToggle,
@@ -138,6 +157,14 @@ export default {
             padding: 8px 0;
             height: 100%;
             overflow-y: scroll;
+            &_status {
+                padding: 8px 18px;
+                color: #95acbc;
+                font-size: 14px;
+            }
+            &__hidden{
+                display: none;
+            }
         }
         &_count {
             font-size: 13px;

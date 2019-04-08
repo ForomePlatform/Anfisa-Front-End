@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" width="15" height="15">
+	<defs>
+		<image width="15" height="15" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAMAAAAMCGV4AAAAAXNSR0IB2cksfwAAADNQTFRF////////////AAAA////////////////////////////////////////////////////CVBvRQAAABF0Uk5TEL8wAH9Q/+/PgGDQPfzh4sAhCSlsAAAAV0lEQVR4nD3NWxKAIAxD0UgEX6Dsf7UWSsrfuTMlwJaoh53I5VDAWS7wVjA+ABUmafbgnB6hOt0WmnMZb2mVYbv91gr0s1Y0tGYhajboAT04QkfqQTLjB87PA/nGAkAhAAAAAElFTkSuQmCC"/>
+	</defs>
+	<style>
+		tspan { white-space:pre }
+	</style>
+	<g id="Filter Panel 1">
+		<use id="Rectangle 624 copy" href="#img1" transform="matrix(1,0,0,1,0,0)"/>
+	</g>
+</svg>

@@ -21,11 +21,15 @@
           type="secondary"
           :onClick="toggleTag"
         />
+        <p v-if="notFoundTag" class="tags-panel_not-found">
+            {{notFoundTagText}}
+        </p>
     </div>
 </template>
 
 <script>
 import TagButton from './TagButton.vue';
+import { NOT_FOUND_TAG } from '../common/constants';
 
 export default {
     data() {
@@ -36,13 +40,19 @@ export default {
     computed: {
         filteredList() {
             return this.allTags.filter(tag => this.selectedTags.indexOf(tag) === -1
-              && tag.indexOf(this.filterValue) >= 0);
+              && tag.toLowerCase().indexOf(this.filterValue.toLowerCase()) >= 0);
         },
         allTags() {
             return this.$store.state.allTags;
         },
         selectedTags() {
             return this.$store.state.selectedTags;
+        },
+        notFoundTag() {
+            return this.filterValue && !this.filteredList.length;
+        },
+        notFoundTagText() {
+            return NOT_FOUND_TAG;
         },
     },
     components: {
@@ -61,25 +71,28 @@ export default {
         margin-left: 10px;
         padding-left: 10px;
         border-left: dotted 1px #DCDCDC;
-        line-height: 20px;
-        &_selected {
-            padding-bottom: 4px;
-        }
+        line-height: 18px;
         &_input {
             flex: 1;
             border: none;
-            font-size: 14px;
+            font-size: 12px;
             line-height: 16px;
             margin-left: 4px;
             width: 80px;
+            font-size: 12px;
+            letter-spacing: 0px;
             &:focus {
                 border: none;
                 outline: none;
             }
-            &::-webkit-input-placeholder {color:#A9A9A9; font-size: 14px;}
-            &::-moz-placeholder          {color:#A9A9A9; font-size: 14px;}
-            &:-moz-placeholder           {color:#A9A9A9; font-size: 14px;}
-            &:-ms-input-placeholder      {color:#A9A9A9; font-size: 14px;}
+            &::-webkit-input-placeholder {color: #babfc3; font-size: 12px;}
+            &::-moz-placeholder          {color: #babfc3; font-size: 12px;}
+            &:-moz-placeholder           {color: #babfc3; font-size: 12px;}
+            &:-ms-input-placeholder      {color: #babfc3; font-size: 12px;}
+        }
+        &_not-found {
+            color: #babfc3;
+            font-size: 12px;
         }
     }
 </style>

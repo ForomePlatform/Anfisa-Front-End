@@ -8,7 +8,7 @@
             placeholder="Notes..."
             class="notes-panel_textarea">
         </b-form-textarea>
-        <b-button class="mt-4" @click="saveNotes">Submit</b-button>
+        <b-button class="notes-panel_btn" @click="saveNotes">SUBMIT</b-button>
     </div>
 </template>
 
@@ -16,15 +16,15 @@
 export default {
     computed: {
         notes() {
-            return this.$store.state.notes;
+            return this.$store.state.note;
         },
     },
     methods: {
         changeNotes(value) {
-            this.$store.commit('changeNotes', value);
+            this.$store.commit('changeNote', value);
         },
         saveNotes() {
-            this.$store.dispatch('saveNotes');
+            this.$store.dispatch('saveNote');
         },
     },
 };
@@ -36,7 +36,7 @@ export default {
         z-index: 10;
         display: flex;
         flex-direction: column;
-        background-color: #deefde;
+        background-color: #2bb3ed;
         top: 0;
         right: 0;
         bottom: 0;
@@ -45,6 +45,22 @@ export default {
         &_textarea {
             resize: none;
             flex: 1 1 auto;
+            border-radius: 3px 3px 0 0;
+            font-size: 16px;
+            color: #0a1c34;
+        }
+        &_btn {
+            height: 43px;
+            background-color: #0a1c34;
+            border-radius: 0 0 3px 3px;
+            font-size: 16px;
+            letter-spacing: 0px;
+            color: #ffffff;
+            font-weight: 800;
+            text-align: center;
+            &:hover {
+                background-color: #1a3e6c;
+            }
         }
     }
 </style>
