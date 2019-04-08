@@ -4,6 +4,7 @@
             <ExpandButton :onClick="toggleFilters.bind(null, 'true')"/>
             <ExpandButton collapse :onClick="toggleFilters.bind(null, 'false')" class="ml-3"/>
         </div>
+        <NonzeroCheckbox :checked="nonzeroChecked" :onChange="toggleNonzeroCheckbox"/>
         <div v-for="stat in stats" v-bind:key="stat.name">
             <CollapseHeader
               :className="className"
@@ -37,16 +38,19 @@
 import CollapseHeader from './CollapseHeader.vue';
 import ExpandButton from './ExpandButton.vue';
 import StatEditor from './statEditor/StatEditor.vue';
+import NonzeroCheckbox from './NonzeroCheckbox.vue';
 
 export default {
     data() {
         return {
             className: 'js-toggle-filters',
+            nonzeroChecked: false,
         };
     },
     computed: {
         stats() {
-            return this.$store.state.stats;
+            return this.nonzeroChecked ? this.$store.getters.getNonzeroStats
+                : this.$store.state.stats;
         },
         oCurrentConditions() {
             return this.$store.getters.oCurrentConditions;
@@ -56,6 +60,7 @@ export default {
         CollapseHeader,
         ExpandButton,
         StatEditor,
+        NonzeroCheckbox,
     },
     methods: {
         toggleFilters(expand) {
@@ -65,6 +70,9 @@ export default {
                     element.click();
                 }
             });
+        },
+        toggleNonzeroCheckbox() {
+            this.nonzeroChecked = !this.nonzeroChecked;
         },
     },
 };

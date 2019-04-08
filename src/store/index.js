@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import * as actions from './actions';
 import * as mutations from './mutations';
+import { checkNonzeroStat } from '../common/utils';
 
 
 Vue.use(Vuex);
@@ -81,6 +82,19 @@ export default new Vuex.Store({
                     data,
                     list,
                 };
+            });
+            return result;
+        },
+        getNonzeroStats: (state) => {
+            const result = [];
+            state.stats.forEach((stat) => {
+                if (stat.type === 'group') {
+                    const data = stat.data.filter(item => checkNonzeroStat(item));
+                    result.push({ ...stat, data });
+                } else {
+                    const subResult = checkNonzeroStat(stat) ? stat : { ...stat, type: 'group', data: [] };
+                    result.push(subResult);
+                }
             });
             return result;
         },

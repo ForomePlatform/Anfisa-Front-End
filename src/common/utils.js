@@ -101,3 +101,13 @@ export function expired(date) {
     const diffSeconds = (currentDate - date) / 1000;
     return diffSeconds > EXPIRED_TIME;
 }
+
+export function checkNonzeroStat(stat) {
+    if (stat.type === STAT_TYPE_ENUM || stat.type === STAT_TYPE_STATUS) {
+        const nonzeroItems = stat.data.filter(item => item[1]);
+        return Boolean(nonzeroItems.length);
+    } else if (stat.type === STAT_TYPE_INT || stat.type === STAT_TYPE_FLOAT) {
+        return stat.data[0] || stat.data[1];
+    }
+    return false;
+}
