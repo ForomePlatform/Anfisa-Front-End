@@ -7,20 +7,27 @@
             <img
               v-if="type === 'project'"
               class="settings-header_icon"
-              alt="settings icon"
+              alt="select project"
               src="../assets/selectProjectIcon.svg"
               @click="onClick"
             />
             <img
               v-if="type === 'project'"
               class="settings-header_icon  ml-2"
-              alt="open site"
+              alt="project"
               src="../assets/projectIcon.svg"
             />
             <img
-              v-if="type === 'filter'"
+              v-if="type === 'filter' && active"
               class="settings-header_icon  ml-2"
-              alt="open site"
+              alt="filter"
+              src="../assets/filterIconRed.svg"
+              @click="onClick"
+            />
+            <img
+              v-else-if="type === 'filter'"
+              class="settings-header_icon  ml-2"
+              alt="filter"
               src="../assets/filterIcon.svg"
               @click="onClick"
             />
@@ -34,6 +41,7 @@ export default {
     props: {
         title: String,
         type: String,
+        active: Boolean,
         onClick: {
             type: Function,
             default: () => {},

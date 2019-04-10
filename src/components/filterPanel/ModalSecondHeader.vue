@@ -41,7 +41,7 @@
 import SaveFilterDropdown from './SaveFilterDropdown.vue';
 
 export default {
-    props: ['onLoadClick', 'enableClearAll', 'enableSave', 'onShowClick', 'loadView'],
+    props: ['onLoadClick', 'enableClearAll', 'enableSave', 'onShowClick', 'loadView', 'clearAll'],
     computed: {
         variants() {
             return this.$store.state.filtered;
@@ -58,12 +58,6 @@ export default {
         },
     },
     methods: {
-        clearAll() {
-            if (this.enableClearAll) {
-                this.$store.commit('removeAllCurrentConditions');
-                this.$store.dispatch('getListByConditions');
-            }
-        },
         saveFilter(filterName) {
             this.$store.dispatch('updateFilter', filterName);
         },

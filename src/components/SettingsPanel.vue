@@ -29,7 +29,9 @@
             <LayoutHeader />
         </div>
         <div class="settings-panel_block">
-            <SettingsHeader title="FILTERS" :onClick="openFilterModal" type="filter"/>
+            <SettingsHeader title="FILTERS" :onClick="openFilterModal" type="filter"
+                :active="!selectedPresetSaved"
+            />
             <div class="d-flex justify-content-between mt-3">
                 <DropdownButton :text="selectedPreset" :data="presets" :onChange="changePreset"/>
                 <!-- <div class="settings-panel_icon-button">
@@ -111,7 +113,13 @@ export default {
             return this.panelCollapsed ? expandIcon : collapseIcon;
         },
         selectedPreset() {
-            return this.$store.state.selectedPreset ? this.$store.state.selectedPreset : 'Presets';
+            if (this.$store.state.selectedPreset) {
+                return this.$store.state.selectedPreset;
+            }
+            return this.selectedPresetSaved ? 'Presets' : 'New Filter';
+        },
+        selectedPresetSaved() {
+            return this.$store.state.selectedPresetSaved;
         },
         demoText() {
             return DEMO_NOTIFICATION;

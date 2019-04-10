@@ -84,6 +84,10 @@ export function setPreset(state, filter) {
     state.selectedPreset = filter;
 }
 
+export function changePresetSaved(state, saved) {
+    state.selectedPresetSaved = saved;
+}
+
 export function setStats(state, stats) {
     state.stats = stats;
 }

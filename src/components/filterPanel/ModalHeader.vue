@@ -2,6 +2,9 @@
         <div class="modal-header">
             <div class="modal-header_title">
                 FILTER VARIANTS
+                <span class="modal-header_title_descr">
+                    {{ title }}
+                </span>
             </div>
             <div class="modal-header_controls">
                 <div
@@ -24,6 +27,12 @@
 <script>
 export default {
     props: ['onClose', 'onAdvancedClick', 'advancedView'],
+    computed: {
+        title() {
+            const { selectedPreset, selectedPresetSaved } = this.$store.state;
+            return ` (${selectedPreset || 'New Filter'}${selectedPresetSaved ? '' : ' - Unsaved'})`;
+        },
+    },
 };
 </script>
 
@@ -43,6 +52,9 @@ export default {
             letter-spacing: 0px;
             color: #2bb3ed;
             font-weight: 800;
+            &_descr {
+                color: #fff;
+            }
         }
         &_controls {
             display: flex;

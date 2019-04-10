@@ -18,7 +18,10 @@ export function getList(context) {
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.commit('setPreset', null);
             context.commit('clearSelectedVariant');
+            context.commit('changePresetSaved', true);
+            context.commit('removeAllCurrentConditions');
         })
         .catch((error) => {
             console.log(error);
@@ -38,6 +41,7 @@ export function getListByFilter(context) {
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
         context.commit('clearSelectedVariant');
+        context.commit('changePresetSaved', true);
     }).catch((error) => {
         console.log(error);
     });
@@ -56,6 +60,7 @@ export function getListByConditions(context) {
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
         context.commit('clearSelectedVariant');
+        context.commit('changePresetSaved', false);
     }).catch((error) => {
         console.log(error);
     });
@@ -250,6 +255,7 @@ export function getZoneList(context, ws) {
         .then((response) => {
             const zones = response.data.filter(zone => zone[0].charAt(0) !== '_');
             zones.forEach(zone => getZoneData(context, zone));
+            context.commit('resetZones');
         });
 }
 
@@ -331,13 +337,14 @@ export function removeFilter(context, filterName) {
         if (filterList && Array.isArray(filterList)) {
             const data = filterList.map(item => item[0]);
             context.commit('setPresets', [null, ...data]);
-            context.commit('setPreset', null);
         }
         const statList = response.data['stat-list'];
         context.commit('setStats', utils.prepareStatList(statList));
         context.commit('removeAllCurrentConditions');
         context.dispatch('getFilterDetails');
         context.dispatch('getListByFilter');
+        context.commit('setPreset', null);
+        context.commit('changePresetSaved', true);
     }).catch((error) => {
         console.log(error);
     });
@@ -355,6 +362,8 @@ export function updateFilter(context, filterName) {
         if (filterList && Array.isArray(filterList)) {
             const data = filterList.map(item => item[0]);
             context.commit('setPresets', [null, ...data]);
+            context.commit('setPreset', filterName);
+            context.commit('changePresetSaved', true);
         }
         context.dispatch('getFilterDetails');
     }).catch((error) => {

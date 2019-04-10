@@ -26,6 +26,7 @@ export default new Vuex.Store({
         zones: {},
         presets: [],
         selectedPreset: null,
+        selectedPresetSaved: true,
         stats: [],
         currentConditions: [],
         rulesData: [],
