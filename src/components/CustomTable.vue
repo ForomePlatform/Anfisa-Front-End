@@ -24,20 +24,20 @@
 </template>
 
 <script>
-    import CustomHScroll from './CustomHScroll.vue';
+import CustomHScroll from './CustomHScroll.vue';
 
-    export default {
-        props: {
-            title: String,
-            id: String,
-            data: Array,
-            secondary: Boolean,
-            content: String,
-        },
-        components: {
-            CustomHScroll,
-        },
-    };
+export default {
+    props: {
+        title: String,
+        id: String,
+        data: Array,
+        secondary: Boolean,
+        content: String,
+    },
+    components: {
+        CustomHScroll,
+    },
+};
 </script>
 
 <style lang="scss" scoped>
