@@ -1,6 +1,6 @@
 <template>
-    <div :class="[settingsPanelCollapsed ? 'variants-panel__collapsed' : '', 'variants-panel']">
-        <div v-if="settingsPanelCollapsed">
+    <div :class="[panelCollapsed ? 'variants-panel__collapsed' : '', 'variants-panel']">
+        <div v-if="panelCollapsed">
             <div
               class="variants-panel_collapse-icon"
               v-on:click="togglePanel"
@@ -83,8 +83,14 @@ export default {
     },
     methods: {
         selectItem(id) {
-            this.$store.dispatch('getVariantDetails', id);
-            this.$store.dispatch('getVariantTags', id);
+            if (this.$store.state.workspace === 'ANNOTATION SERVICE') {
+                const data = this.$store.state.annotations.annotationsSearchResult[id].result[0];
+                this.$store.commit('setSelectedVariant', id);
+                this.$store.dispatch('setVariantsDetails', data);
+            } else {
+                this.$store.dispatch('getVariantDetails', id);
+                this.$store.dispatch('getVariantTags', id);
+            }
         },
         toggleView() {
             this.$store.commit('setListMounting', true);

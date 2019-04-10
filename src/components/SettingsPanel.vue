@@ -1,5 +1,5 @@
 <template>
-    <div :class="[settingsPanelCollapsed ? 'settings-panel__collapsed' : '', 'settings-panel']">
+    <div :class="[panelCollapsed ? 'settings-panel__collapsed' : '', 'settings-panel']">
         <div class="settings-panel_collapse-icon" v-on:click="togglePanel">
             <img :src="panelCollapsedIcon" />
         </div>
@@ -14,6 +14,28 @@
             <span> About</span>
         </div>
         <div class="settings-panel_block">
+            <div v-if="!isAnnotationService">
+                <SettingsHeader title="FILTERS"/>
+                <div class="d-flex justify-content-between mt-3">
+                    <DropdownButton :text="selectedPreset" :data="presets"
+                                    :onChange="changePreset"/>
+                    <div class="settings-panel_icon-button">
+                        <img alt="presets icon" src="../assets/presetsIcon.svg" />
+                    </div>
+                </div>
+
+                <div v-for="zone in Object.keys(zones)"
+                     :key="zone" class="d-flex justify-content-between mt-3">
+                    <DropdownButton :text="getZoneText(zones[zone])"
+                                    :data="zones[zone].values"
+                                    :onChange="value =>changeZoneValue(zone, value)"/>
+                    <div class="settings-panel_icon-button">
+                        <img alt="presets icon" src="../assets/tagsIcon.svg" />
+                    </div>
+                </div>
+            </div>
+            <CustomButton v-if="isAnnotationService"
+                          class="mt-3" title="Submit query" :onClick="openGetAnnotationsModal"/>
             <p class="settings-panel_demo-status">
                 {{demoText}}
             </p>
@@ -72,11 +94,13 @@
             <p v-else class="mt-3 ml-3" >Are you sure you want to download file?</p>
         </CustomPopup>
         <FilterModal ref="filterModal"/>
+        <AnnotationSearchDialog ref="annotationSearchModal"/>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import AnnotationSearchDialog from './AnnotationSearchDialog.vue';
 import DropdownButton from './DropdownButton.vue';
 import CustomButton from './CustomButton.vue';
 import User from './User.vue';
@@ -95,20 +119,10 @@ export default {
         return {
             panelCollapsed: false,
             selectedWorkspace: '',
-            annotations: {
-                anfisaInputData: '',
-            },
         };
     },
     mounted() {
         if (this.isAnnotationService) {
-            const jsonData = this.getCookie('annotationJsonInputData');
-
-            if (jsonData !== '' && jsonData !== undefined && jsonData !== null) {
-                this.annotations.anfisaInputData = jsonData;
-                this.getAnnotationsData();
-            }
-
             this.openGetAnnotationsModal();
         }
     },
@@ -131,21 +145,6 @@ export default {
         },
         demoText() {
             return DEMO_NOTIFICATION;
-        },
-        isProcessingEnd() {
-            return this.$store.state.annotations.processingEnd;
-        },
-        isProcessingStart() {
-            return this.$store.state.annotations.processingStart;
-        },
-        settingsPanelCollapsed() {
-            return this.$store.state.panels.settingsPanelCollapsed;
-        },
-        getErrorsShow() {
-            return this.$store.state.annotations.error.show;
-        },
-        getErrorsMessage() {
-            return this.$store.state.annotations.error.message;
         },
     },
     methods: {
@@ -172,124 +171,7 @@ export default {
             this.$refs.exportFileModal.openModal();
         },
         openGetAnnotationsModal() {
-            this.$store.state.annotations.error.show = false;
-            this.$store.state.annotations.error.message = '';
-            this.$store.state.annotations.processingStart = false;
-            this.$store.state.annotations.processingEnd = false;
-
-            this.$refs.getAnnotationsModal.show();
-        },
-        getAnnotationsData() {
-            if (!this.$store.state.annotations.isFirstSearch) {
-                this.$store.state.annotations.processingStart = true;
-            }
-
-            const jsonData = this.generateJsonFromInputData(this.annotations.anfisaInputData);
-
-            if (jsonData === null) {
-                return;
-            }
-
-            if (this.isValidJsonData(jsonData)) {
-                document.cookie = `annotationJsonInputData = ${this.annotations.anfisaInputData}`;
-                this.$store.state.annotations.error.show = false;
-                this.$store.dispatch('getAnfisaJson', jsonData);
-            }
-        },
-        viewAnnotationsData() {
-            this.$refs.getAnnotationsModal.hide();
-            this.toggleVariantsPanel();
-        },
-        toggleVariantsPanel() {
-            this.$store.state.panels.variantsPanelCollapsed = true;
-            setTimeout(() => window.dispatchEvent(new Event('resize')));
-        },
-        generateJsonFromInputData(data) {
-            const result = [];
-            const element = {};
-            const dataArray = data.split(',');
-
-            for (let i = 0; i < dataArray.length; i++) {
-                const elementArray = dataArray[i].trim().split(/[\s:]+/);
-                const rangeArray = elementArray[1].split(/[-]+/);
-                element.chromosome = elementArray[0].replace('chr', '');
-
-                const start = Number.isNaN(Number(rangeArray[0])) ?
-                    rangeArray[0] : Number(rangeArray[0]);
-                let end;
-                if (rangeArray.length === 1) {
-                    end = start;
-                } else if (Number.isNaN(Number(rangeArray[1]))) {
-                    end = rangeArray[1];
-                } else {
-                    end = Number(rangeArray[1]);
-                }
-                element.start = start;
-                element.end = end;
-                const alternative = elementArray[2];
-                if (alternative) {
-                    if (alternative.indexOf('>') !== -1) {
-                        element.alternative = alternative.split('>')[1];
-                    } else {
-                        element.alternative = alternative;
-                    }
-                }
-
-                result.push(element);
-            }
-
-            return JSON.stringify(result);
-        },
-        isValidJsonData(jsonData) {
-            try {
-                const jsonObject = JSON.parse(jsonData);
-
-                for (let i = 0; i < jsonObject.length; i += 1) {
-                    const obj = jsonObject[i];
-                    for (let j = 0; j < obj.length; j += 1) {
-                        const key = obj[j];
-                        switch (key) {
-                        case 'alternative': {
-                            if (!this.checkValue(jsonObject[i][key], 'string')) {
-                                return false;
-                            }
-
-                            break;
-                        }
-                        case 'end': {
-                            if (!this.checkValue(jsonObject[i][key], 'number')) {
-                                return false;
-                            }
-
-                            break;
-                        }
-                        default: {
-                            break;
-                        }
-                        }
-                    }
-                }
-
-                return true;
-            } catch (error) {
-                this.showErrorGetAnnotations(error.message);
-                return false;
-            }
-        },
-        checkValue(value, type) {
-            if (typeof (value) !== typeof type) {
-                this.showErrorGetAnnotations(`Data entry error: ${value} not ${type}!`);
-                return false;
-            }
-
-            return true;
-        },
-        showErrorGetAnnotations(message) {
-            this.$store.state.annotations.error.message = message;
-            this.$store.state.annotations.error.show = true;
-            this.$store.state.annotations.processingStart = false;
-            this.$store.state.annotations.processingEnd = false;
-            console.log(message);
+            this.$refs.annotationSearchModal.show();
         },
         changeZoneValue(zone, value) {
             this.$store.commit('changeZoneValue', [zone, value]);
@@ -308,15 +190,6 @@ export default {
             this.$store.commit('resetZones');
             this.$refs.filterModal.openModal();
         },
-        getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-
-            if (parts.length === 2) {
-                return parts.pop().split(';').shift();
-            }
-            return null;
-        },
     },
     components: {
         DropdownButton,
@@ -326,6 +199,7 @@ export default {
         FilterModal,
         LayoutHeader,
         CustomPopup,
+        AnnotationSearchDialog,
     },
 };
 </script>
@@ -341,6 +215,7 @@ export default {
         width: 100%;
         margin-bottom: 5px;
     }
+
     .settings-panel {
         position: relative;
         flex-shrink: 0;

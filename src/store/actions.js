@@ -1,11 +1,15 @@
 import axios from 'axios';
 import * as utils from '../common/utils';
 
-const commonHttp = axios.create({
-    baseURL: process.env.VUE_APP_API_URL,
+const headers = {
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
     },
+};
+
+const commonHttp = axios.create({
+    baseURL: process.env.VUE_APP_API_URL,
+    headers: headers.headers,
 });
 
 export function getList(context) {
@@ -74,6 +78,11 @@ export function getListByTag(context, tag) {
         });
 }
 
+export function setVariantsDetails(context, data) {
+    const result = utils.prepareVariantDetails(data);
+    context.commit('setVariantDetails', result);
+}
+
 export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
@@ -81,8 +90,7 @@ export function getVariantDetails(context, variant) {
     context.commit('setSelectedVariant', variant);
     commonHttp.post('/reccnt', params)
         .then((response) => {
-            const result = utils.prepareVariantDetails(response.data);
-            context.commit('setVariantDetails', result);
+            setVariantsDetails(context, response.data);
         })
         .catch((error) => {
             context.commit('setSelectedVariant', null);
@@ -353,15 +361,13 @@ export function getStatList(context, { conditions = null, filter = null }) {
         context.commit('setStats', utils.prepareStatList(statList));
     }).catch((error) => {
         console.log(error);
-        context.commit('changeZoneValue', [zone, null]);
     });
 }
 
 function showError(context, message) {
-    context.commit('setErrorShow', true);
-    context.commit('setErrorMessage', message);
-    context.commit('setProcessingEnd', false);
-    context.commit('setProcessingStart', false);
+    context.commit('setAnnotationSearchShowError', true);
+    context.commit('setAnnotationSearchErrorMessage', message);
+    context.commit('showFinished', false);
     context.commit('setSelectedVariant', null);
     context.commit('initVariantDetails');
     document.cookie = 'annotationJsonInputData = ';
@@ -369,39 +375,56 @@ function showError(context, message) {
 }
 
 
-export function getAnfisaJson(context, anfisaJsonData) {
+export function getAnfisaJson(context, data) {
     let params = new URLSearchParams();
     params.append('login', 'admin');
     params.append('password', 'b82nfGl5sdg');
-
     axios.post('/annotationservice/logon/login', params, headers).then((response) => {
         const { session } = response.data.data;
 
         params = new URLSearchParams();
+        let url;
+        let locHeader;
+        if (data instanceof Blob) {
+            params = new FormData();
+            params.append('data', data);
+            url = '/annotationservice/FormatVcf/get';
+            locHeader = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            };
+        } else {
+            url = '/annotationservice/FormatAnfisa/get';
+            params.append('data', data);
+            locHeader = headers;
+        }
         params.append('session', session);
-        params.append('data', anfisaJsonData);
-
-        axios.post('/annotationservice/GetAnfisaJSON', params, headers).then((resp) => {
-            params = new URLSearchParams();
+        axios.post(url, params, locHeader).then((resp) => {
+            context.commit('setSelectedVariant', 0);
             const dataReq = resp.data.data[0].result[0];
             if (!dataReq) {
-                showError(context, `Nothing found`);
+                showError(context, 'Nothing found');
                 return;
             }
-            params.append('record', JSON.stringify(dataReq));
-            axios.post('/anfisa-anno/app/single_cnt', params, headers).then((res) => {
-                if (!context.state.annotations.isFirstSearch) {
-                    context.commit('setProcessingEnd', true);
+            const records = [];
+            resp.data.data.forEach((item) => {
+                if (item.result.length) {
+                    const index = resp.data.data.indexOf(item);
+                    const name = `[${item.result[0][0].rows[0][2][0][0]}] chr${item.result[0][0].rows[1][2][0][0]}`;
+                    const record = [index, name, 'grey', false];
+                    records.push(record);
                 }
-
-                context.commit('setIsFirstSearch', false);
-                context.commit('setSelectedVariant', 1);
-                setVariantsDetails(context, res);
-            }).catch((error) => {
-                showError(context, `${error.message} - ${error.request.responseURL}`);
             });
+            context.commit('setRecords', records);
+            context.commit('setWorkspace', 'ANNOTATION SERVICE');
+            context.commit('setTotal', records.length);
+            context.commit('setFiltered', records.length);
+            context.commit('setAnnotationsSearchResult', resp.data.data);
+            context.commit('setShowFinished', true);
         }).catch((error) => {
-            showError(context, `${error.response.data.error.comment}`);
+            console.log(error);
+            // showError(context, `${error.response.data.error.comment}`);
         });
     }).catch((error) => {
         showError(context, `${error.message} - ${error.request.responseURL}`);

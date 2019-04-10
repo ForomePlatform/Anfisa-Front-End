@@ -1,12 +1,12 @@
 <template>
     <div class="custom-table">
         <div
-          v-b-toggle="'table_'+id"
-          :class="['custom-table_header', 'js-table_header',
+                v-b-toggle="'table_'+id"
+                :class="['custom-table_header', 'js-table_header',
             secondary ? 'custom-table_header-secondary' : '']"
         >
             {{title.toUpperCase()}}
-            <div v-if="data.length > 0" class="custom-table_header_icon"></div>
+            <div class="custom-table_header_icon" />
         </div>
         <b-collapse :id="'table_'+id" class="custom-table_collapse">
             <div class="custom-table_table-wrapper">
@@ -24,28 +24,28 @@
 </template>
 
 <script>
-import CustomHScroll from './CustomHScroll.vue';
+    import CustomHScroll from './CustomHScroll.vue';
 
-export default {
-    props: {
-        title: String,
-        id: String,
-        data: Array,
-        secondary: Boolean,
-        content: String,
-    },
-    components: {
-        CustomHScroll,
-    },
-};
+    export default {
+        props: {
+            title: String,
+            id: String,
+            data: Array,
+            secondary: Boolean,
+            content: String,
+        },
+        components: {
+            CustomHScroll,
+        },
+    };
 </script>
 
 <style lang="scss" scoped>
     .custom-table {
-            border-radius: 5px;
-            box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
-            background-color: #ffffff;
-            margin: 0 10px 20px 10px;
+        border-radius: 5px;
+        box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
+        background-color: #ffffff;
+        margin: 0 10px 20px 10px;
 
         &_header {
             display: flex;

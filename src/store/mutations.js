@@ -10,6 +10,10 @@ export function setWorkspace(state, workspace) {
     state.workspace = workspace;
 }
 
+export function setAnnotationsSearchResult(state, data) {
+    state.annotations.annotationsSearchResult = data;
+}
+
 export function setTotal(state, total) {
     state.total = total || 0;
 }
@@ -111,24 +115,16 @@ export function setPreset(state, value) {
     state.selectedPreset = value;
 }
 
-export function setProcessingEnd(state, value) {
-    state.annotations.processingEnd = value;
+export function setShowFinished(state, value) {
+    state.annotations.showFinished = value;
 }
 
-export function setProcessingStart(state, value) {
-    state.annotations.processingStart = value;
-}
-
-export function setErrorShow(state, value) {
+export function setAnnotationSearchShowError(state, value) {
     state.annotations.error.show = value;
 }
 
-export function setErrorMessage(state, value) {
+export function setAnnotationSearchErrorMessage(state, value) {
     state.annotations.error.message = value;
-}
-
-export function setIsFirstSearch(state, value) {
-    state.annotations.isFirstSearch = value;
 }
 
 export function setStats(state, stats) {
