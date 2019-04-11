@@ -8,13 +8,15 @@
             <div>
                 <b-card no-body>
                     <b-tabs card ref="myTabs">
-                        <b-tab title="Inputs" active>
+                        <b-tab title="Type in" active>
                             <b-card-text>
                                 <div v-if="!showFinished">
                                     <div v-if="showInputs">
-                                        <p>To get annotations for a specific mutation,
-                                            please insert its description in Forome
-                                            format in the form below.</p>
+                                        <p>To get annotations for specific variants,
+                                            please insert their descriptions in Forome
+                                            format in the forms
+                                            below (each in separate form,
+                                            up to 100 variants per query).</p>
                                         <p style="font-size: 0.7em;">
                                             For example:<br>
                                             chr15:89876828-89876836 TTGCTGCTGC&gt;TTGCTGC<br>
@@ -73,23 +75,31 @@
                                 <div v-if="showFinished && !showError">
                                     <p> {{ queryFinishedText }}</p>
                                 </div>
+                                <div v-if="showError" class="error-message">
+                                    {{ showErrorMessage }}
+                                </div>
                             </b-card-text>
                         </b-tab>
-                        <b-tab title="File Upload">
+                        <b-tab title="Upload VCF">
                             <b-card-text>
                                 <div v-if="!showFinished">
                                     <div v-if="showInputs">
+                                        <p>Please choose the VCF file
+                                            describing the variants to be annotated.
+                                            Maximum file size: 10 MB.
+                                            Maximum number of variants: 100.
+                                        </p>
                                         <b-form-file
                                                 v-model="file"
                                                 :state="Boolean(file)"
                                                 @change="checkFileSize()"
+                                                accept=".vcf"
                                                 placeholder="Choose a file..."
                                                 drop-placeholder="Drop file here..."
                                         ></b-form-file>
                                         <div v-if="showFileSizeError"
                                              v-bind:style="{'color': '#ff0008'}">
-                                            File size limit exceeded.
-                                            Please upload file smaller than 10 MB.
+                                            File too large
                                         </div>
                                     </div>
                                     <div v-else-if="!showError">
@@ -98,6 +108,27 @@
                                 </div>
                                 <div v-if="showFinished && !showError">
                                     <p>{{ queryFinishedText }}</p>
+                                </div>
+                                <div v-if="showError" class="error-message">
+                                    {{ showErrorMessage }}
+                                </div>
+                            </b-card-text>
+                        </b-tab>
+                        <b-tab title="Paste VCF">
+                            <b-card-text>
+                                <div v-if="!showFinished">
+                                    <div v-if="showInputs">
+                                        Under construction
+                                    </div>
+                                    <div v-else-if="!showError">
+                                        <p>{{ queryProcessingText }}</p>
+                                    </div>
+                                </div>
+                                <div v-if="showFinished && !showError">
+                                    <p>{{ queryFinishedText }}</p>
+                                </div>
+                                <div v-if="showError" class="error-message">
+                                    {{ showErrorMessage }}
                                 </div>
                             </b-card-text>
                         </b-tab>
@@ -164,7 +195,9 @@ export default {
     name: 'AnnotationSearchDialog',
     data() {
         return {
-            inputs: [],
+            inputs: [
+                { text: '' },
+            ],
             showInputs: true,
             removeRowIndex: 0,
             file: null,
@@ -184,6 +217,9 @@ export default {
         },
         showError() {
             return this.$store.state.annotations.error.show;
+        },
+        showErrorMessage() {
+            return this.$store.state.annotations.error.message;
         },
     },
     methods: {

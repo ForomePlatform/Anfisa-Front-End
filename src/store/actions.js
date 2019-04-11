@@ -367,10 +367,10 @@ export function getStatList(context, { conditions = null, filter = null }) {
 function showError(context, message) {
     context.commit('setAnnotationSearchShowError', true);
     context.commit('setAnnotationSearchErrorMessage', message);
-    context.commit('showFinished', false);
-    context.commit('setSelectedVariant', null);
-    context.commit('initVariantDetails');
-    document.cookie = 'annotationJsonInputData = ';
+    context.commit('setShowFinished', false);
+    // context.commit('setSelectedVariant', null);
+    // context.commit('initVariantDetails');
+    // document.cookie = 'annotationJsonInputData = ';
     console.log(message);
 }
 
@@ -423,8 +423,7 @@ export function getAnfisaJson(context, data) {
             context.commit('setAnnotationsSearchResult', resp.data.data);
             context.commit('setShowFinished', true);
         }).catch((error) => {
-            console.log(error);
-            // showError(context, `${error.response.data.error.comment}`);
+            showError(context, `Server error: ${error.response.data.error.code.replace('_', ' ')}`);
         });
     }).catch((error) => {
         showError(context, `${error.message} - ${error.request.responseURL}`);
