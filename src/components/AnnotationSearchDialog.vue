@@ -118,7 +118,16 @@
                             <b-card-text>
                                 <div v-if="!showFinished">
                                     <div v-if="showInputs">
-                                        Under construction
+                                        To get annotations for specific variants,
+                                        please paste the portion of VCF file with
+                                        their descriptions in the form below
+                                        (up to 100 variants per query).
+                                        <b-form-textarea
+                                                id="textarea-default"
+                                                v-model="vcfText"
+                                                class="vcfText"
+                                                placeholder="Paste VCF"
+                                        ></b-form-textarea>
                                     </div>
                                     <div v-else-if="!showError">
                                         <p>{{ queryProcessingText }}</p>
@@ -201,11 +210,12 @@ export default {
             showInputs: true,
             removeRowIndex: 0,
             file: null,
+            vcfText: null,
             showFileSizeError: false,
             queryFinishedText: 'Query processing finished. Click "OK" to display the annotations found.',
             rowsLimitExceeded: 'Can\'t add any more variants, 100 is the maximum number for one query',
             queryProcessingText: 'Query processing has been started. It may take a few minutes.\n' +
-                'Please don\'t close this tab in your browser.',
+                    'Please don\'t close this tab in your browser.',
         };
     },
     computed: {
@@ -230,8 +240,13 @@ export default {
             } else {
                 this.showInputs = false;
                 this.$store.state.annotations.error.show = false;
-                this.$store.dispatch('getAnfisaJson', this.file);
+                this.$store.dispatch('formatVcf', this.file);
             }
+        },
+        postVcf() {
+            this.showInputs = false;
+            this.$store.state.annotations.error.show = false;
+            this.$store.dispatch('formatVcf', this.vcfText);
         },
         postInputs() {
             this.inputs = this.inputs.filter(input => input.text);
@@ -245,7 +260,7 @@ export default {
             }
             this.setCookies();
             this.showInputs = false;
-            this.$store.dispatch('getAnfisaJson', jsonData);
+            this.$store.dispatch('formatAnfisa', jsonData);
         },
         checkInputs() {
             for (let i = 0; i < this.inputs.length; i++) {
@@ -330,13 +345,16 @@ export default {
             this.$refs.annotationSearchModal.hide();
         },
         getAnnotationsData() {
-            const { currentTab } = this.$refs.myTabs;
-            switch (currentTab) {
+            const tab = this.$refs.myTabs.currentTab;
+            switch (tab) {
             case 0:
                 this.postInputs();
                 break;
             case 1:
                 this.uploadFile();
+                break;
+            case 2:
+                this.postVcf();
                 break;
             default:
                 break;
@@ -463,6 +481,10 @@ export default {
     .error-message {
         color: #ff0008;
         margin-left: 25px;
+    }
+
+    .vcfText {
+        height: 173px;
     }
 </style>
 

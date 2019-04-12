@@ -6,7 +6,7 @@ const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
     },
 };
-
+let anfisaJsonParams = new URLSearchParams();
 const commonHttp = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
     headers: headers.headers,
@@ -374,33 +374,14 @@ function showError(context, message) {
     console.log(message);
 }
 
-
-export function getAnfisaJson(context, data) {
-    let params = new URLSearchParams();
-    params.append('login', 'admin');
-    params.append('password', 'b82nfGl5sdg');
-    axios.post('/annotationservice/logon/login', params, headers).then((response) => {
+export function getAnfisaJson(context, formatUrl, formatHeader) {
+    const loginParams = new URLSearchParams();
+    loginParams.append('login', 'admin');
+    loginParams.append('password', 'b82nfGl5sdg');
+    axios.post('/annotationservice/logon/login', loginParams, headers).then((response) => {
         const { session } = response.data.data;
-
-        params = new URLSearchParams();
-        let url;
-        let locHeader;
-        if (data instanceof Blob) {
-            params = new FormData();
-            params.append('data', data);
-            url = '/annotationservice/FormatVcf/get';
-            locHeader = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            };
-        } else {
-            url = '/annotationservice/FormatAnfisa/get';
-            params.append('data', data);
-            locHeader = headers;
-        }
-        params.append('session', session);
-        axios.post(url, params, locHeader).then((resp) => {
+        anfisaJsonParams.append('session', session);
+        axios.post(formatUrl, anfisaJsonParams, formatHeader).then((resp) => {
             context.commit('setSelectedVariant', 0);
             const dataReq = resp.data.data[0].result[0];
             if (!dataReq) {
@@ -428,4 +409,24 @@ export function getAnfisaJson(context, data) {
     }).catch((error) => {
         showError(context, `${error.message} - ${error.request.responseURL}`);
     });
+}
+
+export function formatAnfisa(context, data) {
+    const formatUrl = '/annotationservice/FormatAnfisa/get';
+    const formatHeader = headers;
+    anfisaJsonParams = new URLSearchParams();
+    anfisaJsonParams.append('data', data);
+    getAnfisaJson(context, formatUrl, formatHeader);
+}
+
+export function formatVcf(context, data) {
+    const formatUrl = '/annotationservice/FormatVcf/get';
+    const formatHeader = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    };
+    anfisaJsonParams = new FormData();
+    anfisaJsonParams.append('data', data);
+    getAnfisaJson(context, formatUrl, formatHeader);
 }
