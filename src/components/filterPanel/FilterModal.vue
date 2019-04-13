@@ -132,6 +132,7 @@ export default {
                     this.$root.$emit('bv::show::modal', this.CLEAR_MODAL_ID);
                 } else {
                     this.$store.dispatch('getList');
+                    this.$store.dispatch('getFilters');
                 }
             }
         },

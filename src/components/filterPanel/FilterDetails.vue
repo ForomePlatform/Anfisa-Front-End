@@ -20,6 +20,12 @@
                   :changeOperator="changeOperatorHandler"
                   :removeItem="removeEnumItem"
                 />
+                <ZygosityView
+                  v-else-if="condition[0] === statTypes.zygosity"
+                  :name="condition[1]"
+                  :data="condition[4]"
+                  :removeItem="removeZygosityItem"
+                />
             </StatView>
         </div>
     </div>
@@ -29,10 +35,12 @@
 import EnumView from './statView/EnumView.vue';
 import FloatView from './statView/FloatView.vue';
 import StatView from './statView/StatView.vue';
+import ZygosityView from './statView/ZygosityView.vue';
 import {
     STAT_TYPE_ENUM,
     STAT_TYPE_STATUS,
     STAT_NUMERIC,
+    STAT_TYPE_ZYGOSITY,
 } from './../../common/constants';
 
 export default {
@@ -45,6 +53,7 @@ export default {
                 enum: STAT_TYPE_ENUM,
                 status: STAT_TYPE_STATUS,
                 numeric: STAT_NUMERIC,
+                zygosity: STAT_TYPE_ZYGOSITY,
             };
         },
     },
@@ -52,6 +61,7 @@ export default {
         StatView,
         EnumView,
         FloatView,
+        ZygosityView,
     },
     methods: {
         removeHandler(name) {
@@ -64,6 +74,10 @@ export default {
         },
         removeEnumItem(name, itemIndex) {
             this.$store.commit('removeConditionItem', { name, itemIndex });
+            this.$store.dispatch('getListByConditions');
+        },
+        removeZygosityItem(name, itemIndex) {
+            this.$store.commit('removeZygosityItem', { name, itemIndex });
             this.$store.dispatch('getListByConditions');
         },
     },

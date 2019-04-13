@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import * as actions from './actions';
 import * as mutations from './mutations';
 import { checkNonzeroStat } from '../common/utils';
-
+import { STAT_TYPE_ZYGOSITY } from '../common/constants';
 
 Vue.use(Vuex);
 
@@ -77,12 +77,21 @@ export default new Vuex.Store({
         oCurrentConditions: (state) => {
             const result = {};
             state.currentConditions.forEach((condition) => {
-                const [type, name, data, list] = condition;
-                result[name] = {
-                    type,
-                    data,
-                    list,
-                };
+                if (condition[0] === STAT_TYPE_ZYGOSITY) {
+                    const [type, name, family, , variants] = condition;
+                    result[name] = {
+                        type,
+                        family,
+                        variants,
+                    };
+                } else {
+                    const [type, name, data, list] = condition;
+                    result[name] = {
+                        type,
+                        data,
+                        list,
+                    };
+                }
             });
             return result;
         },

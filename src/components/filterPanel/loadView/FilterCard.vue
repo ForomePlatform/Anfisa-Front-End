@@ -35,6 +35,11 @@
                   :operator="condition[2]"
                   :data="condition[3]"
                 />
+                <ZygosityBasicView
+                  v-if="condition[0] === constants.zygosity"
+                  :name="condition[1]"
+                  :data="condition[4]"
+                />
             </div>
         </div>
     </div>
@@ -43,10 +48,12 @@
 <script>
 import FlaotView from '../statView/FloatView.vue';
 import EnumBasicView from './EnumBasicView.vue';
+import ZygosityBasicView from './ZygosityBasicView.vue';
 import {
     STAT_NUMERIC,
     STAT_TYPE_ENUM,
     STAT_TYPE_STATUS,
+    STAT_TYPE_ZYGOSITY,
 } from '../../../common/constants';
 
 export default {
@@ -57,12 +64,14 @@ export default {
                 numeric: STAT_NUMERIC,
                 enum: STAT_TYPE_ENUM,
                 status: STAT_TYPE_STATUS,
+                zygosity: STAT_TYPE_ZYGOSITY,
             };
         },
     },
     components: {
         FlaotView,
         EnumBasicView,
+        ZygosityBasicView,
     },
 };
 </script>

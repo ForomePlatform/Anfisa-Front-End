@@ -30,6 +30,15 @@
           :preselectedData="preselectedData"
           :onSubmit="submitEnumHandler"
         />
+        <ZygosityEditor
+          v-else-if="type === statTypes.zygosity"
+          :family="data.family"
+          :variants="data.variants"
+          :preselectedFamily="preselectedFamily"
+          :preselectedVariants="preselectedVariants"
+          :onSubmit="submitZygosityHandler"
+          :onFamilyChange = "changeFamily"
+        />
     </div>
 </template>
 
@@ -38,11 +47,13 @@ import CoordinateEditor from './CoordinateEditor.vue';
 import LogarithmicEditor from './LogarithmicEditor.vue';
 import LinearEditor from './LinearEditor.vue';
 import EnumEditor from './EnumEditor.vue';
+import ZygosityEditor from './ZygosityEditor.vue';
 import {
     STAT_TYPE_ENUM,
     STAT_TYPE_STATUS,
     ENUM_DEFAULT_OPERATOR,
     STAT_NUMERIC,
+    STAT_TYPE_ZYGOSITY,
     NUMERIC_RENDER_TYPES,
 } from '../../../common/constants';
 
@@ -53,6 +64,7 @@ export default {
         LogarithmicEditor,
         EnumEditor,
         LinearEditor,
+        ZygosityEditor,
     },
     computed: {
         // return data for current condition, {data: ..., type: ...}
@@ -82,17 +94,21 @@ export default {
         preselectedCoordMax() {
             return this.conditionByIndex(1) || this.data[1];
         },
-        // For enum type, this.oCurrentCondition.data = [operator, selectedItemsArray]
         preselectedData() {
-            if (this.oCurrentCondition && this.oCurrentCondition.data) {
-                return this.oCurrentCondition.list;
-            }
-            return [];
+            return (this.oCurrentCondition && this.oCurrentCondition.list) || [];
+        },
+        preselectedFamily() {
+            return (this.oCurrentCondition && this.oCurrentCondition.family)
+                || this.data.selectedFamily || [];
+        },
+        preselectedVariants() {
+            return (this.oCurrentCondition && this.oCurrentCondition.variants) || [];
         },
         statTypes() {
             return {
                 enum: STAT_TYPE_ENUM,
                 status: STAT_TYPE_STATUS,
+                zygosity: STAT_TYPE_ZYGOSITY,
                 linear: NUMERIC_RENDER_TYPES.LINEAR,
                 coordinate: NUMERIC_RENDER_TYPES.COORDINATE,
                 logarithmic: NUMERIC_RENDER_TYPES.LOGARITHMIC,
@@ -115,6 +131,14 @@ export default {
             const condition = [STAT_TYPE_ENUM, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
             this.$store.commit('setCurrentConditions', condition);
             this.$store.dispatch('getListByConditions');
+        },
+        submitZygosityHandler(family, variants) {
+            const condition = [STAT_TYPE_ZYGOSITY, this.name, family, '', variants];
+            this.$store.commit('setCurrentConditions', condition);
+            this.$store.dispatch('getListByConditions');
+        },
+        changeFamily(family) {
+            this.$store.dispatch('getZygosityByFamily', { family, name: this.name });
         },
     },
 };

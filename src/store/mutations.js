@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import { STAT_GROUP } from '../common/constants';
+import * as utils from '../common/utils';
 
 /* eslint-disable no-param-reassign */
 
@@ -132,6 +134,14 @@ export function removeConditionItem(state, { name, itemIndex }) {
     }
 }
 
+export function removeZygosityItem(state, { name, itemIndex }) {
+    const index = state.currentConditions.findIndex(item => item[1] === name);
+    if (index > -1) {
+        state.currentConditions[index][4].splice(itemIndex, 1);
+        Vue.set(state.currentConditions, index, state.currentConditions[index]);
+    }
+}
+
 export function setRulesData(state, rulesData) {
     state.rulesData = rulesData;
 }
@@ -158,4 +168,15 @@ export function setTagFilterValue(state, value) {
 
 export function clearTagFilterValue(state) {
     state.tagFilterValue = '';
+}
+
+export function setZygosityVariants(state, payload) {
+    let list = state.stats;
+    if (payload[1].vgroup) {
+        const targetGroup = list.find(item => item.title === payload[1].vgroup
+            && item.type === STAT_GROUP);
+        list = targetGroup.data;
+    }
+    const targetItemIndex = list.findIndex(item => item.name === payload[1].name);
+    Vue.set(list, targetItemIndex, utils.prepareStatDataByType(payload));
 }
