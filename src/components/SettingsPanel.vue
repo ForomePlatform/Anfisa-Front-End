@@ -16,7 +16,7 @@
             <span> Help</span> |
             <span> About</span>
         </div>
-        <div class="settings-panel_block">
+        <div v-if="demoText" class="settings-panel_block">
             <p class="settings-panel_demo-status">
                 {{demoText}}
             </p>
@@ -122,7 +122,7 @@ export default {
             return this.$store.state.selectedPresetSaved;
         },
         demoText() {
-            return DEMO_NOTIFICATION;
+            return process.env.VUE_APP_PANEL_WARNING ? DEMO_NOTIFICATION : null;
         },
     },
     methods: {

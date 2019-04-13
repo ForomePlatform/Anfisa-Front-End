@@ -3,8 +3,14 @@
     <SettingsPanel />
     <VariantsPanel />
     <VariantDetails />
-    <CustomPopup ref="disclaymerModal" :title="disclaymer.title" :onSubmit="submithandler"
-      :onHide="rejectHandler" :okTitle="disclaymer.ok" :cancelTitle="disclaymer.cancel"
+    <CustomPopup
+      v-if="displayDisclaymer"
+      ref="disclaymerModal"
+      :title="disclaymer.title"
+      :onSubmit="submithandler"
+      :onHide="rejectHandler"
+      :okTitle="disclaymer.ok"
+      :cancelTitle="disclaymer.cancel"
       :noBgClose="true"
     >
         <p class="mt-3 ml-3">
@@ -49,6 +55,9 @@ export default {
         disclaymer() {
             return DISCLAIMER;
         },
+        displayDisclaymer() {
+            return process.env.VUE_APP_DISCLAIMER_POPUP;
+        },
     },
     created() {
         const { ws } = this.$route.query;
@@ -62,11 +71,13 @@ export default {
         this.$store.dispatch('getWorkspaces');
     },
     mounted() {
-        const visited = localStorage.getItem('visited');
-        if (!visited || expired(Date.parse(visited))) {
-            this.openDisclaymerModal();
-        } else {
-            localStorage.setItem('visited', new Date());
+        if (this.displayDisclaymer) {
+            const visited = localStorage.getItem('visited');
+            if (!visited || expired(Date.parse(visited))) {
+                this.openDisclaymerModal();
+            } else {
+                localStorage.setItem('visited', new Date());
+            }
         }
     },
 };
