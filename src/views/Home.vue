@@ -2,8 +2,8 @@
   <div class="home">
     <SettingsPanel />
     <VariantsPanel />
-    <VariantDetails />
-    <CustomPopup
+    <VariantDetailsPanel />
+    <BaseModal
       v-if="displayDisclaymer"
       ref="disclaymerModal"
       :title="disclaymer.title"
@@ -16,17 +16,15 @@
         <p class="mt-3 ml-3">
           {{ disclaymer.text }}
         </p>
-    </CustomPopup>
-    <NewTagPopup/>
+    </BaseModal>
   </div>
 </template>
 
 <script>
-import SettingsPanel from '@/components/SettingsPanel.vue';
-import VariantsPanel from '@/components/VariantsPanel.vue';
-import VariantDetails from '@/components/VariantDetails.vue';
-import CustomPopup from '@/components/CustomPopup.vue';
-import NewTagPopup from '@/components/NewTagPopup.vue';
+import SettingsPanel from '@/components/settingsPanel/SettingsPanel.vue';
+import VariantsPanel from '@/components/variantsListPanel/VariantsPanel.vue';
+import VariantDetailsPanel from '@/components/variantDetailsPanel/VariantDetailsPanel.vue';
+import BaseModal from '@/components/common/BaseModal.vue';
 import { DISCLAIMER } from '@/common/constants';
 import { expired } from '@/common/utils';
 
@@ -35,9 +33,8 @@ export default {
     components: {
         SettingsPanel,
         VariantsPanel,
-        VariantDetails,
-        CustomPopup,
-        NewTagPopup,
+        VariantDetailsPanel,
+        BaseModal,
     },
     methods: {
         openDisclaymerModal() {
