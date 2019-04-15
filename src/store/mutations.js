@@ -180,3 +180,15 @@ export function setZygosityVariants(state, payload) {
     const targetItemIndex = list.findIndex(item => item.name === payload[1].name);
     Vue.set(list, targetItemIndex, utils.prepareStatDataByType(payload));
 }
+
+export function resetListDependencies(state) {
+    state.records = [];
+    state.workspace = '';
+    state.total = 0;
+    state.filtered = 0;
+    state.selectedPreset = null;
+    state.selectedPresetSaved = true;
+    state.selectedVariant = null;
+    state.variantDetails = {};
+    state.currentConditions = [];
+}

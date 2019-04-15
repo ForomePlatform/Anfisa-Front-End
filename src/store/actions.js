@@ -24,6 +24,7 @@ export function getList(context) {
             context.commit('removeAllCurrentConditions');
         })
         .catch((error) => {
+            context.commit('resetListDependencies');
             console.log(error);
         });
 }
@@ -116,6 +117,7 @@ export function getVariantTags(context, variant) {
         .catch((error) => {
             context.commit('setAllTags', []);
             context.commit('setSelectedTags', []);
+            context.commit('changeNote', '');
             console.log(error);
         });
 }
@@ -196,6 +198,7 @@ export function toggleVariantTag(context, tag) {
         .catch((error) => {
             context.commit('setAllTags', []);
             context.commit('setSelectedTags', []);
+            context.commit('changeNote', '');
             console.log(error);
         });
 }
@@ -267,6 +270,8 @@ export function getRulesData(context) {
         context.commit('setRulesData', data.columns);
         context.commit('setRulesParams', data.params);
     }).catch((error) => {
+        context.commit('setRulesData', []);
+        context.commit('setRulesParams', '');
         console.log(error);
     });
 }
@@ -380,6 +385,7 @@ export function getConditionsByFilter(context, filter) {
         const { data } = response;
         context.commit('setAllCurrentConditions', data.conditions || []);
     }).catch((error) => {
+        context.commit('setAllCurrentConditions', []);
         console.log(error);
     });
 }

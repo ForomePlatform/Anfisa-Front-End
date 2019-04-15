@@ -47,6 +47,13 @@ export default {
         submithandler() {
             localStorage.setItem('visited', new Date());
         },
+        updateAppData() {
+            this.$store.dispatch('getList');
+            this.$store.dispatch('getZoneList');
+            this.$store.dispatch('getFilters');
+            this.$store.dispatch('getRulesData');
+            this.$store.dispatch('getWorkspaces');
+        },
     },
     computed: {
         disclaymer() {
@@ -61,11 +68,7 @@ export default {
         if (ws) {
             this.$store.commit('setWorkspace', ws);
         }
-        this.$store.dispatch('getList');
-        this.$store.dispatch('getZoneList');
-        this.$store.dispatch('getFilters');
-        this.$store.dispatch('getRulesData');
-        this.$store.dispatch('getWorkspaces');
+        this.updateAppData();
     },
     mounted() {
         if (this.displayDisclaymer) {
@@ -76,6 +79,14 @@ export default {
                 localStorage.setItem('visited', new Date());
             }
         }
+    },
+    beforeRouteUpdate(to, from, next) {
+        if (to.path === '/' && to.query.ws !== from.query.ws) {
+            const nextWs = to.query.ws || null;
+            this.$store.commit('setWorkspace', nextWs);
+            this.updateAppData();
+        }
+        next();
     },
 };
 </script>

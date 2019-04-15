@@ -96,7 +96,7 @@ import BaseHeader from './BaseHeader.vue';
 import FilterModal from '../filterModal/FilterModal.vue';
 import LayoutControl from './LayoutControl.vue';
 import BaseModal from '../common/BaseModal.vue';
-// import router from '../router';
+import router from '../../router';
 
 const collapseIcon = require('@/assets/collapseIcon.svg');
 const expandIcon = require('@/assets/expandIcon.svg');
@@ -139,12 +139,7 @@ export default {
             window.open(this.exportFileUrl);
         },
         selectWorkspace() {
-            // router.replace(`/?ws=${this.selectedWorkspace}`);
-            this.$store.commit('setWorkspace', this.selectedWorkspace);
-            this.$store.dispatch('getList');
-            this.$store.dispatch('getZoneList');
-            this.$store.dispatch('getFilters');
-            this.$store.dispatch('getRulesData');
+            router.push({ parh: '/', query: { ws: this.selectedWorkspace } });
         },
         openWorkspacesModal() {
             this.$store.dispatch('getWorkspaces');
