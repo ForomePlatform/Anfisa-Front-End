@@ -361,6 +361,10 @@ export function updateFilter(context, filterName) {
     params.append('instr', `UPDATE/${filterName}`);
     if (context.state.currentConditions.length) {
         params.append('conditions', JSON.stringify(context.state.currentConditions));
+        const ctx = utils.getProblemGroup(context.state.currentConditions);
+        if (ctx) {
+            params.append('ctx', JSON.stringify(ctx));
+        }
     }
     commonHttp.post('/stat', params).then((response) => {
         const filterList = response.data['filter-list'];
@@ -396,6 +400,12 @@ export function getStatList(context, { conditions = null, filter = null }) {
         conditions,
         filter,
     });
+    if (conditions && conditions.length) {
+        const ctx = utils.getProblemGroup(conditions);
+        if (ctx) {
+            params.append('ctx', JSON.stringify(ctx));
+        }
+    }
     commonHttp.post('/stat', params).then((response) => {
         const statList = response.data['stat-list'];
         context.commit('setStats', utils.prepareStatList(statList));

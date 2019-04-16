@@ -145,3 +145,8 @@ export function checkNonzeroStat(stat) {
     }
     return false;
 }
+
+export function getProblemGroup(currentConditions) {
+    const zygosity = currentConditions.find(condition => condition[0] === STAT_TYPE_ZYGOSITY);
+    return zygosity ? zygosity[2] : null;
+}
