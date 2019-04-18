@@ -447,6 +447,11 @@ export default {
     },
 };
 </script>
+<style>
+    a {
+        outline: 0;
+    }
+</style>
 <style lang="scss" scoped>
     .button {
         width: 35px;
