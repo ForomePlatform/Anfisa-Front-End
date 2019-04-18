@@ -403,6 +403,8 @@ export function getAnfisaJson(context, formatUrl, formatHeader) {
             context.commit('setFiltered', records.length);
             context.commit('setAnnotationsSearchResult', resp.data.data);
             context.commit('setShowFinished', true);
+            const data = resp.data.data[0].result[0];
+            setVariantsDetails(context, data);
         }).catch((error) => {
             showError(context, `Server error: ${error.response.data.error.code.replace('_', ' ')}`);
         });

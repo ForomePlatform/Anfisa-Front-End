@@ -4,11 +4,12 @@
                  centered
                  scrollable
                  size="lg"
-                 title="Get annotations">
+                 title="Get annotations"
+        >
             <div>
-                <b-card no-body>
+                <b-card no-body id="mainModal">
                     <b-tabs card ref="myTabs">
-                        <b-tab title="Type in" active>
+                        <b-tab title="Type in" active id="typeInTab" class="tab">
                             <b-card-text>
                                 <div v-if="!showFinished">
                                     <div v-if="showInputs">
@@ -80,7 +81,7 @@
                                 </div>
                             </b-card-text>
                         </b-tab>
-                        <b-tab title="Upload VCF">
+                        <b-tab title="Upload VCF" class="tab">
                             <b-card-text>
                                 <div v-if="!showFinished">
                                     <div v-if="showInputs">
@@ -97,6 +98,13 @@
                                                 placeholder="Choose a file..."
                                                 drop-placeholder="Drop file here..."
                                         ></b-form-file>
+                                        <div style="text-align: center">
+                                            <b-button
+                                                    centered
+                                                    class="button addRowButton"
+                                                    @click="clearFileUpload">Clear
+                                            </b-button>
+                                        </div>
                                         <div v-if="showFileSizeError"
                                              v-bind:style="{'color': '#ff0008'}">
                                             File too large
@@ -114,7 +122,7 @@
                                 </div>
                             </b-card-text>
                         </b-tab>
-                        <b-tab title="Paste VCF">
+                        <b-tab title="Paste VCF" class="tab">
                             <b-card-text>
                                 <div v-if="!showFinished">
                                     <div v-if="showInputs">
@@ -125,8 +133,9 @@
                                         <b-form-textarea
                                                 id="textarea-default"
                                                 v-model="vcfText"
-                                                class="vcfText"
                                                 placeholder="Paste VCF"
+                                                rows="10"
+                                                no-resize
                                         ></b-form-textarea>
                                     </div>
                                     <div v-else-if="!showError">
@@ -148,14 +157,14 @@
             <div slot="modal-footer" class="w-100">
                 <b-button v-if="showInputs"
                           size="sm"
-                          class="float-right"
+                          class="footer-button float-right"
                           variant="primary"
                           @click="getAnnotationsData">
                     Submit
                 </b-button>
                 <b-button v-if="showFinished || showError"
                           size="sm"
-                          class="float-right"
+                          class="footer-button float-right"
                           variant="primary"
                           @click="viewAnnotationsData">
                     OK
@@ -164,16 +173,17 @@
         </b-modal>
         <b-modal ref="confirmRemoveRow"
                  centered
-                 title="Removing confirmation">
+                 title="Confirm removing">
             Remove this variant?
             <div slot="modal-footer" class="w-100">
                 <b-button size="sm"
                           variant="primary"
+                          class="footer-button float-right btn-primary"
                           @click="deleteRow(removeRowIndex)">
                     Confirm
                 </b-button>
                 <b-button size="sm"
-                          class="float-right"
+                          class="footer-button float-right btn-secondary"
                           @click="hideDeleteRowDialog">
                     Cancel
                 </b-button>
@@ -181,15 +191,16 @@
         </b-modal>
         <b-modal ref="confirmRemoveAllRows"
                  centered
-                 title="Removing confirmation">
+                 title="Confirm removing">
             Remove all variants?
             <div slot="modal-footer" class="w-100">
                 <b-button size="sm"
+                          class="footer-button float-right btn-secondary"
                           @click="removeAllRows">
                     Confirm
                 </b-button>
                 <b-button size="sm"
-                          class="float-right"
+                          class="footer-button float-right btn-primary"
                           variant="primary"
                           @click="hideRemoveAllRowsDialog">
                     Cancel
@@ -200,6 +211,7 @@
 </template>
 
 <script>
+
 export default {
     name: 'AnnotationSearchDialog',
     data() {
@@ -306,6 +318,7 @@ export default {
             });
             this.file = null;
             this.setCookies();
+            this.addScroll();
         },
         showDeleteRowDialog(inputText, index) {
             if (inputText) {
@@ -328,6 +341,9 @@ export default {
             this.inputs.splice(index, 1);
             this.setCookies();
             this.$refs.confirmRemoveRow.hide();
+        },
+        clearFileUpload() {
+            this.file = null;
         },
         show() {
             const inputData = this.getCookie('annotationJsonInputData');
@@ -422,6 +438,12 @@ export default {
             this.$store.state.panels.variantsPanelCollapsed = true;
             setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
+        addScroll() {
+            setTimeout(() => {
+                const elem = document.getElementById('typeInTab');
+                elem.scrollTop = elem.scrollHeight;
+            });
+        },
     },
 };
 </script>
@@ -441,9 +463,10 @@ export default {
         font-weight: 800;
         cursor: pointer;
         user-select: none;
+        margin-top: 2px;
 
         &:hover {
-            background-color: #597995;
+            background-color: #597995!important;
         }
     }
 
@@ -470,8 +493,9 @@ export default {
     }
 
     .input {
-        width: 90%;
+        width: 88%;
         display: inline !important;
+        margin: 2px;
     }
 
     .addRowWrapper {
@@ -483,8 +507,102 @@ export default {
         margin-left: 25px;
     }
 
-    .vcfText {
-        height: 173px;
+    .tab {
+        outline: none !important;
+    }
+
+    #typeInTab {
+        overflow: auto;
+        height: 340px;
+        border: 0;
+        box-shadow: none;
+    }
+
+    #mainModal {
+        height: 400px;
+    }
+
+    .footer-button {
+        padding: 5px 18px;
+        height: 25px;
+        border-radius: 12px;
+        background-color: #e7e7e7;
+        font-size: 11px;
+        letter-spacing: 0px;
+        color: #0a1c34;
+        font-weight: 800;
+        text-align: center;
+        border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .btn-secondary {
+        &:hover {
+            background-color: #ededed;
+        }
+    }
+    .btn-primary {
+        color: #fff;
+        background-color: #2bb3ed;
+        &:hover {
+            background-color: #48c3f7;
+        }
+    }
+
+    /deep/ .modal-content {
+        border-radius: 12px 12px 10px 10px;
+        border: none;
+
+        .modal-header {
+            height: 54px;
+            background-color: #0a1c34;
+            border-radius: 10px 10px 0 0;
+            border-bottom: 0;
+
+            button {
+                color: #fff;
+                text-shadow: none;
+                opacity: 1;
+                outline: none;
+            }
+
+            .modal-title {
+                font-size: 14px;
+                letter-spacing: 0px;
+                color: #ffffff;
+                font-weight: 800;
+            }
+        }
+
+        .modal-body {
+            padding: 0;
+            margin-bottom: 0;
+
+            select {
+                outline: none;
+                border: none;
+                margin-bottom: 0 !important;
+                padding: 0;
+                border-radius: 0;
+
+                &:focus {
+                    box-shadow: none;
+                }
+
+                option {
+                    font-size: 16px;
+                    letter-spacing: 0px;
+                    color: #1a3e6c;
+                    padding: 10px 20px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: #e7e7e7;
+                    }
+                }
+            }
+        }
     }
 </style>
 
