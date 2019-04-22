@@ -4,7 +4,7 @@
                  centered
                  scrollable
                  size="lg"
-                 title="Get annotations"
+                 title="GET ANNOTATIONS"
         >
             <div>
                 <b-card no-body id="mainModal">
@@ -173,8 +173,8 @@
         </b-modal>
         <b-modal ref="confirmRemoveRow"
                  centered
-                 title="Confirm removing">
-            Remove this variant?
+                 title="CONFIRM REMOVING">
+            <span class="textRemove">Remove this variant?</span>
             <div slot="modal-footer" class="w-100">
                 <b-button size="sm"
                           variant="primary"
@@ -191,8 +191,8 @@
         </b-modal>
         <b-modal ref="confirmRemoveAllRows"
                  centered
-                 title="Confirm removing">
-            Remove all variants?
+                 title="CONFIRM REMOVING">
+            <span class="textRemove">Remove all variants?</span>
             <div slot="modal-footer" class="w-100">
                 <b-button size="sm"
                           class="footer-button float-right btn-secondary"
@@ -471,7 +471,7 @@ export default {
         margin-top: 2px;
 
         &:hover {
-            background-color: #597995!important;
+            background-color: #597995 !important;
         }
     }
 
@@ -531,7 +531,7 @@ export default {
         padding: 5px 18px;
         height: 25px;
         border-radius: 12px;
-        background-color: #e7e7e7;
+        background-color: #2bb3ed;
         font-size: 11px;
         letter-spacing: 0px;
         color: #0a1c34;
@@ -542,17 +542,24 @@ export default {
         justify-content: center;
         align-items: center;
     }
+
     .btn-secondary {
         &:hover {
             background-color: #ededed;
         }
     }
+
     .btn-primary {
         color: #fff;
         background-color: #2bb3ed;
+
         &:hover {
             background-color: #48c3f7;
         }
+    }
+
+    .textRemove {
+        margin-left: 15px;
     }
 
     /deep/ .modal-content {
@@ -573,16 +580,50 @@ export default {
             }
 
             .modal-title {
-                font-size: 14px;
+                font-size: 16px;
                 letter-spacing: 0px;
-                color: #ffffff;
+                color: #2bb3ed;
                 font-weight: 800;
             }
+        }
+
+        .modal-footer {
+            background-color: #e7e7e7;
+            border: none;
+        }
+
+        .card-header {
+            background-color: #0a1c34;
+        }
+
+        .card {
+            border: none;
+            background-color: #e7e7e7;
+        }
+
+        .card-header:first-child {
+            border-radius: 0;
+        }
+
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            font-weight: 700;
+            color: #203b6a;
+            background-color: #e7e7e7;
+            border-color: #e7e7e7;
+        }
+
+        .nav-tabs .nav-item {
+            background-color: #1a3e6c;
+        }
+
+        a {
+            color: #ffffff;
         }
 
         .modal-body {
             padding: 0;
             margin-bottom: 0;
+            background-color: #e7e7e7;
 
             select {
                 outline: none;
