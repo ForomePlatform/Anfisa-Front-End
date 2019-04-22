@@ -567,7 +567,7 @@ export default {
         border: none;
 
         .modal-header {
-            height: 54px;
+            height: 40px;
             background-color: #0a1c34;
             border-radius: 10px 10px 0 0;
             border-bottom: 0;
@@ -609,11 +609,14 @@ export default {
             font-weight: 700;
             color: #203b6a;
             background-color: #e7e7e7;
-            border-color: #e7e7e7;
         }
 
-        .nav-tabs .nav-item {
+        .nav-tabs .nav-link {
+            border: none;
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
             background-color: #1a3e6c;
+            margin: 0 3px 0 3px;
         }
 
         a {
