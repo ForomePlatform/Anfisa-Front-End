@@ -609,6 +609,12 @@ export default {
             font-weight: 700;
             color: #203b6a;
             background-color: #e7e7e7;
+            pointer-events: none;
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
         }
 
         .nav-tabs .nav-link {
@@ -621,6 +627,11 @@ export default {
 
         a {
             color: #ffffff;
+        }
+
+        a:hover {
+            color: #2bb3ed;
+            text-decoration: underline;
         }
 
         .modal-body {
