@@ -7,13 +7,14 @@ import {
     STAT_GROUP,
     EXPIRED_TIME,
     STAT_TYPE_ZYGOSITY,
+    NUMERIC_RENDER_TYPES,
 } from './constants';
 
 const prepareNumericStatData = statItem => ({
     type: statItem[0],
     name: statItem[1].name,
     title: statItem[1].title,
-    render: statItem[1].render.split(',')[0],
+    render: statItem[1].render ? statItem[1].render.split(',')[0] : NUMERIC_RENDER_TYPES.LINEAR,
     data: statItem.splice(2),
 });
 

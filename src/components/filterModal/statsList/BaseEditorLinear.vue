@@ -4,7 +4,7 @@
             <b-form-input
               type="number"
               v-model.number="selectedMin"
-              :step="1"
+              :step="int ? 1 : .001"
               :min="min"
               :max="selectedMax"
               class="mr-2"
@@ -13,7 +13,7 @@
             <b-form-input
               type="number"
               v-model.number="selectedMax"
-              :step="1"
+              :step="int ? 1 : .001"
               :min="selectedMin"
               :max="max"
               class="ml-2"
@@ -26,7 +26,7 @@
           :marks="marks"
           :min="min"
           :max="max"
-          :interval="1"
+          :interval="int ? 1 : .001"
           @change="changeValues"
           tooltip="none"
           :class="[active || activeSlider ? '': 'float-editor_slider__default',
@@ -43,7 +43,7 @@ import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/antd.css';
 
 export default {
-    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax', 'active', 'simple'],
+    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax', 'active', 'simple', 'int'],
     data() {
         return {
             selectedMin: this.preselectedMin,
@@ -101,7 +101,7 @@ export default {
             align-items: center;
             padding: 10px;
             input {
-                width: 86px;
+                width: 88px;
                 height: 33px;
                 color: #0a1c34;
                 border-radius: 3px;

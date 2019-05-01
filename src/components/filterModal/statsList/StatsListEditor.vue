@@ -3,6 +3,7 @@
         <BaseEditorLinear
           v-if="render === statTypes.linear || name === 'Dist_from_Exon'"
           :simple="name === 'Dist_from_Exon'"
+          :int="type === statTypes.int"
           :min="data[0]"
           :max="data[1]"
           :preselectedMin="preselectedLinearMin"
@@ -44,6 +45,7 @@
 
 <script>
 import {
+    STAT_TYPE_INT,
     STAT_TYPE_ENUM,
     STAT_TYPE_STATUS,
     ENUM_DEFAULT_OPERATOR,
@@ -106,6 +108,7 @@ export default {
         },
         statTypes() {
             return {
+                int: STAT_TYPE_INT,
                 enum: STAT_TYPE_ENUM,
                 status: STAT_TYPE_STATUS,
                 zygosity: STAT_TYPE_ZYGOSITY,
