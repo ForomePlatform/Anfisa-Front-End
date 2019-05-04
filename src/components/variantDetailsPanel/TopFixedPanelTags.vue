@@ -73,6 +73,9 @@ export default {
             this.$store.commit('setTagFilterValue', e.target.value);
         },
     },
+    destroyed() {
+        this.$store.commit('clearTagFilterValue');
+    },
 };
 </script>
 

@@ -110,7 +110,9 @@ export function getVariantTags(context, variant) {
             const NOTE_TAG = '_note';
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
-            context.commit('setAllTags', data['check-tags']);
+            const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
+            context.commit('clearTagFilterValue');
+            context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
             context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
         })
@@ -157,7 +159,8 @@ export function addNewTag(context, newTagTitle) {
             const { data } = response;
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
-            context.commit('setAllTags', data['check-tags']);
+            const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
+            context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
             context.commit('clearTagFilterValue');
         })
@@ -191,7 +194,8 @@ export function toggleVariantTag(context, tag) {
             const { data } = response;
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
-            context.commit('setAllTags', data['check-tags']);
+            const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
+            context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
             context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
         })
