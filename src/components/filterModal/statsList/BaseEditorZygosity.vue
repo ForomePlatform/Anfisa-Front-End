@@ -32,7 +32,10 @@
                 </div>
             </b-form-checkbox>
         </div>
-        <div class="zygosity-editor_button" @click="addVariants">
+        <div
+          :class="[allowAdding ? 'zygosity-editor_button__active' : '', 'zygosity-editor_button']"
+          v-on="allowAdding ? { click: addVariants } : {}"
+        >
             ADD
         </div>
     </div>
@@ -46,6 +49,11 @@ export default {
             selectedFamily: this.preselectedFamily.slice() || [],
             selectedVariants: this.preselectedVariants.slice() || [],
         };
+    },
+    computed: {
+        allowAdding() {
+            return this.selectedFamily.length && this.selectedVariants.length;
+        },
     },
     props: ['family', 'variants', 'preselectedFamily', 'preselectedVariants', 'onSubmit', 'onFamilyChange'],
     methods: {
@@ -114,16 +122,19 @@ export default {
         &_button {
             height: 44px;
             line-height: 44px;
-            background-color: #2bb3ed;
             font-size: 16px;
             letter-spacing: 0px;
             color: #ffffff;
             font-weight: 800;
             text-align: center;
             border-radius: 0 0 4px 4px;
-            cursor: pointer;
-            &:hover {
-                background-color: #48c3f7;
+            background-color: #a9a9a9;
+            &__active {
+                background-color: #2bb3ed;
+                cursor: pointer;
+                &:hover {
+                    background-color: #48c3f7;
+                }
             }
         }
     }
