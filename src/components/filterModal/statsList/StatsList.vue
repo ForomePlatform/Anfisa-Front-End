@@ -10,6 +10,7 @@
               :className="className"
               :name="stat.title || stat.name"
               primary
+              :disabled=" stat.type === 'group' && !stat.data.length"
               :filled="Boolean(oCurrentConditions[stat.name])"
             >
                 <div v-if="stat.type === 'group'">
