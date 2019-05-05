@@ -48,7 +48,7 @@ export function getListByFilter(context) {
     });
 }
 
-export function getListByConditions(context) {
+export function getListByConditions(context, zoneChanged) {
     const params = utils.prepareParams({
         ws: context.state.workspace,
         conditions: context.state.currentConditions,
@@ -61,7 +61,10 @@ export function getListByConditions(context) {
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
         context.commit('clearSelectedVariant');
-        context.commit('changePresetSaved', false);
+        if (!zoneChanged) {
+            const { selectedPreset, currentConditions } = context.state;
+            context.commit('changePresetSaved', !selectedPreset && !currentConditions.length);
+        }
     }).catch((error) => {
         console.log(error);
     });

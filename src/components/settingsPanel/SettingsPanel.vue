@@ -151,7 +151,7 @@ export default {
         },
         changeZoneValue(zone, value) {
             this.$store.commit('changeZoneValue', [zone, value]);
-            this.$store.dispatch('getListByConditions');
+            this.$store.dispatch('getListByConditions', true);
         },
         changePreset(preset) {
             this.$store.commit('setPreset', preset);
