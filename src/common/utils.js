@@ -6,17 +6,50 @@ import {
     STAT_TYPES,
     STAT_GROUP,
     EXPIRED_TIME,
+    STAT_TYPE_ZYGOSITY,
+    NUMERIC_RENDER_TYPES,
 } from './constants';
 
-export const prepareStatDataByType = statItem => ({
+const prepareNumericStatData = statItem => ({
+    type: statItem[0],
     name: statItem[1].name,
     title: statItem[1].title,
-    render: statItem[0] === STAT_TYPE_INT || statItem[0] === STAT_TYPE_FLOAT ?
-        statItem[1].render.split(',')[0] : null,
-    type: statItem[0],
-    data: statItem[0] === STAT_TYPE_ENUM || statItem[0] === STAT_TYPE_STATUS
-        ? statItem[2] : statItem.splice(2),
+    render: statItem[1].render ? statItem[1].render.split(',')[0] : NUMERIC_RENDER_TYPES.LINEAR,
+    data: statItem.splice(2),
 });
+
+const prepareEnumStatData = statItem => ({
+    type: statItem[0],
+    name: statItem[1].name,
+    title: statItem[1].title,
+    data: statItem[2],
+});
+
+const prepareZygosityStatData = statItem => ({
+    type: statItem[0],
+    name: statItem[1].name,
+    title: statItem[1].title,
+    data: {
+        family: statItem[1].family,
+        selectedFamily: statItem[2],
+        variants: statItem[3],
+    },
+});
+
+export const prepareStatDataByType = (statItem) => {
+    switch (statItem[0]) {
+    case STAT_TYPE_INT:
+    case STAT_TYPE_FLOAT:
+        return prepareNumericStatData(statItem);
+    case STAT_TYPE_ENUM:
+    case STAT_TYPE_STATUS:
+        return prepareEnumStatData(statItem);
+    case STAT_TYPE_ZYGOSITY:
+        return prepareZygosityStatData(statItem);
+    default:
+        return null;
+    }
+};
 
 export function prepareStatList(statList) {
     const tmpResult = [];
@@ -100,4 +133,21 @@ export function expired(date) {
     const currentDate = new Date();
     const diffSeconds = (currentDate - date) / 1000;
     return diffSeconds > EXPIRED_TIME;
+}
+
+export function checkNonzeroStat(stat) {
+    if (stat.type === STAT_TYPE_ENUM || stat.type === STAT_TYPE_STATUS) {
+        const nonzeroItems = stat.data.filter(item => item[1]);
+        return Boolean(nonzeroItems.length);
+    } else if (stat.type === STAT_TYPE_INT || stat.type === STAT_TYPE_FLOAT) {
+        return stat.data[0] || stat.data[1];
+    } else if (stat.type === STAT_TYPE_ZYGOSITY) {
+        return true;
+    }
+    return false;
+}
+
+export function getProblemGroup(currentConditions) {
+    const zygosity = currentConditions.find(condition => condition[0] === STAT_TYPE_ZYGOSITY);
+    return zygosity ? zygosity[2] : null;
 }

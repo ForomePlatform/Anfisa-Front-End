@@ -18,8 +18,13 @@ export function getList(context) {
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.commit('setPreset', null);
+            context.commit('clearSelectedVariant');
+            context.commit('changePresetSaved', true);
+            context.commit('removeAllCurrentConditions');
         })
         .catch((error) => {
+            context.commit('resetListDependencies');
             console.log(error);
         });
 }
@@ -36,12 +41,14 @@ export function getListByFilter(context) {
         context.commit('setRecords', data.records);
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
+        context.commit('clearSelectedVariant');
+        context.commit('changePresetSaved', true);
     }).catch((error) => {
         console.log(error);
     });
 }
 
-export function getListByConditions(context) {
+export function getListByConditions(context, zoneChanged) {
     const params = utils.prepareParams({
         ws: context.state.workspace,
         conditions: context.state.currentConditions,
@@ -53,6 +60,11 @@ export function getListByConditions(context) {
         context.commit('setRecords', data.records);
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
+        context.commit('clearSelectedVariant');
+        if (!zoneChanged) {
+            const { selectedPreset, currentConditions } = context.state;
+            context.commit('changePresetSaved', !selectedPreset && !currentConditions.length);
+        }
     }).catch((error) => {
         console.log(error);
     });
@@ -68,6 +80,7 @@ export function getListByTag(context, tag) {
             context.commit('setRecords', data.records);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.commit('clearSelectedVariant');
         })
         .catch((error) => {
             console.log(error);
@@ -100,13 +113,16 @@ export function getVariantTags(context, variant) {
             const NOTE_TAG = '_note';
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
-            context.commit('setAllTags', data['check-tags']);
+            const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
+            context.commit('clearTagFilterValue');
+            context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
             context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
         })
         .catch((error) => {
             context.commit('setAllTags', []);
             context.commit('setSelectedTags', []);
+            context.commit('changeNote', '');
             console.log(error);
         });
 }
@@ -124,6 +140,36 @@ export function saveNote(context) {
     params.append('tags', JSON.stringify(tagsObject));
     commonHttp.post('/tags', params)
         .catch((error) => {
+            console.log(error);
+        });
+}
+
+export function addNewTag(context, newTagTitle) {
+    const NOTE_TAG = '_note';
+    const tagsObject = {
+        [newTagTitle.trim()]: true,
+        _note: context.state.note,
+    };
+    context.state.selectedTags.forEach((item) => {
+        tagsObject[item] = true;
+    });
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('rec', context.state.selectedVariant);
+    params.append('tags', JSON.stringify(tagsObject));
+    commonHttp.post('/tags', params)
+        .then((response) => {
+            const { data } = response;
+            const selectedTags = Object.keys(data['rec-tags'])
+                .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
+            const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
+            context.commit('setAllTags', allTags);
+            context.commit('setSelectedTags', selectedTags);
+            context.commit('clearTagFilterValue');
+        })
+        .catch((error) => {
+            context.commit('setAllTags', []);
+            context.commit('setSelectedTags', []);
             console.log(error);
         });
 }
@@ -151,13 +197,15 @@ export function toggleVariantTag(context, tag) {
             const { data } = response;
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
-            context.commit('setAllTags', data['check-tags']);
+            const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
+            context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
             context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
         })
         .catch((error) => {
             context.commit('setAllTags', []);
             context.commit('setSelectedTags', []);
+            context.commit('changeNote', '');
             console.log(error);
         });
 }
@@ -217,6 +265,7 @@ export function getZoneList(context, ws) {
         .then((response) => {
             const zones = response.data.filter(zone => zone[0].charAt(0) !== '_');
             zones.forEach(zone => getZoneData(context, zone));
+            context.commit('resetZones');
         });
 }
 
@@ -228,6 +277,8 @@ export function getRulesData(context) {
         context.commit('setRulesData', data.columns);
         context.commit('setRulesParams', data.params);
     }).catch((error) => {
+        context.commit('setRulesData', []);
+        context.commit('setRulesParams', '');
         console.log(error);
     });
 }
@@ -298,13 +349,14 @@ export function removeFilter(context, filterName) {
         if (filterList && Array.isArray(filterList)) {
             const data = filterList.map(item => item[0]);
             context.commit('setPresets', [null, ...data]);
-            context.commit('setPreset', null);
         }
         const statList = response.data['stat-list'];
         context.commit('setStats', utils.prepareStatList(statList));
         context.commit('removeAllCurrentConditions');
         context.dispatch('getFilterDetails');
         context.dispatch('getListByFilter');
+        context.commit('setPreset', null);
+        context.commit('changePresetSaved', true);
     }).catch((error) => {
         console.log(error);
     });
@@ -316,12 +368,18 @@ export function updateFilter(context, filterName) {
     params.append('instr', `UPDATE/${filterName}`);
     if (context.state.currentConditions.length) {
         params.append('conditions', JSON.stringify(context.state.currentConditions));
+        const ctx = utils.getProblemGroup(context.state.currentConditions);
+        if (ctx) {
+            params.append('ctx', JSON.stringify(ctx));
+        }
     }
     commonHttp.post('/stat', params).then((response) => {
         const filterList = response.data['filter-list'];
         if (filterList && Array.isArray(filterList)) {
             const data = filterList.map(item => item[0]);
             context.commit('setPresets', [null, ...data]);
+            context.commit('setPreset', filterName);
+            context.commit('changePresetSaved', true);
         }
         context.dispatch('getFilterDetails');
     }).catch((error) => {
@@ -338,6 +396,7 @@ export function getConditionsByFilter(context, filter) {
         const { data } = response;
         context.commit('setAllCurrentConditions', data.conditions || []);
     }).catch((error) => {
+        context.commit('setAllCurrentConditions', []);
         console.log(error);
     });
 }
@@ -348,9 +407,30 @@ export function getStatList(context, { conditions = null, filter = null }) {
         conditions,
         filter,
     });
+    if (conditions && conditions.length) {
+        const ctx = utils.getProblemGroup(conditions);
+        if (ctx) {
+            params.append('ctx', JSON.stringify(ctx));
+        }
+    }
     commonHttp.post('/stat', params).then((response) => {
         const statList = response.data['stat-list'];
         context.commit('setStats', utils.prepareStatList(statList));
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+export function getZygosityByFamily(context, { name, family }) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('unit', name);
+    params.append('ctx', JSON.stringify({ problem_group: family }));
+    if (context.state.currentConditions.length) {
+        params.append('conditions', JSON.stringify(context.state.currentConditions));
+    }
+    commonHttp.post('/statunit', params).then((response) => {
+        context.commit('setZygosityVariants', response.data);
     }).catch((error) => {
         console.log(error);
     });

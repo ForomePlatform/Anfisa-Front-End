@@ -2,23 +2,29 @@
   <div class="home">
     <SettingsPanel />
     <VariantsPanel />
-    <VariantDetails />
-    <CustomPopup ref="disclaymerModal" :title="disclaymer.title" :onSubmit="submithandler"
-      :onHide="rejectHandler" :okTitle="disclaymer.ok" :cancelTitle="disclaymer.cancel"
+    <VariantDetailsPanel />
+    <BaseModal
+      v-if="displayDisclaymer"
+      ref="disclaymerModal"
+      :title="disclaymer.title"
+      :onSubmit="submithandler"
+      :onHide="rejectHandler"
+      :okTitle="disclaymer.ok"
+      :cancelTitle="disclaymer.cancel"
       :noBgClose="true"
     >
         <p class="mt-3 ml-3">
           {{ disclaymer.text }}
         </p>
-    </CustomPopup>
+    </BaseModal>
   </div>
 </template>
 
 <script>
-import SettingsPanel from '@/components/SettingsPanel.vue';
-import VariantsPanel from '@/components/VariantsPanel.vue';
-import VariantDetails from '@/components/VariantDetails.vue';
-import CustomPopup from '@/components/CustomPopup.vue';
+import SettingsPanel from '@/components/settingsPanel/SettingsPanel.vue';
+import VariantsPanel from '@/components/variantsListPanel/VariantsPanel.vue';
+import VariantDetailsPanel from '@/components/variantDetailsPanel/VariantDetailsPanel.vue';
+import BaseModal from '@/components/common/BaseModal.vue';
 import { DISCLAIMER } from '@/common/constants';
 import { expired } from '@/common/utils';
 
@@ -27,8 +33,8 @@ export default {
     components: {
         SettingsPanel,
         VariantsPanel,
-        VariantDetails,
-        CustomPopup,
+        VariantDetailsPanel,
+        BaseModal,
     },
     methods: {
         openDisclaymerModal() {
@@ -41,26 +47,46 @@ export default {
         submithandler() {
             localStorage.setItem('visited', new Date());
         },
+        updateAppData() {
+            this.$store.dispatch('getList');
+            this.$store.dispatch('getZoneList');
+            this.$store.dispatch('getFilters');
+            this.$store.dispatch('getRulesData');
+            this.$store.dispatch('getWorkspaces');
+        },
     },
     computed: {
         disclaymer() {
             return DISCLAIMER;
         },
+        displayDisclaymer() {
+            return process.env.VUE_APP_DISCLAIMER_POPUP;
+        },
     },
     created() {
-        this.$store.dispatch('getList');
-        this.$store.dispatch('getZoneList');
-        this.$store.dispatch('getFilters');
-        this.$store.dispatch('getRulesData');
-        this.$store.dispatch('getWorkspaces');
+        const { ws } = this.$route.query;
+        if (ws) {
+            this.$store.commit('setWorkspace', ws);
+        }
+        this.updateAppData();
     },
     mounted() {
-        const visited = localStorage.getItem('visited');
-        if (!visited || expired(Date.parse(visited))) {
-            this.openDisclaymerModal();
-        } else {
-            localStorage.setItem('visited', new Date());
+        if (this.displayDisclaymer) {
+            const visited = localStorage.getItem('visited');
+            if (!visited || expired(Date.parse(visited))) {
+                this.openDisclaymerModal();
+            } else {
+                localStorage.setItem('visited', new Date());
+            }
         }
+    },
+    beforeRouteUpdate(to, from, next) {
+        if (to.path === '/' && to.query.ws !== from.query.ws) {
+            const nextWs = to.query.ws || null;
+            this.$store.commit('setWorkspace', nextWs);
+            this.updateAppData();
+        }
+        next();
     },
 };
 </script>

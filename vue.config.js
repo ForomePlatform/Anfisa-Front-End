@@ -1,9 +1,9 @@
 module.exports = {
-    baseUrl: process.env.NODE_ENV === 'production' ? '/anfisa-dev/' : '/',
+    baseUrl: process.env.BASE_URL,
     devServer: {
         proxy: {
             '/api/*': {
-                target: 'http://192.168.1.84',
+                target: process.env.DEV_SERVER_PROXY,
             },
         },
     },
