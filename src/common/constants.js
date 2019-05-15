@@ -33,6 +33,7 @@ export const STAT_TYPE_INT = 'int';
 export const STAT_TYPE_FLOAT = 'float';
 export const STAT_TYPE_ENUM = 'enum';
 export const STAT_TYPE_STATUS = 'status';
+export const STAT_TYPE_ZYGOSITY = 'zygosity';
 export const STAT_GROUP = 'group';
 export const STAT_NUMERIC = 'numeric';
 
@@ -42,13 +43,20 @@ export const NUMERIC_RENDER_TYPES = {
     LINEAR: 'linear',
 };
 
-export const STAT_TYPES = [STAT_TYPE_INT, STAT_TYPE_FLOAT, STAT_TYPE_ENUM, STAT_TYPE_STATUS];
+// List of allowed types to display in 'Filter Modal' (check utils.prepareStatList)
+export const STAT_TYPES = [
+    STAT_TYPE_INT,
+    STAT_TYPE_FLOAT,
+    STAT_TYPE_ENUM,
+    STAT_TYPE_STATUS,
+    STAT_TYPE_ZYGOSITY,
+];
 
 export const LOG_EDITOR_MARKS = [0, 0.0001, 0.001, 0.01, 0.05, 0.5, 1];
 
 export const DEMO_NOTIFICATION = 'Demo Instance. Use at your own risk. Instance resets every night at 00:00 EDT';
 
-export const NOT_FOUND_TAG = 'Tag not found';
+export const NOT_FOUND_TAG = 'Tag not found, to create a new tag continue typing new tag name and press Enter';
 
 export const DISCLAIMER = {
     title: 'DISCLAIMER',

@@ -1,7 +1,9 @@
 module.exports = {
-    publicPath: process.env.NODE_ENV === 'production' ? '/annotation-dev/' : '/',
+    baseUrl: process.env.BASE_URL,
     devServer: {
         proxy: {
+            '/api/*': {
+                target: process.env.DEV_SERVER_PROXY,
             '/anfisa/*': {
                 target: 'https://demo.forome.org',
             },

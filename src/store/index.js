@@ -3,7 +3,8 @@ import Vuex from 'vuex';
 
 import * as actions from './actions';
 import * as mutations from './mutations';
-
+import { checkNonzeroStat } from '../common/utils';
+import { STAT_TYPE_ZYGOSITY } from '../common/constants';
 
 Vue.use(Vuex);
 
@@ -25,6 +26,7 @@ export default new Vuex.Store({
         zones: {},
         presets: [],
         selectedPreset: null,
+        selectedPresetSaved: true,
         stats: [],
         currentConditions: [],
         rulesData: [],
@@ -32,6 +34,7 @@ export default new Vuex.Store({
         filterDetails: [],
         version: '',
         listMounting: false,
+        tagFilterValue: '',
         annotations: {
             showFinished: false,
             error: {
@@ -85,12 +88,34 @@ export default new Vuex.Store({
         oCurrentConditions: (state) => {
             const result = {};
             state.currentConditions.forEach((condition) => {
-                const [type, name, data, list] = condition;
-                result[name] = {
-                    type,
-                    data,
-                    list,
-                };
+                if (condition[0] === STAT_TYPE_ZYGOSITY) {
+                    const [type, name, family, , variants] = condition;
+                    result[name] = {
+                        type,
+                        family,
+                        variants,
+                    };
+                } else {
+                    const [type, name, data, list] = condition;
+                    result[name] = {
+                        type,
+                        data,
+                        list,
+                    };
+                }
+            });
+            return result;
+        },
+        getNonzeroStats: (state) => {
+            const result = [];
+            state.stats.forEach((stat) => {
+                if (stat.type === 'group') {
+                    const data = stat.data.filter(item => checkNonzeroStat(item));
+                    result.push({ ...stat, data });
+                } else {
+                    const subResult = checkNonzeroStat(stat) ? stat : { ...stat, type: 'group', data: [] };
+                    result.push(subResult);
+                }
             });
             return result;
         },

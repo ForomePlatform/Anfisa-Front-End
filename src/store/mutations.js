@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import { STAT_GROUP } from '../common/constants';
+import * as utils from '../common/utils';
 
 /* eslint-disable no-param-reassign */
 
@@ -66,6 +68,11 @@ export function setSelectedVariant(state, selectedVariant) {
     state.selectedVariant = selectedVariant;
 }
 
+export function clearSelectedVariant(state) {
+    state.selectedVariant = null;
+    state.variantDetails = {};
+}
+
 export function setSelectedTags(state, tags) {
     state.selectedTags = tags;
 }
@@ -127,6 +134,10 @@ export function setAnnotationSearchErrorMessage(state, value) {
     state.annotations.error.message = value;
 }
 
+export function changePresetSaved(state, saved) {
+    state.selectedPresetSaved = saved;
+}
+
 export function setStats(state, stats) {
     state.stats = stats;
 }
@@ -171,6 +182,14 @@ export function removeConditionItem(state, { name, itemIndex }) {
     }
 }
 
+export function removeZygosityItem(state, { name, itemIndex }) {
+    const index = state.currentConditions.findIndex(item => item[1] === name);
+    if (index > -1) {
+        state.currentConditions[index][4].splice(itemIndex, 1);
+        Vue.set(state.currentConditions, index, state.currentConditions[index]);
+    }
+}
+
 export function setRulesData(state, rulesData) {
     state.rulesData = rulesData;
 }
@@ -189,4 +208,35 @@ export function setVersion(state, version) {
 
 export function setListMounting(state, value) {
     state.listMounting = value;
+}
+
+export function setTagFilterValue(state, value) {
+    state.tagFilterValue = value;
+}
+
+export function clearTagFilterValue(state) {
+    state.tagFilterValue = '';
+}
+
+export function setZygosityVariants(state, payload) {
+    let list = state.stats;
+    if (payload[1].vgroup) {
+        const targetGroup = list.find(item => item.title === payload[1].vgroup
+            && item.type === STAT_GROUP);
+        list = targetGroup.data;
+    }
+    const targetItemIndex = list.findIndex(item => item.name === payload[1].name);
+    Vue.set(list, targetItemIndex, utils.prepareStatDataByType(payload));
+}
+
+export function resetListDependencies(state) {
+    state.records = [];
+    state.workspace = '';
+    state.total = 0;
+    state.filtered = 0;
+    state.selectedPreset = null;
+    state.selectedPresetSaved = true;
+    state.selectedVariant = null;
+    state.variantDetails = {};
+    state.currentConditions = [];
 }
