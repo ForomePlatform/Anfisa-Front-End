@@ -17,7 +17,6 @@
                   placement: 'top',
                   delay: { show: 400, hide: 0 }
               }">
-
             </span>
         </div>
     </div>

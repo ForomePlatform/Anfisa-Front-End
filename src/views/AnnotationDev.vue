@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import SettingsPanel from '@/components/SettingsPanel.vue';
-import VariantsPanel from '@/components/VariantsPanel.vue';
-import VariantDetails from '@/components/VariantDetails.vue';
+import SettingsPanel from '@/components/settingsPanel/SettingsPanel.vue';
+import VariantsPanel from '@/components/variantsListPanel/VariantsPanel.vue';
+import VariantDetails from '@/components/variantDetailsPanel/VariantDetailsPanel.vue';
 
 export default {
     name: 'annotation-dev',

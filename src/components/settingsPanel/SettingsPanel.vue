@@ -1,109 +1,111 @@
 <template>
     <div :class="[panelCollapsed ? 'settings-panel__collapsed' : '', 'settings-panel']">
         <div
-          class="settings-panel_collapse-icon"
-          v-on:click="togglePanel"
+                class="settings-panel_collapse-icon"
+                v-on:click="togglePanel"
         >
-            <img :src="panelCollapsedIcon" />
+            <img :src="panelCollapsedIcon"/>
         </div>
         <div v-if="!panelCollapsed">
-        <img class="mb-1 settings-panel_logo" alt="Foreme logo" src="@/assets/foromeLogo.png" />
-        <div class="mb-2 settings-panel_title">
-            Anfisa
-        </div>
-        <div class="mb-3 settings-panel_menu">
-            <span>ver {{version.slice(7)}}</span> |
-            <span> Help</span> |
-            <span> About</span>
-        </div>
-        <div v-if="demoText" class="settings-panel_block">
-        <div class="settings-panel_block">
-            <div v-if="!isAnnotationService">
-                <SettingsHeader title="FILTERS"/>
-                <div class="d-flex justify-content-between mt-3">
-                    <DropdownButton :text="selectedPreset" :data="presets"
-                                    :onChange="changePreset"/>
-                    <div class="settings-panel_icon-button">
-                        <img alt="presets icon" src="../assets/presetsIcon.svg" />
-                    </div>
-                </div>
+            <img class="mb-1 settings-panel_logo" alt="Foreme logo" src="@/assets/foromeLogo.png"/>
+            <div class="mb-2 settings-panel_title">
+                Anfisa
+            </div>
+            <div class="mb-3 settings-panel_menu">
+                <span>ver {{version.slice(7)}}</span> |
+                <span> Help</span> |
+                <span> About</span>
+            </div>
+            <div v-if="demoText" class="settings-panel_block">
+                <div class="settings-panel_block">
+                    <div v-if="!isAnnotationService">
+                        <BaseHeader title="FILTERS"/>
+                        <div class="d-flex justify-content-between mt-3">
+                            <BaseDropdownButton :text="selectedPreset" :data="presets"
+                                                :onChange="changePreset"/>
+                            <div class="settings-panel_icon-button">
+                                <img alt="presets icon" src="@/assets/presetsIcon.svg"/>
+                            </div>
+                        </div>
 
-                <div v-for="zone in Object.keys(zones)"
-                     :key="zone" class="d-flex justify-content-between mt-3">
-                    <DropdownButton :text="getZoneText(zones[zone])"
-                                    :data="zones[zone].values"
-                                    :onChange="value =>changeZoneValue(zone, value)"/>
-                    <div class="settings-panel_icon-button">
-                        <img alt="presets icon" src="../assets/tagsIcon.svg" />
+                        <div v-for="zone in Object.keys(zones)"
+                             :key="zone" class="d-flex justify-content-between mt-3">
+                            <BaseDropdownButton :text="getZoneText(zones[zone])"
+                                                :data="zones[zone].values"
+                                                :onChange="value =>changeZoneValue(zone, value)"/>
+                            <div class="settings-panel_icon-button">
+                                <img alt="presets icon" src="@/assets/tagsIcon.svg"/>
+                            </div>
+                        </div>
                     </div>
+                    <BaseButton v-if="isAnnotationService"
+                                class="mt-3" title="Submit query"
+                                :onClick="openGetAnnotationsModal"/>
+                </div>
+                <p class="settings-panel_demo-status">
+                    {{demoText}}
+                </p>
+            </div>
+            <div class="settings-panel_block">
+                <BaseHeader title="PROJECT" :onClick="openWorkspacesModal" type="project"/>
+                <div class="settings-panel_text">{{ workspace }}</div>
+            </div>
+            <div class="settings-panel_block">
+                <LayoutControl/>
+            </div>
+            <div class="settings-panel_block">
+                <BaseHeader title="FILTERS" :onClick="openFilterModal" type="filter"
+                            :active="!selectedPresetSaved"
+                />
+                <div class="d-flex justify-content-between mt-3">
+                    <BaseDropdownButton
+                            :text="selectedPreset"
+                            :data="presets"
+                            :onChange="changePreset"
+                    />
+                    <!-- <div class="settings-panel_icon-button">
+                        <img alt="presets icon" src="@/assets/presetsIcon.svg" />
+                    </div> -->
+                </div>
+                <div
+                        v-for="zone in Object.keys(zones)"
+                        :key="zone"
+                        class="d-flex justify-content-between mt-3"
+                >
+                    <BaseDropdownButton
+                            :text="getZoneText(zones[zone])"
+                            :data="zones[zone].values"
+                            :onChange="value =>changeZoneValue(zone, value)"
+                    />
+                    <!-- <div class="settings-panel_icon-button">
+                        <img alt="presets icon" src="@/assets/tagsIcon.svg" />
+                    </div> -->
                 </div>
             </div>
-            <CustomButton v-if="isAnnotationService"
-                          class="mt-3" title="Submit query" :onClick="openGetAnnotationsModal"/>
-            <p class="settings-panel_demo-status">
-                {{demoText}}
-            </p>
-        </div>
-        <div class="settings-panel_block">
-            <BaseHeader title="PROJECT" :onClick="openWorkspacesModal" type="project"/>
-            <div class="settings-panel_text">{{ workspace }}</div>
-        </div>
-        <div class="settings-panel_block">
-            <LayoutControl />
-        </div>
-        <div class="settings-panel_block">
-            <BaseHeader title="FILTERS" :onClick="openFilterModal" type="filter"
-                :active="!selectedPresetSaved"
-            />
-            <div class="d-flex justify-content-between mt-3">
-                <BaseDropdownButton
-                    :text="selectedPreset"
-                    :data="presets"
-                    :onChange="changePreset"
-                />
-                <!-- <div class="settings-panel_icon-button">
-                    <img alt="presets icon" src="@/assets/presetsIcon.svg" />
-                </div> -->
+            <div class="settings-panel_block">
+                <BaseHeader title="REPORT"/>
+                <!-- <BaseButton title="PUBLISH" /> -->
+                <BaseButton class="mt-3" title="EXPORT" :onClick="openExportFileModal"/>
             </div>
-            <div
-              v-for="zone in Object.keys(zones)"
-              :key="zone"
-              class="d-flex justify-content-between mt-3"
-            >
-                <BaseDropdownButton
-                  :text="getZoneText(zones[zone])"
-                  :data="zones[zone].values"
-                  :onChange="value =>changeZoneValue(zone, value)"
-                />
-                <!-- <div class="settings-panel_icon-button">
-                    <img alt="presets icon" src="@/assets/tagsIcon.svg" />
-                </div> -->
+            <div class="settings-panel_block">
+                <BaseHeader title="USER"/>
+                <BaseUserControl/>
             </div>
-        </div>
-        <div class="settings-panel_block">
-            <BaseHeader title="REPORT" />
-            <!-- <BaseButton title="PUBLISH" /> -->
-            <BaseButton class="mt-3" title="EXPORT" :onClick="openExportFileModal"/>
-        </div>
-        <div class="settings-panel_block">
-            <BaseHeader title="USER" />
-            <BaseUserControl />
-        </div>
         </div>
         <BaseModal ref="workspaceModal" title="SELECT WORKSPACE" :onSubmit="selectWorkspace">
             <div v-on:dblclick="selectWorkspaceByDblClick">
                 <b-form-select
-                  v-model="selectedWorkspace"
-                  :options="workspacesList"
-                  class="mb-3"
-                  :select-size="8"
+                        v-model="selectedWorkspace"
+                        :options="workspacesList"
+                        class="mb-3"
+                        :select-size="8"
                 />
             </div>
         </BaseModal>
         <BaseModal ref="exportFileModal" title="EXPORT" :onSubmit="exportFile"
-          :okDisabled="!exportFileUrl">
+                   :okDisabled="!exportFileUrl">
             <p v-if="exportFileLoading" class="mt-3 ml-3">Wait please...</p>
-            <p v-else class="mt-3 ml-3" >Are you sure you want to download file?</p>
+            <p v-else class="mt-3 ml-3">Are you sure you want to download file?</p>
         </BaseModal>
         <FilterModal ref="filterModal"/>
         <AnnotationSearchDialog ref="annotationSearchModal"/>
@@ -111,9 +113,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import AnnotationSearchDialog from '../common/AnnotationSearchDialog.vue';
 import { DEMO_NOTIFICATION } from '@/common/constants';
+import { mapState } from 'vuex';
+import AnnotationSearchDialog from '../AnnotationSearchDialog.vue';
 import BaseDropdownButton from '../common/BaseDropdownButton.vue';
 import BaseButton from '../common/BaseButton.vue';
 import BaseUserControl from './BaseUserControl.vue';
@@ -218,8 +220,6 @@ export default {
         BaseUserControl,
         BaseHeader,
         FilterModal,
-        LayoutHeader,
-        CustomPopup,
         AnnotationSearchDialog,
         LayoutControl,
         BaseModal,
