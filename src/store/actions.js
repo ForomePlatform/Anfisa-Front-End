@@ -211,7 +211,7 @@ export function toggleVariantTag(context, tag) {
 }
 
 export function getWorkspaces(context) {
-    commonHttp.get('/dirinfo')
+    return commonHttp.get('/dirinfo')
         .then((response) => {
             const { data } = response;
             context.commit('setWorkspacesList', data.workspaces);
