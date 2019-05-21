@@ -31,7 +31,8 @@
               :onRemove="removeFilter"
             />
         </div>
-        <div v-else class="filter-modal_content">
+        <div v-else class="filter-modal_content"
+             :style="{'height' : `${modalContentHeight}px`}">
             <StatsList />
             <ConditionsView />
         </div>
@@ -67,6 +68,7 @@ export default {
             advancedView: false,
             CLEAR_MODAL_ID: 'filterModalClearWarning',
             LOAD_MODAL_ID: 'filterModalLoadWarning',
+            modalContentHeight: 620,
         };
     },
     computed: {
@@ -97,6 +99,13 @@ export default {
     methods: {
         openModal() {
             this.$refs.filterModal.show();
+            setTimeout(() => {
+                const modalContent = document.getElementsByClassName('filter-modal_content');
+                if (modalContent) {
+                    this.modalContentHeight = modalContent ?
+                        modalContent[0].offsetWidth / 2.3 : this.modalContentHeight;
+                }
+            }, 1);
         },
         closeModal() {
             this.$refs.filterModal.hide();
@@ -147,7 +156,6 @@ export default {
     .filter-modal {
         &_content {
             display: flex;
-            height: 620px;
             overflow: hidden;
         }
         &_load-view {
@@ -160,6 +168,7 @@ export default {
         }
         /deep/ .modal-dialog {
             min-width: 1224px !important;
+            max-width: 85%;
         }
         /deep/ .modal-body {
             padding: 0;
