@@ -119,6 +119,9 @@ export default {
                 }
             }
         }
+        &:hover .zygosity-editor_button__active {
+            background-color: #2bb3ed;
+        }
         &_button {
             height: 44px;
             line-height: 44px;
@@ -130,7 +133,7 @@ export default {
             border-radius: 0 0 4px 4px;
             background-color: #a9a9a9;
             &__active {
-                background-color: #2bb3ed;
+                background-color: #a9a9a9;
                 cursor: pointer;
                 &:hover {
                     background-color: #48c3f7;

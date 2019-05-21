@@ -136,10 +136,13 @@ export default {
                 padding-left: 4px;
             }
         }
+        &:hover .enum-editor_button {
+            background-color: #2bb3ed;
+        }
         &_button {
             height: 44px;
             line-height: 44px;
-            background-color: #2bb3ed;
+            background-color: #a9a9a9;
             font-size: 16px;
             letter-spacing: 0px;
             color: #ffffff;
