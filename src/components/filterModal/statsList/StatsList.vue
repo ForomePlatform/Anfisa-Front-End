@@ -11,7 +11,7 @@
               :name="stat.title || stat.name"
               primary
               :disabled=" stat.type === 'group' && !stat.data.length"
-              :filled="Boolean(oCurrentConditions[stat.name])"
+              :filled="filledStat(stat)"
             >
                 <div v-if="stat.type === 'group'">
                     <BaseCollapseHeader
@@ -19,7 +19,7 @@
                       v-for="subStat in stat.data"
                       v-bind:key="subStat.name"
                       :name="subStat.title || subStat.name"
-                      :filled="Boolean(oCurrentConditions[subStat.name])"
+                      :filled="filledStat(subStat)"
                     >
                         <StatsListEditor
                           :type="subStat.type"
@@ -74,6 +74,10 @@ export default {
         },
         toggleNonzeroCheckbox() {
             this.nonzeroChecked = !this.nonzeroChecked;
+        },
+        filledStat(stat) {
+            return Boolean(this.oCurrentConditions[stat.name] ||
+                (stat.type === 'group' && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
         },
     },
 };
