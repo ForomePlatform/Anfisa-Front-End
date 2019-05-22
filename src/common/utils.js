@@ -10,6 +10,10 @@ import {
     NUMERIC_RENDER_TYPES,
 } from './constants';
 
+export function includes(stringA, stringB) {
+    return stringA.toUpperCase().includes(stringB.toUpperCase());
+}
+
 const prepareNumericStatData = statItem => ({
     type: statItem[0],
     name: statItem[1].name,
@@ -69,7 +73,8 @@ export function prepareStatList(statList) {
                 }
                 groupsData[groupName].push(prepareStatDataByType(statItem));
             } else {
-                tmpResult.push(prepareStatDataByType(statItem));
+                const data = prepareStatDataByType(statItem);
+                tmpResult.push({ ...data, title: data.name });
             }
         });
     }
@@ -143,6 +148,18 @@ export function checkNonzeroStat(stat) {
         return stat.data[0] || stat.data[1];
     } else if (stat.type === STAT_TYPE_ZYGOSITY) {
         return true;
+    }
+    return false;
+}
+
+export function checkStatByQuery(stat, query = '') {
+    if (includes(stat.name, query)) {
+        return true;
+    } else if (stat.type === STAT_TYPE_ENUM || stat.type === STAT_TYPE_STATUS) {
+        return stat.data.some(item => includes(item[0], query));
+    } else if (stat.type === STAT_TYPE_ZYGOSITY) {
+        return stat.data.family.some(item => includes(item, query))
+            || stat.data.variants.some(item => includes(item[0], query));
     }
     return false;
 }

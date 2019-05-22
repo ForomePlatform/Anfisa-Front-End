@@ -3,8 +3,8 @@ import Vuex from 'vuex';
 
 import * as actions from './actions';
 import * as mutations from './mutations';
-import { checkNonzeroStat } from '../common/utils';
-import { STAT_TYPE_ZYGOSITY } from '../common/constants';
+import { checkNonzeroStat, checkStatByQuery, includes } from '../common/utils';
+import { STAT_TYPE_ZYGOSITY, STAT_GROUP } from '../common/constants';
 
 Vue.use(Vuex);
 
@@ -98,15 +98,42 @@ export default new Vuex.Store({
         getNonzeroStats: (state) => {
             const result = [];
             state.stats.forEach((stat) => {
-                if (stat.type === 'group') {
+                if (stat.type === STAT_GROUP) {
                     const data = stat.data.filter(item => checkNonzeroStat(item));
                     result.push({ ...stat, data });
                 } else {
-                    const subResult = checkNonzeroStat(stat) ? stat : { ...stat, type: 'group', data: [] };
+                    const subResult = checkNonzeroStat(stat) ? stat :
+                        { ...stat, type: STAT_GROUP, data: [] };
                     result.push(subResult);
                 }
             });
             return result;
+        },
+        getFilteredStats(state, getters) {
+            return (searchQuery, nonzeroChecked) => {
+                const result = [];
+                const statsList = nonzeroChecked ? getters.getNonzeroStats : state.stats;
+                if (!searchQuery) {
+                    return statsList;
+                }
+                statsList.forEach((stat) => {
+                    let subResult;
+                    if (stat.type === STAT_GROUP) {
+                        if (includes(stat.title, searchQuery)) {
+                            subResult = stat;
+                        } else {
+                            const data = stat.data.filter(subStat =>
+                                checkStatByQuery(subStat, searchQuery));
+                            subResult = { ...stat, data };
+                        }
+                    } else {
+                        subResult = checkStatByQuery(stat, searchQuery) ? stat :
+                            { ...stat, type: STAT_GROUP, data: [] };
+                    }
+                    result.push(subResult);
+                });
+                return result;
+            };
         },
     },
 });

@@ -4,6 +4,14 @@
             <BaseExpandButton :onClick="toggleFilters.bind(null, 'true')"/>
             <BaseExpandButton collapse :onClick="toggleFilters.bind(null, 'false')" class="ml-3"/>
         </div>
+        <div class="stats-list_search">
+            <b-form-input
+              class="stats-list_search-field"
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search"
+            />
+        </div>
         <BaseNonzeroCheckbox :checked="nonzeroChecked" :onChange="toggleNonzeroCheckbox"/>
         <div v-for="stat in stats" v-bind:key="stat.name">
             <BaseCollapseHeader
@@ -46,12 +54,12 @@ export default {
         return {
             className: 'js-toggle-filters',
             nonzeroChecked: false,
+            searchQuery: '',
         };
     },
     computed: {
         stats() {
-            return this.nonzeroChecked ? this.$store.getters.getNonzeroStats
-                : this.$store.state.stats;
+            return this.$store.getters.getFilteredStats(this.searchQuery, this.nonzeroChecked);
         },
         oCurrentConditions() {
             return this.$store.getters.oCurrentConditions;
@@ -94,6 +102,16 @@ export default {
         &_controls {
             margin: 18px 24px 0 24px;
             display: flex;
+        }
+        &_search {
+            margin: 10px 24px;
+            &-field {
+                height: 33px;
+                border-radius: 3px;
+                background-color: #e7e7e7;
+                font-size: 13px;
+                letter-spacing: 0px;
+            }
         }
     }
 </style>
