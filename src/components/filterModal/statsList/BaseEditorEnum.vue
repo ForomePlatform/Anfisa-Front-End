@@ -38,7 +38,7 @@
             </b-form-checkbox>
         </div>
         <div class="enum-editor_button" @click="addData">
-            ADD
+            {{buttonText}}
         </div>
     </div>
 </template>
@@ -51,7 +51,7 @@ export default {
             selected: this.preselectedData.slice() || [],
         };
     },
-    props: ['list', 'onSubmit', 'preselectedData'],
+    props: ['list', 'onSubmit', 'preselectedData', 'buttonText'],
     computed: {
         filteredList() {
             if (this.query) {

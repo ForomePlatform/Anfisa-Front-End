@@ -33,7 +33,7 @@
             'float-editor_slider']"
         />
         <div class="float-editor_button" @click="addData">
-            ADD
+            {{buttonText}}
         </div>
     </div>
 </template>
@@ -43,7 +43,7 @@ import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/antd.css';
 
 export default {
-    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax', 'active', 'simple', 'int'],
+    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax', 'active', 'simple', 'int', 'buttonText'],
     data() {
         return {
             selectedMin: this.preselectedMin,

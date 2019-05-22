@@ -56,7 +56,7 @@
             />
         </div>
         <div class="int-editor_button" @click="addData">
-            ADD
+            {{buttonText}}
         </div>
     </div>
 </template>
@@ -77,7 +77,7 @@ const marksData = {
 };
 
 export default {
-    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax'],
+    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax', 'buttonText'],
     data() {
         return {
             selectedMin: this.preselectedMin,

@@ -32,7 +32,7 @@
           :class="[defaultSlider ? 'float-editor_slider__default' : '', 'float-editor_slider']"
         />
         <div class="float-editor_button" @click="addData">
-            ADD
+            {{buttonText}}
         </div>
     </div>
 </template>
@@ -46,7 +46,7 @@ const MIN = 0;
 const MAX = 1;
 
 export default {
-    props: ['onSubmit', 'preselectedMin', 'preselectedMax'],
+    props: ['onSubmit', 'preselectedMin', 'preselectedMax', 'buttonText'],
     data() {
         return {
             min: MIN,

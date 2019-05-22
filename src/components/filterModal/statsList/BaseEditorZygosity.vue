@@ -36,7 +36,7 @@
           :class="[allowAdding ? 'zygosity-editor_button__active' : '', 'zygosity-editor_button']"
           v-on="allowAdding ? { click: addVariants } : {}"
         >
-            ADD
+            {{buttonText}}
         </div>
     </div>
 </template>
@@ -55,7 +55,7 @@ export default {
             return this.selectedFamily.length && this.selectedVariants.length;
         },
     },
-    props: ['family', 'variants', 'preselectedFamily', 'preselectedVariants', 'onSubmit', 'onFamilyChange'],
+    props: ['family', 'variants', 'preselectedFamily', 'preselectedVariants', 'onSubmit', 'onFamilyChange', 'buttonText'],
     methods: {
         addVariants() {
             this.onSubmit(this.selectedFamily.slice(), this.selectedVariants.slice());
