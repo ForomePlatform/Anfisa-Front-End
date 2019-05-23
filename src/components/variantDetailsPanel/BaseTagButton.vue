@@ -60,7 +60,7 @@ export default {
         }
         &-secondary {
             font-size: 12px;
-            background-color: #DCDCDC;
+            background-color: #C4C4C4;
             opacity: .4;
         }
     }

@@ -88,8 +88,7 @@ export default {
     .filter-modal-conditions {
         overflow-y: auto;
         padding: 0 21px;
-        width: 866px;
-        max-height: 730px;
+        width: 100%;
         box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
         background-color: #ffffff;
         &_item {

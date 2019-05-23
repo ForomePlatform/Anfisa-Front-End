@@ -1,6 +1,6 @@
 <template>
     <div class="enum-editor">
-        <div class="enum-editor_header">
+        <div class="enum-editor_header" v-if="filteredList.length > 10">
             <b-form-input
               class="enum-editor_search"
               v-model="query" type="text"
