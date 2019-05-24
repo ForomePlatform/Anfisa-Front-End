@@ -127,13 +127,16 @@ export function getVariantTags(context, variant) {
         });
 }
 
+function saveNoteStatus(context, response, timeout) {
+    context.commit('setSaveNoteStatus', response);
+    setTimeout(() => {
+        context.commit('setSaveNoteStatus', null);
+    }, timeout);
+}
+
 export function saveNote(context) {
-    let text = context.state.note.trim();
-    if (text.substr(text.length - 1, text.length) === '\n') {
-        text = text.substr(0, text.length - 2);
-    }
     const tagsObject = {
-        _note: text,
+        _note: context.state.note.trim(),
     };
     context.state.selectedTags.forEach((item) => {
         tagsObject[item] = true;
@@ -142,8 +145,13 @@ export function saveNote(context) {
     params.append('ws', context.state.workspace);
     params.append('rec', context.state.selectedVariant);
     params.append('tags', JSON.stringify(tagsObject));
+
     commonHttp.post('/tags', params)
+        .then((response) => {
+            saveNoteStatus(context, response.status, 3000);
+        })
         .catch((error) => {
+            saveNoteStatus(context, error, 10000);
             console.log(error);
         });
 }

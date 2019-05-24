@@ -41,7 +41,7 @@ export default {
         height: 18px;
         line-height: 18px;
         border-radius: 2px;
-        background-color: #959595;
+        background-color: #808080;
         color: #fff;
         padding: 0 6px;
         display: inline-block;
@@ -60,7 +60,7 @@ export default {
         }
         &-secondary {
             font-size: 12px;
-            background-color: #C4C4C4;
+            background-color: #9c9c9c;
             opacity: .4;
         }
     }

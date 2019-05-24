@@ -1,10 +1,11 @@
 <template>
     <div class="enum-editor">
-        <div class="enum-editor_header" v-if="filteredList.length > 10">
+        <div class="enum-editor_header">
             <b-form-input
               class="enum-editor_search"
               v-model="query" type="text"
               placeholder="Search"
+              v-if="filteredList.length > 10"
             />
         </div>
 
@@ -97,7 +98,7 @@ export default {
         background-color: #fff;
         border-radius: 4px;
         &_header {
-            padding: 10px;
+            padding: 5px;
         }
         &_search {
             height: 33px;

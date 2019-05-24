@@ -32,6 +32,7 @@
             />
         </div>
         <div v-else class="filter-modal_content"
+             ref="filterModalContent"
              :style="{'height' : `${modalContentHeight}px`}">
             <StatsList />
             <ConditionsView />
@@ -100,11 +101,7 @@ export default {
         openModal() {
             this.$refs.filterModal.show();
             setTimeout(() => {
-                const modalContent = document.getElementsByClassName('filter-modal_content');
-                if (modalContent) {
-                    this.modalContentHeight = modalContent ?
-                        modalContent[0].offsetWidth / 2.3 : this.modalContentHeight;
-                }
+                this.modalContentHeight = this.$refs.filterModalContent.offsetWidth / 2.3;
             }, 1);
         },
         closeModal() {
@@ -157,6 +154,7 @@ export default {
         &_content {
             display: flex;
             overflow: hidden;
+            min-height: 620px;
         }
         &_load-view {
             height: 620px;

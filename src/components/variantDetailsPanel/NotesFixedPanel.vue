@@ -9,8 +9,11 @@
             class="notes-fixed-panel_textarea"
        >
         </b-form-textarea>
-        <div class="saved-label-block" v-bind:class="{'show-saved-anim' : showSaved}">
-            <div class="saved-label">Saved</div>
+        <div :class="['saved-label-block', showSaved ? 'show-saved-anim' : '']">
+            <div :class="[saveNoteStatus ? 'saved-label_ok' : 'saved-label_error', 'saved-label']">
+                {{ saveNoteStatus ? 'Saved' : 'Something went wrong, ' +
+                'saving failed. Please try again later'}}
+            </div>
         </div>
         <b-button class="notes-fixed-panel_btn" @click="saveNotes">SUBMIT</b-button>
     </div>
@@ -18,14 +21,15 @@
 
 <script>
 export default {
-    data() {
-        return {
-            showSaved: false,
-        };
-    },
     computed: {
         notes() {
             return this.$store.state.note;
+        },
+        showSaved() {
+            return this.$store.state.saveNoteStatus;
+        },
+        saveNoteStatus() {
+            return this.$store.state.saveNoteStatus === 200;
         },
     },
     methods: {
@@ -34,8 +38,6 @@ export default {
         },
         saveNotes() {
             this.$store.dispatch('saveNote');
-            this.showSaved = true;
-            setTimeout(() => { this.showSaved = false; }, 3000);
         },
     },
 };
@@ -78,12 +80,20 @@ export default {
     }
 
     .saved-label {
-        color: #fff;
-        font-size: 14px;
-        background-color: #959595;
+        color: #0a1c34;
+        font-size: 18px;
         width: 100px;
         margin: 0 auto;
         border-radius: 5px;
+        &_ok {
+            color: #0a1c34;
+            border: 2px solid #1a3e6c;
+        }
+        &_error {
+            background-color: #ff0008;
+            width: 220px;
+            color: #fff;
+        }
     }
     .saved-label-block {
         position: absolute;
@@ -93,7 +103,7 @@ export default {
         opacity: 0;
     }
     .show-saved-anim {
-        opacity: 0.6;
+        opacity: 1;
         transition: 1s;
         animation: show 3s 1;
         animation-fill-mode: forwards;

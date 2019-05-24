@@ -96,6 +96,7 @@ export default {
         height: inherit;
         overflow-y: auto;
         width: 354px;
+        min-width: 354px;
         box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
         background-color: #e7e7e7;
         padding-bottom: 20px;

@@ -21,6 +21,7 @@ export default new Vuex.Store({
         selectedTags: [],
         workspacesList: [],
         note: '',
+        saveNoteStatus: null,
         exportFileUrl: null,
         exportFileLoading: false,
         zones: {},

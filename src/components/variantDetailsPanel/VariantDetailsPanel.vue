@@ -4,8 +4,8 @@
         <BaseFixedButton
           v-if="isSelected"
           :onClick="openNote"
-          :class="['fixed-button_form', showNotes ? 'fixed-button_form__active' :
-          notesCount !== 0 ? 'fixed-button_form_nonEmpty' : '']"
+          :class="['fixed-button_form', showNotes ? 'fixed-button_form__active' : '',
+          notesCount ? 'fixed-button_form_nonEmpty' : '']"
           title="Add/edit notes"
         >
             <img v-if="showNotes" src="@/assets/crossIcon.svg"/>
@@ -126,10 +126,7 @@ export default {
             return this.$store.state.selectedVariant !== null;
         },
         notesCount() {
-            if (this.$store.state.note.split('\n').slice(-1).pop()) {
-                return this.$store.state.note.split('\n').length;
-            }
-            return this.$store.state.note.split('\n').length - 1;
+            return this.$store.state.note.trim();
         },
     },
     methods: {
