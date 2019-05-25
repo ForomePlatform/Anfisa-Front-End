@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="advanced-view_content_editor">
-                <textarea v-model="selectedData" />
+                <textarea v-model="selectedData" @keydown.stop/>
             </div>
         </div>
         <div class="advanced-view_footer">
