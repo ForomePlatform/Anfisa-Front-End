@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 import * as actions from './actions';
 import * as mutations from './mutations';
-import { checkNonzeroStat, checkStatByQuery, includes } from '../common/utils';
+import { checkStatByQuery, includes } from '../common/utils';
 import { STAT_TYPE_ZYGOSITY, STAT_GROUP } from '../common/constants';
 
 Vue.use(Vuex);
@@ -95,28 +95,10 @@ export default new Vuex.Store({
             });
             return result;
         },
-        getNonzeroStats: (state) => {
-            const result = [];
-            state.stats.forEach((stat) => {
-                if (stat.type === STAT_GROUP) {
-                    const data = stat.data.filter(item => checkNonzeroStat(item));
-                    result.push({ ...stat, data });
-                } else {
-                    const subResult = checkNonzeroStat(stat) ? stat :
-                        { ...stat, type: STAT_GROUP, data: [] };
-                    result.push(subResult);
-                }
-            });
-            return result;
-        },
-        getFilteredStats(state, getters) {
-            return (searchQuery, nonzeroChecked) => {
+        getFilteredStats(state) {
+            return (searchQuery) => {
                 const result = [];
-                const statsList = nonzeroChecked ? getters.getNonzeroStats : state.stats;
-                if (!searchQuery) {
-                    return statsList;
-                }
-                statsList.forEach((stat) => {
+                state.stats.forEach((stat) => {
                     let subResult;
                     if (stat.type === STAT_GROUP) {
                         if (includes(stat.title, searchQuery)) {

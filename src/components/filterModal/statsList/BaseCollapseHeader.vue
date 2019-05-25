@@ -98,7 +98,7 @@ export default {
                 }
             }
         }
-        &_disabled {
+        &_disabled.collapse-header_primary {
             cursor: default;
             border-bottom: 1px solid #a9a9a9;
             .collapse-header_primary_title {
@@ -120,7 +120,6 @@ export default {
                 }
             }
         }
-
         &_secondary {
             white-space: nowrap;
             height: 35px;
@@ -139,6 +138,20 @@ export default {
             &[aria-expanded=true] {
                 background-color: #fff;
                 border-radius: 3px 3px 0 0;
+            }
+        }
+        &_disabled.collapse-header_secondary {
+            cursor: default;
+            border-bottom: 1px solid inherit;
+            background-color: inherit;
+            .collapse-header_secondary_title {
+                color: #a9a9a9;
+            }
+            &:hover {
+                background-color: inherit;
+            }
+            &[aria-expanded=true] {
+                border-bottom: none;
             }
         }
     }

@@ -18,18 +18,20 @@
               :className="className"
               :name="stat.title || stat.name"
               primary
-              :disabled=" stat.type === 'group' && !stat.data.length"
+              :disabled="primaryDisabled(stat)"
               :filled="filledStat(stat)"
             >
                 <div v-if="stat.type === 'group'">
                     <BaseCollapseHeader
-                      :className="className"
                       v-for="subStat in stat.data"
                       v-bind:key="subStat.name"
+                      :className="className"
                       :name="subStat.title || subStat.name"
+                      :disabled="secondaryDisabled(subStat)"
                       :filled="filledStat(subStat)"
                     >
                         <StatsListEditor
+                          v-if="filledStat(subStat) || showStat(subStat)"
                           :type="subStat.type"
                           :data="subStat.data"
                           :name="subStat.name"
@@ -37,13 +39,20 @@
                         />
                     </BaseCollapseHeader>
                 </div>
-                <StatsListEditor v-else :type="stat.type" :data="stat.data" :name="stat.name"/>
+                <StatsListEditor
+                  v-else-if="filledStat(stat) || showStat(stat)"
+                  :type="stat.type"
+                  :data="stat.data"
+                  :name="stat.name"
+                />
             </BaseCollapseHeader>
         </div>
     </div>
 </template>
 
 <script>
+import { checkNonzeroStat } from '@/common/utils';
+import { STAT_GROUP } from '@/common/constants';
 import BaseCollapseHeader from './BaseCollapseHeader.vue';
 import BaseExpandButton from './BaseExpandButton.vue';
 import StatsListEditor from './StatsListEditor.vue';
@@ -59,7 +68,8 @@ export default {
     },
     computed: {
         stats() {
-            return this.$store.getters.getFilteredStats(this.searchQuery, this.nonzeroChecked);
+            return this.searchQuery ? this.$store.getters.getFilteredStats(this.searchQuery)
+                : this.$store.state.stats;
         },
         oCurrentConditions() {
             return this.$store.getters.oCurrentConditions;
@@ -84,8 +94,20 @@ export default {
             this.nonzeroChecked = !this.nonzeroChecked;
         },
         filledStat(stat) {
-            return Boolean(this.oCurrentConditions[stat.name] ||
-                (stat.type === 'group' && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
+            return Boolean(this.oCurrentConditions[stat.name] || (stat.type === STAT_GROUP
+                && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
+        },
+        showStat(stat) {
+            return !this.nonzeroChecked || checkNonzeroStat(stat);
+        },
+        primaryDisabled(stat) {
+            return !this.filledStat(stat) && (
+                (stat.type === STAT_GROUP && !stat.data.length)
+                || (stat.type !== STAT_GROUP && !this.showStat(stat.data[0]))
+            );
+        },
+        secondaryDisabled(stat) {
+            return !this.filledStat(stat) && !this.showStat(stat);
         },
     },
 };
