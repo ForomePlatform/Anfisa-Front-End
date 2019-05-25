@@ -109,6 +109,37 @@ export default {
         secondaryDisabled(stat) {
             return !this.filledStat(stat) && !this.showStat(stat);
         },
+        expandPreselectedStats() {
+            const isStringTrue = value => value === 'true';
+            const getStatName = stat => stat.title || stat.name;
+            this.nonzeroChecked = false;
+            this.searchQuery = '';
+            const elements = document.getElementsByClassName(this.className);
+            const expandSet = new Set();
+            this.stats.forEach((stat) => {
+                if (this.oCurrentConditions[stat.name]) {
+                    expandSet.add(getStatName(stat));
+                } else if (stat.type === STAT_GROUP) {
+                    stat.data.forEach((subStat) => {
+                        if (this.oCurrentConditions[subStat.name]) {
+                            expandSet.add(getStatName(stat));
+                            expandSet.add(getStatName(subStat));
+                        }
+                    });
+                }
+            });
+            Array.from(elements).forEach((element) => {
+                const statName = element.getAttribute('aria-controls');
+                const currentExpand = isStringTrue('aria-expanded');
+                const expectedExpand = expandSet.has(statName);
+                if (currentExpand !== expectedExpand) {
+                    element.click();
+                }
+            });
+        },
+    },
+    mounted() {
+        this.expandPreselectedStats();
     },
 };
 </script>

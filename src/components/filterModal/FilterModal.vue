@@ -6,6 +6,7 @@
       hide-footer
       centered
       class="filter-modal"
+      lazy
     >
         <FilterModalHeader
           :onClose="closeModal"
