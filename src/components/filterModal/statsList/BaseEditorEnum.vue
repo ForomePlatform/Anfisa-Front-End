@@ -5,7 +5,7 @@
               class="enum-editor_search"
               v-model="query" type="text"
               placeholder="Search"
-              v-if="filteredList.length > 10"
+              v-if="list.length > 10"
             />
         </div>
 
@@ -56,7 +56,8 @@ export default {
     computed: {
         filteredList() {
             if (this.query) {
-                return this.list.filter(item => item[0].includes(this.query));
+                return this.list.filter(item => item[0].toLowerCase()
+                    .includes(this.query.toLowerCase()));
             }
             return this.list;
         },
