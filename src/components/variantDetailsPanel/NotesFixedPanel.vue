@@ -2,6 +2,7 @@
     <div class="notes-fixed-panel">
         <b-form-textarea
             @input="changeNotes"
+            @keydown.native.stop
             :value="notes"
             :rows="10"
             no-resize
