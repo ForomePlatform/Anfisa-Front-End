@@ -11,6 +11,7 @@ npm install
 
 ### Compiles and hot-reloads for development
 ```
+configure DEV_SERVER_PROXY in .env.development.local
 npm run serve
 ```
 

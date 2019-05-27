@@ -1,6 +1,7 @@
 {
   "name": "anfisa-front-end",
-  "version": "0.1.0",
+  "version": "0.3.5",
+  "backendVersion": "0.3.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
