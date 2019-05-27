@@ -114,6 +114,21 @@ export function prepareParams({
     return params;
 }
 
+function updateIGVLink(variantDetails) {
+    if (variantDetails.view_gen && variantDetails.view_gen.data) {
+        for (let i = 0; i < variantDetails.view_gen.data.length; i += 1) {
+            const item = variantDetails.view_gen.data[i];
+            if (item[0] === 'IGV') {
+                item[1] = item[1].replace('target="blank"', '').replace('link</a>', `link</a>
+                    <span style="font-size:12px">(for this link to work, make sure
+                    <a href="https://software.broadinstitute.org/software/igv/download" target="_blank">
+                    the IGV app</a> is running on your computer)</span>`);
+            }
+        }
+    }
+    return variantDetails;
+}
+
 export function prepareVariantDetails(data) {
     const result = {};
     const getValuesForRow = row => (Array.isArray(row) ? row.map(val => val[0]) : []);
@@ -131,7 +146,7 @@ export function prepareVariantDetails(data) {
             };
         }
     });
-    return result;
+    return updateIGVLink(result);
 }
 
 export function expired(date) {
