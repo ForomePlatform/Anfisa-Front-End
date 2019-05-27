@@ -115,7 +115,18 @@ export default {
     },
     computed: {
         variantDetails() {
-            return this.$store.state.variantDetails;
+            const { variantDetails } = this.$store.state;
+            if (variantDetails.view_gen && variantDetails.view_gen.data) {
+                for (let i = 0; i < variantDetails.view_gen.data.length; i++) {
+                    const item = variantDetails.view_gen.data[i];
+                    if (item[0] === 'IGV') {
+                        item[1] = item[1].replace('target="blank"', '').replace('link</a>', 'link</a>' +
+                            ' <span style="font-size:12px">(for this link to work, make sure the IGV app' +
+                            ' is running on your computer)</span>');
+                    }
+                }
+            }
+            return variantDetails;
         },
         annotation() {
             return this.$store.getters.annotation;
