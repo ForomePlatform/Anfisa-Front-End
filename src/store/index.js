@@ -3,8 +3,8 @@ import Vuex from 'vuex';
 
 import * as actions from './actions';
 import * as mutations from './mutations';
-import { checkNonzeroStat } from '../common/utils';
-import { STAT_TYPE_ZYGOSITY } from '../common/constants';
+import { checkStatByQuery, includes } from '../common/utils';
+import { STAT_TYPE_ZYGOSITY, STAT_GROUP } from '../common/constants';
 
 Vue.use(Vuex);
 
@@ -21,6 +21,7 @@ export default new Vuex.Store({
         selectedTags: [],
         workspacesList: [],
         note: '',
+        saveNoteStatus: null,
         exportFileUrl: null,
         exportFileLoading: false,
         zones: {},
@@ -95,18 +96,27 @@ export default new Vuex.Store({
             });
             return result;
         },
-        getNonzeroStats: (state) => {
-            const result = [];
-            state.stats.forEach((stat) => {
-                if (stat.type === 'group') {
-                    const data = stat.data.filter(item => checkNonzeroStat(item));
-                    result.push({ ...stat, data });
-                } else {
-                    const subResult = checkNonzeroStat(stat) ? stat : { ...stat, type: 'group', data: [] };
+        getFilteredStats(state) {
+            return (searchQuery) => {
+                const result = [];
+                state.stats.forEach((stat) => {
+                    let subResult;
+                    if (stat.type === STAT_GROUP) {
+                        if (includes(stat.title, searchQuery)) {
+                            subResult = stat;
+                        } else {
+                            const data = stat.data.filter(subStat =>
+                                checkStatByQuery(subStat, searchQuery));
+                            subResult = { ...stat, data };
+                        }
+                    } else {
+                        subResult = checkStatByQuery(stat, searchQuery) ? stat :
+                            { ...stat, type: STAT_GROUP, data: [] };
+                    }
                     result.push(subResult);
-                }
-            });
-            return result;
+                });
+                return result;
+            };
         },
     },
 });

@@ -10,6 +10,10 @@ import {
     NUMERIC_RENDER_TYPES,
 } from './constants';
 
+export function includes(stringA, stringB) {
+    return stringA.toUpperCase().includes(stringB.toUpperCase());
+}
+
 const prepareNumericStatData = statItem => ({
     type: statItem[0],
     name: statItem[1].name,
@@ -69,7 +73,8 @@ export function prepareStatList(statList) {
                 }
                 groupsData[groupName].push(prepareStatDataByType(statItem));
             } else {
-                tmpResult.push(prepareStatDataByType(statItem));
+                const data = prepareStatDataByType(statItem);
+                tmpResult.push({ ...data, title: data.name });
             }
         });
     }
@@ -109,6 +114,21 @@ export function prepareParams({
     return params;
 }
 
+function updateIGVLink(variantDetails) {
+    if (variantDetails.view_gen && variantDetails.view_gen.data) {
+        for (let i = 0; i < variantDetails.view_gen.data.length; i += 1) {
+            const item = variantDetails.view_gen.data[i];
+            if (item[0] === 'IGV') {
+                item[1] = item[1].replace('target="blank"', '').replace('link</a>', `link</a>
+                    <span style="font-size:12px">(for this link to work, make sure
+                    <a href="https://software.broadinstitute.org/software/igv/download" target="_blank">
+                    the IGV app</a> is running on your computer)</span>`);
+            }
+        }
+    }
+    return variantDetails;
+}
+
 export function prepareVariantDetails(data) {
     const result = {};
     const getValuesForRow = row => (Array.isArray(row) ? row.map(val => val[0]) : []);
@@ -126,7 +146,7 @@ export function prepareVariantDetails(data) {
             };
         }
     });
-    return result;
+    return updateIGVLink(result);
 }
 
 export function expired(date) {
@@ -140,9 +160,21 @@ export function checkNonzeroStat(stat) {
         const nonzeroItems = stat.data.filter(item => item[1]);
         return Boolean(nonzeroItems.length);
     } else if (stat.type === STAT_TYPE_INT || stat.type === STAT_TYPE_FLOAT) {
-        return stat.data[0] || stat.data[1];
+        return Boolean(stat.data[0] || stat.data[1]);
     } else if (stat.type === STAT_TYPE_ZYGOSITY) {
         return true;
+    }
+    return false;
+}
+
+export function checkStatByQuery(stat, query = '') {
+    if (includes(stat.name, query)) {
+        return true;
+    } else if (stat.type === STAT_TYPE_ENUM || stat.type === STAT_TYPE_STATUS) {
+        return stat.data.some(item => includes(item[0], query));
+    } else if (stat.type === STAT_TYPE_ZYGOSITY) {
+        return stat.data.family.some(item => includes(item, query))
+            || stat.data.variants.some(item => includes(item[0], query));
     }
     return false;
 }

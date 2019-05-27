@@ -5,6 +5,7 @@
               class="enum-editor_search"
               v-model="query" type="text"
               placeholder="Search"
+              v-if="list.length > 10"
             />
         </div>
 
@@ -38,7 +39,7 @@
             </b-form-checkbox>
         </div>
         <div class="enum-editor_button" @click="addData">
-            ADD
+            {{buttonText}}
         </div>
     </div>
 </template>
@@ -51,11 +52,12 @@ export default {
             selected: this.preselectedData.slice() || [],
         };
     },
-    props: ['list', 'onSubmit', 'preselectedData'],
+    props: ['list', 'onSubmit', 'preselectedData', 'buttonText'],
     computed: {
         filteredList() {
             if (this.query) {
-                return this.list.filter(item => item[0].includes(this.query));
+                return this.list.filter(item => item[0].toLowerCase()
+                    .includes(this.query.toLowerCase()));
             }
             return this.list;
         },
@@ -97,7 +99,7 @@ export default {
         background-color: #fff;
         border-radius: 4px;
         &_header {
-            padding: 10px;
+            padding: 5px;
         }
         &_search {
             height: 33px;
@@ -136,10 +138,13 @@ export default {
                 padding-left: 4px;
             }
         }
+        &:hover .enum-editor_button {
+            background-color: #2bb3ed;
+        }
         &_button {
             height: 44px;
             line-height: 44px;
-            background-color: #2bb3ed;
+            background-color: #a9a9a9;
             font-size: 16px;
             letter-spacing: 0px;
             color: #ffffff;

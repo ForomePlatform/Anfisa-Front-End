@@ -10,12 +10,14 @@
           :preselectedMax="preselectedLinearMax"
           :onSubmit="submitHandler"
           :active="Boolean(oCurrentCondition)"
+          :buttonText="buttonText"
         />
         <BaseEditorLogarithmic
           v-else-if="render === statTypes.logarithmic"
           :preselectedMin="preselectedLogMin"
           :preselectedMax="preselectedLogMax"
           :onSubmit="submitHandler"
+          :buttonText="buttonText"
         />
         <BaseEditorCoordinate
           v-else-if="render === statTypes.coordinate"
@@ -24,12 +26,14 @@
           :preselectedMin="preselectedCoordMin"
           :preselectedMax="preselectedCoordMax"
           :onSubmit="submitHandler"
+          :buttonText="buttonText"
         />
         <BaseEditorEnum
           v-else-if="type === statTypes.enum || type === statTypes.status"
           :list="data"
           :preselectedData="preselectedData"
           :onSubmit="submitEnumHandler"
+          :buttonText="buttonText"
         />
         <BaseEditorZygosity
           v-else-if="type === statTypes.zygosity"
@@ -39,6 +43,7 @@
           :preselectedVariants="preselectedVariants"
           :onSubmit="submitZygosityHandler"
           :onFamilyChange = "changeFamily"
+          :buttonText="buttonText"
         />
     </div>
 </template>
@@ -116,6 +121,9 @@ export default {
                 coordinate: NUMERIC_RENDER_TYPES.COORDINATE,
                 logarithmic: NUMERIC_RENDER_TYPES.LOGARITHMIC,
             };
+        },
+        buttonText() {
+            return this.oCurrentCondition ? 'UPDATE' : 'ADD';
         },
     },
     methods: {

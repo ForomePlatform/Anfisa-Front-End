@@ -36,7 +36,7 @@
           :class="[allowAdding ? 'zygosity-editor_button__active' : '', 'zygosity-editor_button']"
           v-on="allowAdding ? { click: addVariants } : {}"
         >
-            ADD
+            {{buttonText}}
         </div>
     </div>
 </template>
@@ -55,7 +55,7 @@ export default {
             return this.selectedFamily.length && this.selectedVariants.length;
         },
     },
-    props: ['family', 'variants', 'preselectedFamily', 'preselectedVariants', 'onSubmit', 'onFamilyChange'],
+    props: ['family', 'variants', 'preselectedFamily', 'preselectedVariants', 'onSubmit', 'onFamilyChange', 'buttonText'],
     methods: {
         addVariants() {
             this.onSubmit(this.selectedFamily.slice(), this.selectedVariants.slice());
@@ -119,6 +119,9 @@ export default {
                 }
             }
         }
+        &:hover .zygosity-editor_button__active {
+            background-color: #2bb3ed;
+        }
         &_button {
             height: 44px;
             line-height: 44px;
@@ -130,7 +133,7 @@ export default {
             border-radius: 0 0 4px 4px;
             background-color: #a9a9a9;
             &__active {
-                background-color: #2bb3ed;
+                background-color: #a9a9a9;
                 cursor: pointer;
                 &:hover {
                     background-color: #48c3f7;

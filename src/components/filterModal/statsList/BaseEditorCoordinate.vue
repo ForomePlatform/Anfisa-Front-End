@@ -56,7 +56,7 @@
             />
         </div>
         <div class="int-editor_button" @click="addData">
-            ADD
+            {{buttonText}}
         </div>
     </div>
 </template>
@@ -77,7 +77,7 @@ const marksData = {
 };
 
 export default {
-    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax'],
+    props: ['min', 'max', 'onSubmit', 'preselectedMin', 'preselectedMax', 'buttonText'],
     data() {
         return {
             selectedMin: this.preselectedMin,
@@ -221,10 +221,13 @@ export default {
                 letter-spacing: 0px;
             }
         }
+        &:hover .int-editor_button {
+            background-color: #2bb3ed;
+        }
         &_button {
             height: 44px;
             line-height: 44px;
-            background-color: #2bb3ed;
+            background-color: #a9a9a9;
             font-size: 16px;
             letter-spacing: 0px;
             color: #ffffff;
