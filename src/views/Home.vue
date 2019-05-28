@@ -27,6 +27,7 @@ import VariantDetailsPanel from '@/components/variantDetailsPanel/VariantDetails
 import BaseModal from '@/components/common/BaseModal.vue';
 import { DISCLAIMER } from '@/common/constants';
 import { expired } from '@/common/utils';
+import { version, backendVersion } from '../../package.json';
 
 export default {
     name: 'home',
@@ -52,7 +53,9 @@ export default {
             this.$store.dispatch('getZoneList');
             this.$store.dispatch('getFilters');
             this.$store.dispatch('getRulesData');
-            this.$store.dispatch('getWorkspaces');
+            this.$store.dispatch('getWorkspaces').then(() => {
+                console.log(`back v.${this.$store.state.version.slice(7)} | front v.${version} | back-required v.${backendVersion}`);
+            });
         },
     },
     computed: {

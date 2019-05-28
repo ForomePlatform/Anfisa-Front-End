@@ -5,34 +5,38 @@
                 SEE {{variants || 0}} VARIANTS
             </div>
         </div>
-        <div class="second-header_filters">
-            <b>{{conditionsLength || 0}}</b> Active Filters
-        </div>
-        <div
-          :class="[
+        <div class="tools">
+            <div class="second-header_filters">
+                <b>{{conditionsLength || 0}}</b> Active Filters
+            </div>
+            <div
+                    :class="[
             !enableClearAll ? 'second-header_clear__disabled' : 'second-header_clear__enabled',
             'second-header_clear'
           ]"
-          @click="clearAll"
-        >
-            <img v-if="enableClearAll" alt="close" src="@/assets/filterCloseIcon.svg"/>
-            <img v-else alt="close" src="@/assets/filterCloseDisabledIcon.png"/>
-            CLEAR ALL
-        </div>
-        <BaseSaveFilterDropdown
-          :enabled="Boolean(enableSave)"
-          :filterName="currentFilter"
-          :processing="processing"
-          :onSave="saveFilter"
-          :onSaveAs="removeFilterName"
-        />
-        <div
-          :class="[loadView ? 'second-header_load__active' : '', 'second-header_load']"
-          @click="onLoadClick"
-        >
-            <img v-if="loadView" alt="load" src="@/assets/filterLoadActiveIcon.png"/>
-            <img v-else alt="load" src="@/assets/filterLoadIcon.svg"/>
-            LOAD
+                    @click="clearAll"
+            >
+                <img v-if="enableClearAll" alt="close" src="@/assets/filterCloseIcon.svg"/>
+                <img v-else alt="close" src="@/assets/filterCloseDisabledIcon.png"/>
+                CLEAR ALL
+            </div>
+            <div class="save-load">
+                <BaseSaveFilterDropdown
+                        :enabled="Boolean(enableSave)"
+                        :filterName="currentFilter"
+                        :processing="processing"
+                        :onSave="saveFilter"
+                        :onSaveAs="removeFilterName"
+                />
+                <div
+                    :class="[loadView ? 'second-header_load__active' : '', 'second-header_load']"
+                    @click="onLoadClick"
+                >
+                    <img v-if="loadView" alt="load" src="@/assets/filterLoadActiveIcon.png"/>
+                    <img v-else alt="load" src="@/assets/filterLoadIcon.svg"/>
+                    LOAD
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -100,6 +104,9 @@ export default {
             font-size: 14px;
             letter-spacing: 0px;
             color: #ffffff;
+            display: inline-block;
+            float: left;
+            padding-top: 5px;
         }
         &_clear, &_load {
             width: 134px;
@@ -118,7 +125,7 @@ export default {
         }
         &_clear {
             padding: 0 23px 0 13px;
-            margin-right: 300px;
+            float: left;
             &__disabled {
                 background-color: #15263e;
                 color: #1a3e6c;
@@ -135,6 +142,7 @@ export default {
             padding: 0 25px 0 20px;
             background-color: #2bb3ed;
             margin-left: 22px;
+            float: right;
             &:hover {
                 background-color: #48c3f7;
             }
@@ -152,5 +160,12 @@ export default {
             background-repeat: repeat-y;
             margin-right: 37px;
         }
+    }
+    .save-load {
+        display: inline-block;
+        float: right;
+    }
+    .tools {
+        width: 100%;
     }
 </style>

@@ -4,7 +4,9 @@
         <BaseFixedButton
           v-if="isSelected"
           :onClick="openNote"
-          :class="['fixed-button_form', showNotes ? 'fixed-button_form__active' : '']"
+          :class="['fixed-button_form', showNotes ? 'fixed-button_form__active' : '',
+          notesCount ? 'fixed-button_form_nonEmpty' : '']"
+          title="Add/edit notes"
         >
             <img v-if="showNotes" src="@/assets/crossIcon.svg"/>
             <img v-else src="@/assets/bookIcon.svg"/>
@@ -136,6 +138,9 @@ export default {
         isSelected() {
             return this.$store.state.selectedVariant !== null;
         },
+        notesCount() {
+            return this.$store.state.note.trim();
+        },
     },
     methods: {
         openNote() {
@@ -165,6 +170,12 @@ export default {
                 opacity: 1;
                 right: 299px;
             }
+            &_nonEmpty {
+                opacity: 1;
+            }
         }
+    }
+    .notes-count {
+        padding-left: 5px;
     }
 </style>

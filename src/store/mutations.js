@@ -58,6 +58,10 @@ export function changeNote(state, note) {
     state.note = note;
 }
 
+export function setSaveNoteStatus(state, saveNoteStatus) {
+    state.saveNoteStatus = saveNoteStatus;
+}
+
 export function setExportFileLoading(state, value) {
     state.exportFileLoading = value;
 }

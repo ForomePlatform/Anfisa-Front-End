@@ -7,8 +7,15 @@
             :rows="10"
             no-resize
             placeholder="Notes..."
-            class="notes-fixed-panel_textarea">
+            class="notes-fixed-panel_textarea"
+       >
         </b-form-textarea>
+        <div :class="['saved-label-block', showSaved ? 'show-saved-anim' : '']">
+            <div :class="[saveNoteStatus ? 'saved-label_ok' : 'saved-label_error', 'saved-label']">
+                {{ saveNoteStatus ? 'Saved' : 'Something went wrong, ' +
+                'saving failed. Please try again later'}}
+            </div>
+        </div>
         <b-button class="notes-fixed-panel_btn" @click="saveNotes">SUBMIT</b-button>
     </div>
 </template>
@@ -18,6 +25,12 @@ export default {
     computed: {
         notes() {
             return this.$store.state.note;
+        },
+        showSaved() {
+            return this.$store.state.saveNoteStatus;
+        },
+        saveNoteStatus() {
+            return this.$store.state.saveNoteStatus === 200;
         },
     },
     methods: {
@@ -43,6 +56,8 @@ export default {
         bottom: 0;
         width: 300px;
         padding: 20px;
+        text-align: center;
+        margin: 0 auto;
         &_textarea {
             resize: none;
             flex: 1 1 auto;
@@ -63,5 +78,36 @@ export default {
                 background-color: #1a3e6c;
             }
         }
+    }
+
+    .saved-label {
+        color: #0a1c34;
+        font-size: 18px;
+        width: 100px;
+        margin: 0 auto;
+        border-radius: 5px;
+        &_ok {
+            color: #0a1c34;
+            border: 2px solid #1a3e6c;
+        }
+        &_error {
+            background-color: #ff0008;
+            width: 220px;
+            color: #fff;
+        }
+    }
+    .saved-label-block {
+        position: absolute;
+        width: 86%;
+        bottom: 75px;
+        border-left: 1px solid #ced4da;
+        opacity: 0;
+    }
+    .show-saved-anim {
+        opacity: 1;
+        transition: 1s;
+        animation: show 3s 1;
+        animation-fill-mode: forwards;
+        animation-delay: 1s;
     }
 </style>
