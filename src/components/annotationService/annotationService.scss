@@ -1,0 +1,205 @@
+.button {
+  width: 35px;
+  float: right;
+  height: 35px;
+  border-radius: 17px;
+  background-color: #2bb3ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  letter-spacing: 0px;
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 2px;
+
+  &:hover {
+    background-color: #597995 !important;
+  }
+}
+
+.example-text {
+  font-size: 0.7em;
+}
+
+.number-column {
+  float: left;
+  margin-top: 7px;
+  margin-right: 10px;
+  width: 27px;
+  text-align: center;
+}
+
+.input {
+  width: 88%;
+  display: inline !important;
+  margin: 2px;
+}
+
+.addRowWrapper {
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #2bb3ed;
+
+  &:hover {
+    background-color: #48c3f7;
+  }
+}
+
+.error-message {
+  color: #ff0008;
+  margin-left: 25px;
+}
+
+.tab {
+  outline: none !important;
+}
+
+.textRemove {
+  margin-left: 15px;
+}
+
+.addRowButton {
+  float: none;
+  display: inline;
+  white-space: pre-line;
+  width: 120px;
+  height: 45px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.disabledButton {
+  background-color: #597995;
+}
+
+.typeInTab {
+  overflow: auto;
+  height: 340px;
+  border: 0;
+  box-shadow: none;
+}
+
+.mainModal {
+  height: 400px;
+}
+
+.footer-button {
+  color: #fff;
+  padding: 5px 18px;
+  height: 25px;
+  border-radius: 12px;
+  background-color: #2bb3ed;
+  font-size: 11px;
+  letter-spacing: 0px;
+  font-weight: 800;
+  text-align: center;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/deep/ .modal-content {
+  border-radius: 12px 12px 10px 10px;
+  border: none;
+
+  .modal-header {
+    height: 40px;
+    background-color: #0a1c34;
+    border-radius: 10px 10px 0 0;
+    border-bottom: 0;
+    vertical-align: center;
+
+    button {
+      color: #fff;
+      text-shadow: none;
+      opacity: 1;
+      outline: none;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      letter-spacing: 0px;
+      color: #2bb3ed;
+      font-weight: 800;
+    }
+  }
+
+  .modal-footer {
+    background-color: #e7e7e7;
+    border: none;
+  }
+
+  .card-header {
+    background-color: #0a1c34;
+  }
+
+  .card-header:first-child {
+    border-radius: 0;
+  }
+
+  .card {
+    border: none;
+    background-color: #e7e7e7;
+  }
+
+  .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    font-weight: 700;
+    color: #203b6a;
+    background-color: #e7e7e7;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .nav-tabs .nav-link {
+    border: none;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    background-color: #1a3e6c;
+    margin: 0 3px 0 3px;
+  }
+
+  a {
+    color: #ffffff;
+  }
+
+  a:hover {
+    color: #2bb3ed;
+    text-decoration: underline;
+  }
+
+  .modal-body {
+    padding: 0;
+    margin-bottom: 0;
+    background-color: #e7e7e7;
+
+    select {
+      outline: none;
+      border: none;
+      margin-bottom: 0 !important;
+      padding: 0;
+      border-radius: 0;
+
+      &:focus {
+        box-shadow: none;
+      }
+
+      option {
+        font-size: 16px;
+        letter-spacing: 0px;
+        color: #1a3e6c;
+        padding: 10px 20px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #e7e7e7;
+        }
+      }
+    }
+  }
+}

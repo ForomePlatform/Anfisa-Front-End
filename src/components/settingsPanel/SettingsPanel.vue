@@ -16,6 +16,34 @@
             <span> Help</span> |
             <span> About</span>
         </div>
+        <div class="settings-panel_block">
+            <div v-if="!isAnnotationService">
+                <BaseHeader title="FILTERS"/>
+                <div class="d-flex justify-content-between mt-3">
+                    <BaseDropdownButton :text="selectedPreset"
+                                        :data="presets"
+                                        :onChange="changePreset"/>
+                    <div class="settings-panel_icon-button">
+                        <img alt="presets icon" src="@/assets/presetsIcon.svg"/>
+                    </div>
+                </div>
+
+                <div v-for="zone in Object.keys(zones)"
+                     :key="zone"
+                     class="d-flex justify-content-between mt-3">
+                    <BaseDropdownButton :text="getZoneText(zones[zone])"
+                                        :data="zones[zone].values"
+                                        :onChange="value =>changeZoneValue(zone, value)"/>
+                    <div class="settings-panel_icon-button">
+                        <img alt="presets icon" src="@/assets/tagsIcon.svg"/>
+                    </div>
+                </div>
+            </div>
+            <BaseButton v-if="isAnnotationService"
+                        class="mt-3"
+                        title="Submit query"
+                        :onClick="openGetAnnotationsModal"/>
+        </div>
         <div v-if="demoText" class="settings-panel_block">
             <p class="settings-panel_demo-status">
                 {{demoText}}
@@ -83,12 +111,14 @@
             <p v-else class="mt-3 ml-3" >Are you sure you want to download file?</p>
         </BaseModal>
         <FilterModal ref="filterModal"/>
+        <AnnotationSearchDialog ref="annotationSearchModal"/>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import { DEMO_NOTIFICATION } from '@/common/constants';
+import { DEMO_NOTIFICATION, ANNOTATION_SERVICE } from '@/common/constants';
+import AnnotationSearchDialog from '../annotationService/AnnotationSearchDialog.vue';
 import BaseDropdownButton from '../common/BaseDropdownButton.vue';
 import BaseButton from '../common/BaseButton.vue';
 import BaseUserControl from './BaseUserControl.vue';
@@ -108,6 +138,11 @@ export default {
             panelCollapsed: false,
             selectedWorkspace: '',
         };
+    },
+    mounted() {
+        if (this.isAnnotationService) {
+            this.openGetAnnotationsModal();
+        }
     },
     computed: {
         ...mapState(['tags', 'workspacesList', 'exportFileUrl', 'exportFileLoading', 'zones', 'presets', 'version']),
@@ -129,6 +164,9 @@ export default {
         demoText() {
             return process.env.VUE_APP_PANEL_WARNING ? DEMO_NOTIFICATION : null;
         },
+        isAnnotationService() {
+            return this.$store.state.workspace === ANNOTATION_SERVICE;
+        },
     },
     methods: {
         togglePanel() {
@@ -148,6 +186,9 @@ export default {
         openExportFileModal() {
             this.$store.dispatch('getExportFile');
             this.$refs.exportFileModal.openModal();
+        },
+        openGetAnnotationsModal() {
+            this.$refs.annotationSearchModal.show();
         },
         changeZoneValue(zone, value) {
             this.$store.commit('changeZoneValue', [zone, value]);
@@ -181,6 +222,7 @@ export default {
         FilterModal,
         LayoutControl,
         BaseModal,
+        AnnotationSearchDialog,
     },
 };
 </script>
@@ -263,5 +305,12 @@ export default {
             width: 34px;
             padding: 0;
         }
+    }
+    .title-input {
+        margin-bottom: 0;
+    }
+    .tags-panel_input {
+        width: 100%;
+        margin-bottom: 5px;
     }
 </style>

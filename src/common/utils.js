@@ -183,3 +183,44 @@ export function getProblemGroup(currentConditions) {
     const zygosity = currentConditions.find(condition => condition[0] === STAT_TYPE_ZYGOSITY);
     return zygosity ? zygosity[2] : null;
 }
+
+export function generateJsonFromInputData(data) {
+    const result = [];
+    data.forEach((input) => {
+        const element = {};
+        const dataArray = input.text.split(',');
+
+        for (let i = 0; i < dataArray.length; i += 1) {
+            const elementArray = dataArray[i].trim()
+                .split(/[\s:]+/);
+            const rangeArray = elementArray[1].split(/[-]+/);
+            element.chromosome = elementArray[0].replace('chr', '');
+
+            const start = Number.isNaN(Number(rangeArray[0])) ?
+                rangeArray[0] : Number(rangeArray[0]);
+            let end;
+            if (rangeArray.length === 1) {
+                end = start;
+            } else if (Number.isNaN(Number(rangeArray[1]))) {
+                end = rangeArray[1];
+            } else {
+                end = Number(rangeArray[1]);
+            }
+            element.start = start;
+            element.end = end;
+            const alternative = elementArray[2];
+            if (alternative) {
+                if (alternative.indexOf('>') !== -1) {
+                    element.alternative = alternative.split('>')[1];
+                } else {
+                    element.alternative = alternative;
+                }
+            }
+            result.push(element);
+        }
+    });
+    if (result.length) {
+        return JSON.stringify(result);
+    }
+    return null;
+}

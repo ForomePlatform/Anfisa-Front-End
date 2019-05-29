@@ -196,3 +196,19 @@ export function resetListDependencies(state) {
     state.variantDetails = {};
     state.currentConditions = [];
 }
+
+export function setAnnotationsSearchResult(state, data) {
+    state.annotations.annotationsSearchResult = data;
+}
+
+export function setShowFinished(state, value) {
+    state.annotations.showFinished = value;
+}
+
+export function setAnnotationSearchShowError(state, value) {
+    state.annotations.error.show = value;
+}
+
+export function setAnnotationSearchErrorMessage(state, value) {
+    state.annotations.error.message = value;
+}
