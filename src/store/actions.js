@@ -275,8 +275,7 @@ export function getZoneList(context, ws) {
     params.append('ws', ws || context.state.workspace);
     commonHttp.post('/zone_list', params)
         .then((response) => {
-            const zones = response.data.filter(zone => zone[0].charAt(0) !== '_');
-            zones.forEach(zone => getZoneData(context, zone));
+            response.data.forEach(zone => getZoneData(context, zone));
             context.commit('resetZones');
         });
 }
