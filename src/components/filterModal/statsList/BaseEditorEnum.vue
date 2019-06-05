@@ -81,6 +81,9 @@ export default {
             }
             this.selected = result;
         },
+        cleanQuery() {
+            this.query = '';
+        },
     },
     // Update data if it was changed in the store
     // (e.g on change filter or on changes data via StatView)

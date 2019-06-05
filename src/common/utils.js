@@ -162,7 +162,8 @@ export function checkNonzeroStat(stat) {
     } else if (stat.type === STAT_TYPE_INT || stat.type === STAT_TYPE_FLOAT) {
         return Boolean(stat.data[0] || stat.data[1]);
     } else if (stat.type === STAT_TYPE_ZYGOSITY) {
-        return true;
+        const nonzeroItems = stat.data.variants.filter(item => item[1]);
+        return Boolean(nonzeroItems.length);
     }
     return false;
 }
