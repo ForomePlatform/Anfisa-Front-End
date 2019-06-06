@@ -12,7 +12,7 @@
             <div class="base-table_table-wrapper">
                 <BaseScrollHorizontal :id="id">
                     <div v-if="content" v-html="content" class="base-table_html"/>
-                    <table class="base-table_table">
+                    <table v-else class="base-table_table">
                         <tr v-for="(row, index) in data" v-bind:key="index">
                             <td v-for="(cell, index) in row" v-html="cell" v-bind:key="index"/>
                         </tr>
@@ -111,6 +111,7 @@ export default {
         }
         &_html {
             white-space: pre-line;
+            font-family: "Courier New", Courier, monospace;
         }
         &_table {
             width: 100%;
