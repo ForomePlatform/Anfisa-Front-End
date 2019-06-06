@@ -4,6 +4,7 @@
       title="Warning"
       :onSubmit="onSubmit"
       :ok-title="okTitle"
+      :enterKeyFunc="onSubmit"
     >
         <p class="mt-3 ml-3">
             You will lose all changes to the {{ preset }}<br/>
