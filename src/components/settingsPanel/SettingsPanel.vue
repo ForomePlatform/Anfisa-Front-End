@@ -77,8 +77,11 @@
                 />
             </div>
         </BaseModal>
-        <BaseModal ref="exportFileModal" title="EXPORT" :onSubmit="exportFile"
-          :okDisabled="!exportFileUrl">
+        <BaseModal ref="exportFileModal"
+                   title="EXPORT"
+                   :onSubmit="exportFile"
+                   :enterKeyFunc="exportFile"
+                   :okDisabled="!exportFileUrl">
             <p v-if="exportFileLoading" class="mt-3 ml-3">Wait please...</p>
             <p v-else class="mt-3 ml-3" >Are you sure you want to download file?</p>
         </BaseModal>
