@@ -9,7 +9,14 @@
 
 <script>
 export default {
-    props: ['onRemove'],
+    props: ['onRemove', 'condition'],
+    watch: {
+        condition() {
+            if (this.condition[3] && !this.condition[3].length) {
+                this.$store.commit('removeCurrentCondition', this.condition[1]);
+            }
+        },
+    },
 };
 </script>
 

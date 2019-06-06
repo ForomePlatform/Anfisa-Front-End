@@ -5,7 +5,8 @@
           v-bind:key="index + '-' + condition[1]"
           class="filter-modal-conditions_item"
         >
-            <BaseConditionWrapper :onRemove="() => removeHandler(condition[1])">
+            <BaseConditionWrapper :onRemove="() => removeHandler(condition[1])"
+                                  :condition="condition">
                 <BaseViewFloat
                   v-if="condition[0] === statTypes.numeric"
                   :name="condition[1]"
