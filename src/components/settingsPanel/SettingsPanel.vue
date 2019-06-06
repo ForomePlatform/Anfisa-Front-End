@@ -17,28 +17,6 @@
             <span> About</span>
         </div>
         <div class="settings-panel_block">
-            <div v-if="!isAnnotationService">
-                <BaseHeader title="FILTERS"/>
-                <div class="d-flex justify-content-between mt-3">
-                    <BaseDropdownButton :text="selectedPreset"
-                                        :data="presets"
-                                        :onChange="changePreset"/>
-                    <div class="settings-panel_icon-button">
-                        <img alt="presets icon" src="@/assets/presetsIcon.svg"/>
-                    </div>
-                </div>
-
-                <div v-for="zone in Object.keys(zones)"
-                     :key="zone"
-                     class="d-flex justify-content-between mt-3">
-                    <BaseDropdownButton :text="getZoneText(zones[zone])"
-                                        :data="zones[zone].values"
-                                        :onChange="value =>changeZoneValue(zone, value)"/>
-                    <div class="settings-panel_icon-button">
-                        <img alt="presets icon" src="@/assets/tagsIcon.svg"/>
-                    </div>
-                </div>
-            </div>
             <BaseButton v-if="isAnnotationService"
                         class="mt-3"
                         title="Submit query"

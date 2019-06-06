@@ -1,54 +1,22 @@
 <template>
-    <b-modal ref="confirmDialog"
-             centered>
-        <div slot="modal-title">CONFIRM REMOVING</div>
-        <span class="textRemove">{{ text }}</span>
-        <div slot="modal-footer" class="w-100">
-            <b-button size="sm"
-                      class="footer-button float-right"
-                      variant="primary"
-                      @click="confirmFunction">
-                Confirm
-            </b-button>
-            <b-button size="sm"
-                      class="footer-button float-right btn-secondary"
-                      @click="hide">
-                Cancel
-            </b-button>
-        </div>
-    </b-modal>
+    <BaseModal
+            :id="id"
+            title="CONFIRM REMOVING"
+            :onSubmit="confirmFunction"
+            :ok-title="'Confirm'"
+    >
+        <p class="mt-3 ml-3">{{ text }}</p>
+    </BaseModal>
 </template>
 
 <script>
+import BaseModal from '@/components/common/BaseModal.vue';
+
 export default {
     name: 'ConfirmDialog',
-    props: {
-        text: {
-            type: String,
-            default: '',
-        },
-        confirmFunction: {
-            type: Function,
-            default: null,
-        },
+    components: {
+        BaseModal,
     },
-    methods: {
-        show() {
-            this.$refs.confirmDialog.show();
-        },
-        hide() {
-            this.$refs.confirmDialog.hide();
-        },
-    },
+    props: ['text', 'id', 'confirmFunction'],
 };
 </script>
-
-<style lang="scss" scoped>
-    @import '../annotationService.scss';
-    .btn-secondary {
-        color: black;
-        &:hover {
-            background-color: #ededed;
-        }
-    }
-</style>

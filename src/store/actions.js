@@ -459,16 +459,13 @@ function showError(context, message) {
     context.commit('setAnnotationSearchShowError', true);
     context.commit('setAnnotationSearchErrorMessage', message);
     context.commit('setShowFinished', false);
-    // context.commit('setSelectedVariant', null);
-    // context.commit('initVariantDetails');
-    // document.cookie = 'annotationJsonInputData = ';
     console.log(message);
 }
 
 export function getAnfisaJson(context, formatUrl, formatHeader) {
     const loginParams = new URLSearchParams();
-    loginParams.append('login', 'admin');
-    loginParams.append('password', 'b82nfGl5sdg');
+    loginParams.append('login', `${process.env.VUE_APP_ANNOTATION_SERVICE_LOGIN}`);
+    loginParams.append('password', `${process.env.VUE_APP_ANNOTATION_SERVICE_PASSWORD}`);
     axios.post('/annotationservice/logon/login', loginParams, httpParams).then((response) => {
         const { session } = response.data.data;
         anfisaJsonParams.append('session', session);

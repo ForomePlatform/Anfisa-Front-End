@@ -212,3 +212,8 @@ export function setAnnotationSearchShowError(state, value) {
 export function setAnnotationSearchErrorMessage(state, value) {
     state.annotations.error.message = value;
 }
+
+export function setVariantsPanelCollapsed(state, value) {
+    state.panels.variantsPanelCollapsed = value;
+}
+
