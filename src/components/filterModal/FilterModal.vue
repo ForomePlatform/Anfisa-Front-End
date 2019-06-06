@@ -41,7 +41,7 @@
     </b-modal>
     <BaseWarningModal
       :id="LOAD_MODAL_ID"
-      okTitle="LOAD ANYWAYS"
+      okTitle="LOAD ANYWAY"
       :onSubmit="openLoadView"
       :preset="selectedPreset || 'New Filter'"
     />
