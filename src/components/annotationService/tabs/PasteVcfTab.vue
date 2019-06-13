@@ -18,8 +18,8 @@
             <div v-if="showFinished && !showError">
                 <p>{{ constants.QUERY_FINISHED_TEXT }}</p>
             </div>
-            <div v-if="showError" class="error-message">
-                {{ showErrorMessage }}
+            <div v-if="showError">
+                <ErrorMessage></ErrorMessage>
             </div>
         </b-card-text>
     </div>
@@ -27,10 +27,14 @@
 
 <script>
 import { ANNOTATION_SERVICE_CONTS } from '../../../common/constants';
+import ErrorMessage from './ErrorMessage.vue';
 
 export default {
     name: 'PasteVcfTab',
     props: ['showInputs'],
+    components: {
+        ErrorMessage,
+    },
     data() {
         return {
             vcfText: '',
@@ -46,18 +50,6 @@ export default {
         showError() {
             return this.$store.state.annotations.error.show;
         },
-        showErrorMessage() {
-            return this.$store.state.annotations.error.message;
-        },
-    },
-    methods: {
-        postVcf(content) {
-            this.$store.dispatch('formatVcf', content);
-        },
     },
 };
 </script>
-
-<style lang="scss" scoped>
-    @import '../annotationService.scss';
-</style>

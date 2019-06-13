@@ -1,10 +1,10 @@
 <template>
     <div>
-       <b-modal ref="annotationSearchModal"
-                centered
-                scrollable
-                size="lg"
-                title="GET ANNOTATIONS">
+        <b-modal ref="annotationSearchModal"
+                 centered
+                 scrollable
+                 size="lg"
+                 title="GET ANNOTATIONS">
             <div>
                 <b-card no-body
                         class="main-modal">
@@ -13,62 +13,72 @@
                         <b-tab title="Type in"
                                class="tab">
                             <TypeInTab ref="typeInTab"
-                                       :showInputs="showSubmit">
+                                       :showInputs="showSubmit"
+                                       :showRemoveAllRowsDialog="showRemoveAllRowsDialog"
+                                       :showRemoveRowDialog="showRemoveRowDialog">
                             </TypeInTab>
                         </b-tab>
-                        <b-tab title="Upload VCF"
-                               class="tab">
-                            <UploadVcfTab ref="uploadVcfTab"
-                                          :showInputs="showSubmit">
-                            </UploadVcfTab>
+                        <b-tab title="Upload VCF" class="tab">
+                            <UploadVcfTab ref="uploadVcfTab" :showInputs="showSubmit"/>
                         </b-tab>
-                        <b-tab title="Paste VCF"
-                               class="tab">
-                            <PasteVcfTab ref="pasteVcfTab"
-                                         :showInputs="showSubmit">
-                            </PasteVcfTab>
+                        <b-tab title="Paste VCF" class="tab">
+                            <PasteVcfTab ref="pasteVcfTab" :showInputs="showSubmit"/>
                         </b-tab>
                     </b-tabs>
                 </b-card>
             </div>
             <div slot="modal-footer"
                  class="w-100">
-                <b-button v-if="showSubmit"
-                          size="sm"
-                          class="btn_footer"
-                          variant="primary"
-                          @click="getAnnotationsData">
-                    Submit
-                </b-button>
-                <b-button v-if="showFinished || showError"
-                          size="sm"
-                          class="btn_footer"
-                          variant="primary"
-                          @click="viewAnnotationsData">
-                    OK
-                </b-button>
+                <Button v-if="showSubmit"
+                        className="btn_footer"
+                        text="Submit"
+                        variant="primary"
+                        :onClick="getAnnotationsData"
+                />
+                <Button v-if="showFinished || showError"
+                        className="btn_footer"
+                        text="OK"
+                        variant="primary"
+                        :onClick="viewAnnotationsData"
+                />
             </div>
         </b-modal>
+        <ConfirmDialog
+                :id="REMOVE_ALL_ROWS_MODAL_ID"
+                text="Remove all variants?"
+                :confirmFunction="removeAllRows"
+        />
+        <ConfirmDialog
+                :id="REMOVE_ROW_MODAL_ID"
+                text="Remove this variant?"
+                :confirmFunction="removeRow"
+        />
     </div>
 </template>
 
 <script>
 import { ANNOTATION_SERVICE_CONTS } from '../../common/constants';
+import Button from './Button.vue';
+import ConfirmDialog from './ConfirmDialog.vue';
+import PasteVcfTab from './tabs/PasteVcfTab.vue';
 import TypeInTab from './tabs/TypeInTab.vue';
 import UploadVcfTab from './tabs/UploadVcfTab.vue';
-import PasteVcfTab from './tabs/PasteVcfTab.vue';
 
 export default {
     name: 'AnnotationSearchDialog',
     data() {
         return {
             showSubmit: true,
+            REMOVE_ROW_MODAL_ID: 'confirmRemoveRow',
+            REMOVE_ALL_ROWS_MODAL_ID: 'confirmRemoveAllRows',
         };
     },
     components: {
+        Button,
+        ConfirmDialog,
+        PasteVcfTab,
         TypeInTab,
         UploadVcfTab,
-        PasteVcfTab,
     },
     computed: {
         constants() {
@@ -103,7 +113,7 @@ export default {
                 this.$refs.uploadVcfTab.uploadFile();
                 break;
             case 2:
-                this.$refs.pasteVcfTab.postVcf(this.vcfText);
+                this.$store.dispatch('formatVcf', this.vcfText);
                 break;
             default:
                 break;
@@ -119,12 +129,22 @@ export default {
             this.$store.commit('setVariantsPanelCollapsed', true);
             setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
+        removeRow() {
+            this.$refs.typeInTab.removeRow();
+        },
+        removeAllRows() {
+            this.$refs.typeInTab.removeAllRows();
+        },
+        showRemoveAllRowsDialog() {
+            this.$root.$emit('bv::show::modal', this.REMOVE_ALL_ROWS_MODAL_ID);
+        },
+        showRemoveRowDialog() {
+            this.$root.$emit('bv::show::modal', this.REMOVE_ROW_MODAL_ID);
+        },
     },
 };
 </script>
 <style lang="scss" scoped>
-    @import 'annotationService.scss';
-
     .main-modal {
         height: 400px;
     }
@@ -231,6 +251,7 @@ export default {
                 }
             }
         }
+
         .modal-footer {
             button {
                 padding: 5px 18px;
@@ -247,14 +268,17 @@ export default {
                 justify-content: center;
                 align-items: center;
             }
+
             .btn-secondary {
                 &:hover {
                     background-color: #ededed;
                 }
             }
+
             .btn-primary {
                 color: #fff;
                 background-color: #2bb3ed;
+
                 &:hover {
                     background-color: #48c3f7;
                 }

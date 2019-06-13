@@ -287,11 +287,4 @@ export default {
             padding: 0;
         }
     }
-    .title-input {
-        margin-bottom: 0;
-    }
-    .tags-panel_input {
-        width: 100%;
-        margin-bottom: 5px;
-    }
 </style>

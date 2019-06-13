@@ -77,6 +77,7 @@ export const ANNOTATION_SERVICE_CONTS = {
     CHOOSE_VCF_TEXT: 'Please choose the VCF file describing the variants to be annotated. Maximum file size: 10 MB. Maximum number of variants: 100.',
     TYPE_IN_DESC_TEXT: 'To get annotations for specific variants, please insert their descriptions in Forome format in the forms below (each in separate form, up to 100 variants per query).',
     PASTE_VCF_DESC_TEXT: 'To get annotations for specific variants, please paste the portion of VCF file with their descriptions in the form below (up to 100 variants per query).',
+    REMOVE_ROW_BTN_TITLE: 'Remove this variant from your query',
 };
 
 export const ANNOTATION_SERVICE = 'ANNOTATION SERVICE';

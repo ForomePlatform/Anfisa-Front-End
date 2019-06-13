@@ -9,14 +9,15 @@
                             :state="Boolean(file)"
                             accept=".vcf"
                             placeholder="Choose a file..."
-                            drop-placeholder="Drop file here...">
+                            drop-placeholder="Drop file here..."
+                    >
                     </b-form-file>
                     <div style="text-align: center">
-                        <b-button
+                        <Button text="Clear"
                                 centered
-                                class="btn_row-handlder"
-                                @click="clearFileUpload">Clear
-                        </b-button>
+                                className="btn_row-handlder"
+                                :onClick="clearFileUpload"
+                        />
                     </div>
                     <div v-if="showFileSizeError"
                          class="error-message">File too large</div>
@@ -28,8 +29,8 @@
             <div v-if="showFinished && !showError">
                 <p>{{ constants.QUERY_FINISHED_TEXT }}</p>
             </div>
-            <div v-if="showError" class="error-message">
-                {{ showErrorMessage }}
+            <div v-if="showError">
+                <ErrorMessage></ErrorMessage>
             </div>
         </b-card-text>
     </div>
@@ -37,10 +38,16 @@
 
 <script>
 import { ANNOTATION_SERVICE_CONTS } from '../../../common/constants';
+import Button from '../Button.vue';
+import ErrorMessage from './ErrorMessage.vue';
 
 export default {
     name: 'UploadVcfTab',
     props: ['showInputs'],
+    components: {
+        Button,
+        ErrorMessage,
+    },
     data() {
         return {
             file: null,
@@ -59,9 +66,6 @@ export default {
         showError() {
             return this.$store.state.annotations.error.show;
         },
-        showErrorMessage() {
-            return this.$store.state.annotations.error.message;
-        },
     },
     methods: {
         clearFileUpload() {
@@ -76,7 +80,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss" scoped>
-    @import '../annotationService.scss';
-</style>

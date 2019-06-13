@@ -20,11 +20,13 @@
                                 trim
                                 placeholder="Input data"
                                 @change="setCookies"/>
-                        <b-button class="btn btn_remove-row"
-                                  title="Remove this variant from your query"
-                                  @click="showDeleteRowDialog(input.text, index)">
-                            -
-                        </b-button>
+                        <div style="float: right;">
+                            <Button v-if="inputs.length"
+                                    className="btn_remove-row"
+                                    text="-"
+                                    :title="constants.REMOVE_ROW_BTN_TITLE"
+                                    :onClick="showDeleteRowDialog.bind(this, input.text, index)"/>
+                        </div>
                         <div v-if="input.error != null">
                             <div v-for="(error) in input.error" :key="error">
                                 <div class="error-message">{{ error }}</div>
@@ -35,18 +37,17 @@
                         <p>{{ constants.ROWS_LIMIT_EXCEEDED }}</p>
                     </div>
                     <div class="add-row-wrapper">
-                        <b-button
+                        <Button className="btn_row-handlder"
+                                text="Add a variant
+                               to your query"
+                                class="inlineBlock"
                                 :disabled="rowsLimitExceeded"
-                                :class="[rowsLimitExceeded ?
-                                                    'btn_row-handlder_disabled' : '',
-                                                    'btn_row-handlder']"
-                                primary
-                                @click="addRow">Add a variant to your query
-                        </b-button>
-                        <b-button v-if="inputs.length"
-                                  class="btn_row-handlder"
-                                  @click="showRemoveAllRowsDialog">Remove all
-                        </b-button>
+                                :onClick="addRow"/>
+                        <Button v-if="inputs.length"
+                                class="inlineBlock"
+                                className="btn_row-handlder"
+                                text="Remove all"
+                                :onClick="showRemoveAllRowsDialog"/>
                     </div>
                 </div>
                 <div v-else-if="!showError">
@@ -56,42 +57,32 @@
             <div v-if="showFinished && !showError">
                 <p>{{ constants.QUERY_FINISHED_TEXT }}</p>
             </div>
-            <div v-if="showError" class="error-message">
-                {{ showErrorMessage }}
+            <div v-if="showError">
+                <ErrorMessage></ErrorMessage>
             </div>
         </b-card-text>
-        <ConfirmDialog
-                :id="REMOVE_ALL_ROWS_MODAL_ID"
-                text="Remove all variants?"
-                :confirmFunction="removeAllRows"
-        />
-        <ConfirmDialog
-                :id="REMOVE_ROW_MODAL_ID"
-                text="Remove this variant?"
-                :confirmFunction="removeRow"
-        />
     </div>
 </template>
 
 <script>
 import * as utils from '../../../common/utils';
 import { ANNOTATION_SERVICE_CONTS } from '../../../common/constants';
-import ConfirmDialog from '../confirmDialogs/ConfirmDialog.vue';
+import Button from '../Button.vue';
+import ErrorMessage from './ErrorMessage.vue';
 
 export default {
     name: 'TypeInTab',
+    props: ['showInputs', 'showRemoveAllRowsDialog', 'showRemoveRowDialog'],
     components: {
-        ConfirmDialog,
+        Button,
+        ErrorMessage,
     },
-    props: ['showInputs'],
     data() {
         return {
             inputs: [
                 { text: '' },
             ],
             removeRowIndex: 0,
-            REMOVE_ROW_MODAL_ID: 'confirmRemoveRow',
-            REMOVE_ALL_ROWS_MODAL_ID: 'confirmRemoveAllRows',
         };
     },
     computed: {
@@ -107,9 +98,6 @@ export default {
         showError() {
             return this.$store.state.annotations.error.show;
         },
-        showErrorMessage() {
-            return this.$store.state.annotations.error.message;
-        },
     },
     methods: {
         setCookies() {
@@ -118,7 +106,7 @@ export default {
         showDeleteRowDialog(inputText, index) {
             this.removeRowIndex = index;
             if (inputText) {
-                this.$root.$emit('bv::show::modal', this.REMOVE_ROW_MODAL_ID);
+                this.showRemoveRowDialog();
             } else {
                 this.removeRow(index);
             }
@@ -153,9 +141,6 @@ export default {
         removeAllRows() {
             this.inputs = [];
             this.setCookies();
-        },
-        showRemoveAllRowsDialog() {
-            this.$root.$emit('bv::show::modal', this.REMOVE_ALL_ROWS_MODAL_ID);
         },
         postInputs() {
             this.inputs = this.inputs.filter(input => input.text);
@@ -211,7 +196,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import '../annotationService.scss';
     .type-in-tab {
         overflow: auto;
         height: 340px;
@@ -242,4 +226,7 @@ export default {
         margin: 2px;
     }
 
+    .inlineBlock {
+        display: inline-block;
+    }
 </style>
