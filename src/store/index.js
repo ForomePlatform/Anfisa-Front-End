@@ -36,6 +36,17 @@ export default new Vuex.Store({
         version: '',
         listMounting: false,
         tagFilterValue: '',
+        annotations: {
+            showFinished: false,
+            error: {
+                show: false,
+                message: '',
+            },
+            annotationsSearchResult: {
+                variantsPanelCollapsed: false,
+            },
+        },
+        panels: {},
     },
     actions,
     mutations,

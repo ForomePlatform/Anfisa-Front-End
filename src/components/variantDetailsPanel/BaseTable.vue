@@ -11,8 +11,10 @@
         <b-collapse :id="'table_'+id" class="cubasestom-table_collapse">
             <div class="base-table_table-wrapper">
                 <BaseScrollHorizontal :id="id">
-                    <div v-if="content" v-html="content" class="base-table_html"/>
-                    <table class="base-table_table">
+                    <div v-if="content" class="base-table_html">
+                        <pre>{{ content }}</pre>
+                    </div>
+                    <table v-else class="base-table_table">
                         <tr v-for="(row, index) in data" v-bind:key="index">
                             <td v-for="(cell, index) in row" v-html="cell" v-bind:key="index"/>
                         </tr>
@@ -110,7 +112,8 @@ export default {
             }
         }
         &_html {
-            white-space: pre-line;
+            width: fit-content;
+            font-family: "Courier New", Courier, monospace;
         }
         &_table {
             width: 100%;

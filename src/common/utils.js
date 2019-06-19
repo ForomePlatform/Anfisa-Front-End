@@ -114,21 +114,6 @@ export function prepareParams({
     return params;
 }
 
-function updateIGVLink(variantDetails) {
-    if (variantDetails.view_gen && variantDetails.view_gen.data) {
-        for (let i = 0; i < variantDetails.view_gen.data.length; i += 1) {
-            const item = variantDetails.view_gen.data[i];
-            if (item[0] === 'IGV') {
-                item[1] = item[1].replace('target="blank"', '').replace('link</a>', `link</a>
-                    <span style="font-size:12px">(for this link to work, make sure
-                    <a href="https://software.broadinstitute.org/software/igv/download" target="_blank">
-                    the IGV app</a> is running on your computer)</span>`);
-            }
-        }
-    }
-    return variantDetails;
-}
-
 export function prepareVariantDetails(data) {
     const result = {};
     const getValuesForRow = row => (Array.isArray(row) ? row.map(val => val[0]) : []);
@@ -146,7 +131,7 @@ export function prepareVariantDetails(data) {
             };
         }
     });
-    return updateIGVLink(result);
+    return result;
 }
 
 export function expired(date) {
@@ -182,4 +167,45 @@ export function checkStatByQuery(stat, query = '') {
 export function getProblemGroup(currentConditions) {
     const zygosity = currentConditions.find(condition => condition[0] === STAT_TYPE_ZYGOSITY);
     return zygosity ? zygosity[2] : null;
+}
+
+export function generateJsonFromInputData(data) {
+    const result = [];
+    data.forEach((input) => {
+        const element = {};
+        const dataArray = input.text.split(',');
+
+        for (let i = 0; i < dataArray.length; i += 1) {
+            const elementArray = dataArray[i].trim()
+                .split(/[\s:]+/);
+            const rangeArray = elementArray[1].split(/[-]+/);
+            element.chromosome = elementArray[0].replace('chr', '');
+
+            const start = Number.isNaN(Number(rangeArray[0])) ?
+                rangeArray[0] : Number(rangeArray[0]);
+            let end;
+            if (rangeArray.length === 1) {
+                end = start;
+            } else if (Number.isNaN(Number(rangeArray[1]))) {
+                end = rangeArray[1];
+            } else {
+                end = Number(rangeArray[1]);
+            }
+            element.start = start;
+            element.end = end;
+            const alternative = elementArray[2];
+            if (alternative) {
+                if (alternative.indexOf('>') !== -1) {
+                    element.alternative = alternative.split('>')[1];
+                } else {
+                    element.alternative = alternative;
+                }
+            }
+            result.push(element);
+        }
+    });
+    if (result.length) {
+        return JSON.stringify(result);
+    }
+    return null;
 }
