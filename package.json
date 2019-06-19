@@ -1,7 +1,7 @@
 {
   "name": "anfisa-front-end",
-  "version": "0.3.5",
-  "backendVersion": "0.3.2",
+  "version": "0.4.2",
+  "backendVersion": "0.4.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -15,6 +15,7 @@
     "bootstrap": "^4.1.3",
     "bootstrap-vue": "^2.0.0-rc.13",
     "vue": "^2.5.17",
+    "vue-cookie-law": "^1.10.0",
     "vue-router": "^3.0.1",
     "vue-slider-component": "^3.0.3",
     "vuex": "^3.0.1"

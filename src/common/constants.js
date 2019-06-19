@@ -68,3 +68,16 @@ export const DISCLAIMER = {
 
 // seconds
 export const EXPIRED_TIME = 8 * 3600;
+
+export const ANNOTATION_SERVICE_CONTS = {
+    QUERY_PROCESSING_TEXT: `Query processing has been started. It may take a few minutes.
+    Please don't close this tab in your browser.`,
+    QUERY_FINISHED_TEXT: 'Query processing finished. Click "OK" to display the annotations found.',
+    ROWS_LIMIT_EXCEEDED: 'Can\'t add any more variants, 100 is the maximum number for one query',
+    CHOOSE_VCF_TEXT: 'Please choose the VCF file describing the variants to be annotated. Maximum file size: 10 MB. Maximum number of variants: 100.',
+    TYPE_IN_DESC_TEXT: 'To get annotations for specific variants, please insert their descriptions in Forome format in the forms below (each in separate form, up to 100 variants per query).',
+    PASTE_VCF_DESC_TEXT: 'To get annotations for specific variants, please paste the portion of VCF file with their descriptions in the form below (up to 100 variants per query).',
+    REMOVE_ROW_BTN_TITLE: 'Remove this variant from your query',
+};
+
+export const ANNOTATION_SERVICE = 'ANNOTATION SERVICE';
