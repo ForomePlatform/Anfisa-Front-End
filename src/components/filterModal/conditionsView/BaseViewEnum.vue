@@ -18,7 +18,7 @@
          v-for="(item, index) in data"
          v-bind:key="item + '-' + index"
          class="enum-view_item"
-         @click="() => removeItem(name, index)"
+         @click="() => removeItem(name, index, data)"
         >
             {{item}}
             <div class="enum-view_item_cross"/>

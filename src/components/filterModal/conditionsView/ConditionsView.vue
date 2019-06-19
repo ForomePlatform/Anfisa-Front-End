@@ -5,8 +5,7 @@
           v-bind:key="index + '-' + condition[1]"
           class="filter-modal-conditions_item"
         >
-            <BaseConditionWrapper :onRemove="() => removeHandler(condition[1])"
-                                  :condition="condition">
+            <BaseConditionWrapper :onRemove="() => removeHandler(condition[1])">
                 <BaseViewFloat
                   v-if="condition[0] === statTypes.numeric"
                   :name="condition[1]"
@@ -73,8 +72,11 @@ export default {
             this.$store.commit('changeConditionOperator', { name, operator });
             this.$store.dispatch('getListByConditions');
         },
-        removeEnumItem(name, itemIndex) {
+        removeEnumItem(name, itemIndex, data) {
             this.$store.commit('removeConditionItem', { name, itemIndex });
+            if (!data.length) {
+                this.$store.commit('removeCurrentCondition', name);
+            }
             this.$store.dispatch('getListByConditions');
         },
         removeZygosityItem(name, itemIndex) {
