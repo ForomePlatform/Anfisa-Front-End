@@ -16,11 +16,12 @@
             <span> Help</span> |
             <span> About</span>
         </div>
-        <div class="settings-panel_block">
-            <BaseButton v-if="isAnnotationService"
-                        class="mt-3"
-                        title="Submit query"
-                        :onClick="openGetAnnotationsModal"/>
+        <div v-if="isAnnotationService" class="settings-panel_block">
+            <BaseButton
+              class="mt-3"
+              title="Submit query"
+              :onClick="openGetAnnotationsModal"
+            />
         </div>
         <div v-if="demoText" class="settings-panel_block">
             <p class="settings-panel_demo-status">
