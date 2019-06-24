@@ -16,6 +16,13 @@
             <span> Help</span> |
             <span> About</span>
         </div>
+        <div v-if="isAnnotationService" class="settings-panel_block">
+            <BaseButton
+              class="mt-3"
+              title="Submit query"
+              :onClick="openGetAnnotationsModal"
+            />
+        </div>
         <div v-if="demoText" class="settings-panel_block">
             <p class="settings-panel_demo-status">
                 {{demoText}}
@@ -77,18 +84,23 @@
                 />
             </div>
         </BaseModal>
-        <BaseModal ref="exportFileModal" title="EXPORT" :onSubmit="exportFile"
-          :okDisabled="!exportFileUrl">
+        <BaseModal ref="exportFileModal"
+                   title="EXPORT"
+                   :onSubmit="exportFile"
+                   :enterKeyFunc="exportFile"
+                   :okDisabled="!exportFileUrl">
             <p v-if="exportFileLoading" class="mt-3 ml-3">Wait please...</p>
             <p v-else class="mt-3 ml-3" >Are you sure you want to download file?</p>
         </BaseModal>
         <FilterModal ref="filterModal"/>
+        <AnnotationSearchDialog ref="annotationSearchModal"/>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import { DEMO_NOTIFICATION } from '@/common/constants';
+import { DEMO_NOTIFICATION, ANNOTATION_SERVICE } from '@/common/constants';
+import AnnotationSearchDialog from '../annotationService/AnnotationSearchDialog.vue';
 import BaseDropdownButton from '../common/BaseDropdownButton.vue';
 import BaseButton from '../common/BaseButton.vue';
 import BaseUserControl from './BaseUserControl.vue';
@@ -108,6 +120,11 @@ export default {
             panelCollapsed: false,
             selectedWorkspace: '',
         };
+    },
+    mounted() {
+        if (this.isAnnotationService) {
+            this.openGetAnnotationsModal();
+        }
     },
     computed: {
         ...mapState(['tags', 'workspacesList', 'exportFileUrl', 'exportFileLoading', 'zones', 'presets', 'version']),
@@ -129,6 +146,9 @@ export default {
         demoText() {
             return process.env.VUE_APP_PANEL_WARNING ? DEMO_NOTIFICATION : null;
         },
+        isAnnotationService() {
+            return this.$store.state.workspace === ANNOTATION_SERVICE;
+        },
     },
     methods: {
         togglePanel() {
@@ -148,6 +168,9 @@ export default {
         openExportFileModal() {
             this.$store.dispatch('getExportFile');
             this.$refs.exportFileModal.openModal();
+        },
+        openGetAnnotationsModal() {
+            this.$refs.annotationSearchModal.show();
         },
         changeZoneValue(zone, value) {
             this.$store.commit('changeZoneValue', [zone, value]);
@@ -181,6 +204,7 @@ export default {
         FilterModal,
         LayoutControl,
         BaseModal,
+        AnnotationSearchDialog,
     },
 };
 </script>

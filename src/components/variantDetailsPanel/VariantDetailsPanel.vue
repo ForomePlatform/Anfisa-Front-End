@@ -165,4 +165,7 @@ export default {
     .notes-count {
         padding-left: 5px;
     }
+    .igv_comment {
+        font-size:12px;
+    }
 </style>

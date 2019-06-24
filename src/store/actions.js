@@ -1,11 +1,16 @@
 import axios from 'axios';
 import * as utils from '../common/utils';
+import { ANNOTATION_SERVICE } from '../common/constants';
 
-const commonHttp = axios.create({
-    baseURL: process.env.VUE_APP_API_URL,
+const httpParams = {
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
     },
+};
+let anfisaJsonParams = new URLSearchParams();
+const commonHttp = axios.create({
+    baseURL: process.env.VUE_APP_API_URL,
+    headers: httpParams.headers,
 });
 
 export function getList(context) {
@@ -86,6 +91,10 @@ export function getListByTag(context, tag) {
             console.log(error);
         });
 }
+export function setVariantsDetails(context, data) {
+    const result = utils.prepareVariantDetails(data);
+    context.commit('setVariantDetails', result);
+}
 
 export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
@@ -94,8 +103,7 @@ export function getVariantDetails(context, variant) {
     context.commit('setSelectedVariant', variant);
     commonHttp.post('/reccnt', params)
         .then((response) => {
-            const result = utils.prepareVariantDetails(response.data);
-            context.commit('setVariantDetails', result);
+            setVariantsDetails(context, response.data);
         })
         .catch((error) => {
             context.commit('setSelectedVariant', null);
@@ -445,4 +453,76 @@ export function getZygosityByFamily(context, { name, family }) {
     }).catch((error) => {
         console.log(error);
     });
+}
+
+function showError(context, message) {
+    context.commit('setAnnotationSearchShowError', true);
+    context.commit('setAnnotationSearchErrorMessage', message);
+    context.commit('setShowFinished', false);
+    console.log(message);
+}
+
+export function getAnfisaJson(context, formatUrl, formatHeader) {
+    const loginParams = new URLSearchParams();
+    loginParams.append('login', `${process.env.VUE_APP_ANNOTATION_SERVICE_LOGIN}`);
+    loginParams.append('password', `${process.env.VUE_APP_ANNOTATION_SERVICE_PASSWORD}`);
+    axios.post('/annotationservice/logon/login', loginParams, httpParams).then((response) => {
+        const { session } = response.data.data;
+        anfisaJsonParams.append('session', session);
+        axios.post(formatUrl, anfisaJsonParams, formatHeader).then((resp) => {
+            context.commit('setSelectedVariant', 0);
+            const dataReq = resp.data.data[0].result[0];
+            if (!dataReq) {
+                showError(context, 'Nothing found');
+                return;
+            }
+            const records = [];
+            resp.data.data.forEach((item) => {
+                if (item.result.length) {
+                    const index = resp.data.data.indexOf(item);
+                    const name = `[${item.result[0][0].rows[0][2][0][0]}] chr${item.result[0][0].rows[1][2][0][0]}`;
+                    const record = [index, name, 'grey', false];
+                    records.push(record);
+                }
+            });
+            context.commit('setRecords', records);
+            context.commit('setWorkspace', ANNOTATION_SERVICE);
+            context.commit('setTotal', records.length);
+            context.commit('setFiltered', records.length);
+            context.commit('setAnnotationsSearchResult', resp.data.data);
+            context.commit('setShowFinished', true);
+            const data = resp.data.data[0].result[0];
+            setVariantsDetails(context, data);
+        }).catch((error) => {
+            let message;
+            if (error.response.data.error) {
+                message = `Server error: ${error.response.data.error.code.replace('_', ' ')}`;
+            } else {
+                message = 'Server error: unknown error';
+            }
+            showError(context, message);
+        });
+    }).catch((error) => {
+        showError(context, `${error.message} - ${error.request.responseURL}`);
+    });
+}
+
+export function formatAnfisa(context, data) {
+    const formatUrl = '/annotationservice/FormatAnfisa/get';
+    const formatHeader = httpParams;
+    anfisaJsonParams = new URLSearchParams();
+    anfisaJsonParams.append('data', data);
+    getAnfisaJson(context, formatUrl, formatHeader);
+}
+
+export function formatVcf(context, data) {
+    const formatUrl = '/annotationservice/FormatVcf/get';
+    const formatHeader = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    };
+    anfisaJsonParams = new FormData();
+    anfisaJsonParams.append('data', data);
+    getAnfisaJson(context, formatUrl, formatHeader);
 }

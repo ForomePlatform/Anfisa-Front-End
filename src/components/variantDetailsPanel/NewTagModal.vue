@@ -1,5 +1,8 @@
 <template>
-    <BaseModal id="newTagModal" title="CREATE NEW TAG" :onSubmit="addNewTag">
+    <BaseModal id="newTagModal"
+               title="CREATE NEW TAG"
+               :onSubmit="addNewTag"
+               :enterKeyFunc="addNewTag">
         <p class="mt-3 ml-3" > Are you sure you want to create a new tag {{ filterValue }}?</p>
     </BaseModal>
 </template>
