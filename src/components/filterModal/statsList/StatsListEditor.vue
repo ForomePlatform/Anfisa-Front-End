@@ -29,7 +29,6 @@
                 :buttonText="buttonText"
         />
         <BaseEditorEnum
-                ref="baseEditorEnum"
                 v-else-if="type === statTypes.enum || type === statTypes.status"
                 :list="data"
                 :preselectedData="preselectedData"

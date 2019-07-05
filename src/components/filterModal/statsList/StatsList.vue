@@ -92,17 +92,21 @@ export default {
                 }
             });
         },
-        hasFiltered(data) {
+        hasFiltered(subStat) {
             if (this.searchQuery) {
-                let array;
-                if (Array.isArray(data.data)) {
-                    array = data.data;
-                } else if (data.data.variants) {
+                const query = this.searchQuery.toLowerCase();
+                let array = subStat.data;
+                if (subStat.type === 'zygosity') {
                     // INHERITANCE - custom handler
-                    array = data.data.variants.concat(data.data.family);
+                    array = array.variants.concat(array.family);
                 }
-                const result = array.filter(item => (Array.isArray(item) ? item[0].toLowerCase()
-                    .includes(this.searchQuery.toLowerCase()) : false));
+                const result = array.filter((item) => {
+                    if (Array.isArray(item)) {
+                        const nonCheckedRes = this.nonzeroChecked ? item[1] : true;
+                        return nonCheckedRes && item[0].toLowerCase().includes(query);
+                    }
+                    return false;
+                });
                 return !!result.length;
             }
             return false;
@@ -121,41 +125,69 @@ export default {
         },
         filteredData(stat) {
             let result = stat.data;
-            if (stat.type !== 'zygosity' && Array.isArray(result)) {
-                result = this.filterData(result);
-            } else if (stat.type === 'zygosity') {
+            const query = this.searchQuery.toLowerCase();
+            const isSubstat = (stat.title || stat.name).toLowerCase().includes(query);
+            if (stat.type === 'zygosity') {
                 result = {
                     ...result,
-                    variants: this.filterData(stat.data.variants),
-                    family: stat.data.family.filter(f =>
-                        f.toLowerCase().includes(this.searchQuery.toLowerCase())),
+                    variants: this.filterData(result.variants, isSubstat),
+                    family: result.family.filter(f =>
+                        f.toLowerCase().includes(query)),
                 };
+                if (!(!!result.variants.length || !!result.family.length)) {
+                    result = [];
+                }
+            } else {
+                result = this.filterData(result, isSubstat);
             }
             return result;
         },
-        filterData(data) {
-            return data.filter(i => (Array.isArray(i) ? i[0].toLowerCase()
-                .includes(this.searchQuery.toLowerCase()) && (this.nonzeroChecked ? i[1] : true) :
-                false));
+        filterData(data, isSubstat) {
+            const query = this.searchQuery.toLowerCase();
+            return data.filter((item) => {
+                if (Array.isArray(item)) {
+                    const nonCheckedRes = this.nonzeroChecked ? item[1] : true;
+                    return nonCheckedRes && (isSubstat ? item[0].toLowerCase() :
+                        item[0].toLowerCase().includes(query));
+                }
+                return false;
+            });
         },
         toggleNonzeroCheckbox() {
             this.nonzeroChecked = !this.nonzeroChecked;
+            if (this.nonzeroChecked) {
+                const query = this.searchQuery;
+                this.searchQuery = '';
+                this.clicks();
+                this.searchQuery = query;
+            } else {
+                setTimeout(() => {
+                    this.clicks();
+                }, 1);
+            }
         },
         filledStat(stat) {
             return Boolean(this.oCurrentConditions[stat.name] || (stat.type === STAT_GROUP
                 && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
         },
         showStat(stat) {
-            return !this.nonzeroChecked || checkNonzeroStat(stat);
+            return !this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery);
         },
         primaryDisabled(stat) {
             return !this.filledStat(stat) && (
-                (stat.type === STAT_GROUP && !stat.data.length)
+                (stat.type === STAT_GROUP && this.inheritanceHandler(stat))
                 || (stat.type !== STAT_GROUP && !this.showStat(stat))
             );
         },
+        inheritanceHandler(stat) {
+            if (stat.title === 'Inheritance') {
+                return !stat.data.filter(item => this.filteredData(item).variants).length
+                    || !stat.data.length;
+            }
+            return !stat.data.length;
+        },
         secondaryDisabled(stat) {
-            return !this.filledStat(stat) && !this.showStat(stat);
+            return !this.filledStat(stat) && !this.showStat(stat) && this.inheritanceHandler(stat);
         },
         expandPreselectedStats() {
             const isStringTrue = value => value === 'true';
@@ -185,12 +217,7 @@ export default {
                 }
             });
         },
-    },
-    mounted() {
-        this.expandPreselectedStats();
-    },
-    watch: {
-        searchQuery() {
+        clicks() {
             if (this.searchQuery === '') {
                 this.toggleFilters('false');
             } else {
@@ -209,6 +236,14 @@ export default {
                     }
                 });
             }
+        },
+    },
+    mounted() {
+        this.expandPreselectedStats();
+    },
+    watch: {
+        searchQuery() {
+            this.$nextTick(this.clicks);
         },
     },
 };
