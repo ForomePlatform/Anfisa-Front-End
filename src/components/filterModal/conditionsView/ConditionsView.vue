@@ -72,8 +72,11 @@ export default {
             this.$store.commit('changeConditionOperator', { name, operator });
             this.$store.dispatch('getListByConditions');
         },
-        removeEnumItem(name, itemIndex) {
+        removeEnumItem(name, itemIndex, data) {
             this.$store.commit('removeConditionItem', { name, itemIndex });
+            if (!data.length) {
+                this.$store.commit('removeCurrentCondition', name);
+            }
             this.$store.dispatch('getListByConditions');
         },
         removeZygosityItem(name, itemIndex) {
