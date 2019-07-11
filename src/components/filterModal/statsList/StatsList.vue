@@ -29,6 +29,7 @@
                       :name="subStat.title || subStat.name"
                       :disabled="secondaryDisabled(subStat)"
                       :filled="filledStat(subStat)"
+                      :title="subStat.tooltip"
                     >
                         <StatsListEditor
                           v-if="filledStat(subStat) || showStat(subStat)"
