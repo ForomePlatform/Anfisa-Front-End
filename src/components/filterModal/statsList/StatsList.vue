@@ -65,7 +65,6 @@ export default {
         return {
             className: 'js-toggle-filters',
             nonzeroChecked: false,
-            searchQuery: '',
         };
     },
     computed: {
@@ -75,6 +74,14 @@ export default {
         },
         oCurrentConditions() {
             return this.$store.getters.oCurrentConditions;
+        },
+        searchQuery: {
+            get: function () {
+                return this.$store.state.filterSearchQuery;
+            },
+            set: function (newValue) {
+                this.$store.commit('setFilterSearchQuery', newValue);
+            }
         },
     },
     components: {
@@ -157,9 +164,11 @@ export default {
             this.nonzeroChecked = !this.nonzeroChecked;
             if (this.nonzeroChecked) {
                 const query = this.searchQuery;
-                this.searchQuery = '';
+                this.$store.commit('setFilterSearchQuery', '');
+                // this.searchQuery = '';
                 this.clicks();
-                this.searchQuery = query;
+                // this.searchQuery = query;
+                this.$store.commit('setFilterSearchQuery', query);
             } else {
                 setTimeout(() => {
                     this.clicks();
@@ -193,7 +202,8 @@ export default {
             const isStringTrue = value => value === 'true';
             const getStatName = stat => stat.title || stat.name;
             this.nonzeroChecked = false;
-            this.searchQuery = '';
+            // this.searchQuery = '';
+            this.$store.commit('setFilterSearchQuery', '');
             const elements = document.getElementsByClassName(this.className);
             const expandSet = new Set();
             this.stats.forEach((stat) => {
