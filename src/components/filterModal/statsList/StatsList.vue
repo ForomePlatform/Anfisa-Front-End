@@ -20,6 +20,7 @@
               primary
               :disabled="primaryDisabled(stat)"
               :filled="filledStat(stat)"
+              :hasFiltered="hasPrimaryFiltered(stat)"
             >
                 <div v-if="stat.type === 'group'">
                     <BaseCollapseHeader
@@ -29,11 +30,12 @@
                       :name="subStat.title || subStat.name"
                       :disabled="secondaryDisabled(subStat)"
                       :filled="filledStat(subStat)"
+                      :hasFiltered="hasFiltered(subStat)"
                     >
                         <StatsListEditor
                           v-if="filledStat(subStat) || showStat(subStat)"
                           :type="subStat.type"
-                          :data="subStat.data"
+                          :data="filteredData(subStat)"
                           :name="subStat.name"
                           :render="subStat.render"
                         />
@@ -42,7 +44,7 @@
                 <StatsListEditor
                   v-else-if="filledStat(stat) || showStat(stat)"
                   :type="stat.type"
-                  :data="stat.data"
+                  :data="filteredData(stat)"
                   :name="stat.name"
                 />
             </BaseCollapseHeader>
@@ -63,7 +65,6 @@ export default {
         return {
             className: 'js-toggle-filters',
             nonzeroChecked: false,
-            searchQuery: '',
         };
     },
     computed: {
@@ -73,6 +74,14 @@ export default {
         },
         oCurrentConditions() {
             return this.$store.getters.oCurrentConditions;
+        },
+        searchQuery: {
+            get: function () {
+                return this.$store.state.filterSearchQuery;
+            },
+            set: function (newValue) {
+                this.$store.commit('setFilterSearchQuery', newValue);
+            }
         },
     },
     components: {
@@ -90,30 +99,111 @@ export default {
                 }
             });
         },
+        hasFiltered(subStat) {
+            if (this.searchQuery) {
+                const query = this.searchQuery.toLowerCase();
+                let array = subStat.data;
+                if (subStat.type === 'zygosity') {
+                    // INHERITANCE - custom handler
+                    array = array.variants.concat(array.family);
+                }
+                const result = array.filter((item) => {
+                    if (Array.isArray(item)) {
+                        const nonCheckedRes = this.nonzeroChecked ? item[1] : true;
+                        return nonCheckedRes && item[0].toLowerCase().includes(query);
+                    }
+                    return false;
+                });
+                return !!result.length;
+            }
+            return false;
+        },
+        hasSecondaryFiltered(data) {
+            return !!data.filter(item => (item.name ? item.name.toLowerCase()
+                .includes(this.searchQuery.toLowerCase()) : false)).length;
+        },
+        hasPrimaryFiltered(data) {
+            if (data.data && Array.isArray(data.data)) {
+                const filter = data.data.filter(item => (Array.isArray(item) ?
+                    this.hasFiltered(data) : this.hasFiltered(item)));
+                return filter.length ? true : this.hasSecondaryFiltered(data.data);
+            }
+            return false;
+        },
+        filteredData(stat) {
+            let result = stat.data;
+            const query = this.searchQuery.toLowerCase();
+            const isSubstat = (stat.title || stat.name).toLowerCase().includes(query);
+            if (stat.type === 'zygosity') {
+                result = {
+                    ...result,
+                    variants: this.filterData(result.variants, isSubstat),
+                    family: result.family.filter(f =>
+                        f.toLowerCase().includes(query)),
+                };
+                if (!(!!result.variants.length || !!result.family.length)) {
+                    result = [];
+                }
+            } else {
+                result = this.filterData(result, isSubstat);
+            }
+            return result;
+        },
+        filterData(data, isSubstat) {
+            const query = this.searchQuery.toLowerCase();
+            return data.filter((item) => {
+                if (Array.isArray(item)) {
+                    const nonCheckedRes = this.nonzeroChecked ? item[1] : true;
+                    return nonCheckedRes && (isSubstat ? item[0].toLowerCase() :
+                        item[0].toLowerCase().includes(query));
+                }
+                return false;
+            });
+        },
         toggleNonzeroCheckbox() {
             this.nonzeroChecked = !this.nonzeroChecked;
+            if (this.nonzeroChecked) {
+                const query = this.searchQuery;
+                this.$store.commit('setFilterSearchQuery', '');
+                // this.searchQuery = '';
+                this.clicks();
+                // this.searchQuery = query;
+                this.$store.commit('setFilterSearchQuery', query);
+            } else {
+                setTimeout(() => {
+                    this.clicks();
+                }, 1);
+            }
         },
         filledStat(stat) {
             return Boolean(this.oCurrentConditions[stat.name] || (stat.type === STAT_GROUP
                 && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
         },
         showStat(stat) {
-            return !this.nonzeroChecked || checkNonzeroStat(stat);
+            return !this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery);
         },
         primaryDisabled(stat) {
             return !this.filledStat(stat) && (
-                (stat.type === STAT_GROUP && !stat.data.length)
-                || (stat.type !== STAT_GROUP && !this.showStat(stat.data[0]))
+                (stat.type === STAT_GROUP && this.inheritanceHandler(stat))
+                || (stat.type !== STAT_GROUP && !this.showStat(stat))
             );
         },
+        inheritanceHandler(stat) {
+            if (stat.title === 'Inheritance') {
+                return !stat.data.filter(item => this.filteredData(item).variants).length
+                    || !stat.data.length;
+            }
+            return !stat.data.length;
+        },
         secondaryDisabled(stat) {
-            return !this.filledStat(stat) && !this.showStat(stat);
+            return !this.filledStat(stat) && !this.showStat(stat) && this.inheritanceHandler(stat);
         },
         expandPreselectedStats() {
             const isStringTrue = value => value === 'true';
             const getStatName = stat => stat.title || stat.name;
             this.nonzeroChecked = false;
-            this.searchQuery = '';
+            // this.searchQuery = '';
+            this.$store.commit('setFilterSearchQuery', '');
             const elements = document.getElementsByClassName(this.className);
             const expandSet = new Set();
             this.stats.forEach((stat) => {
@@ -137,9 +227,34 @@ export default {
                 }
             });
         },
+        clicks() {
+            if (this.searchQuery === '') {
+                this.toggleFilters('false');
+            } else {
+                let elements =
+                    document.querySelectorAll('.js-toggle-filters.collapsed:not(.collapse-header_disabled)');
+                Array.from(elements).forEach((element) => {
+                    if (element.getAttribute('aria-expanded') !== 'true' && element.getAttribute('hasfiltered')) {
+                        element.click();
+                    }
+                });
+                elements =
+                    document.querySelectorAll('.js-toggle-filters:not(.collapse-header_disabled)');
+                Array.from(elements).forEach((element) => {
+                    if (element.getAttribute('aria-expanded') === 'true' && !element.getAttribute('hasfiltered')) {
+                        element.click();
+                    }
+                });
+            }
+        },
     },
     mounted() {
         this.expandPreselectedStats();
+    },
+    watch: {
+        searchQuery() {
+            this.$nextTick(this.clicks);
+        },
     },
 };
 </script>

@@ -217,3 +217,6 @@ export function setVariantsPanelCollapsed(state, value) {
     state.panels.variantsPanelCollapsed = value;
 }
 
+export function setFilterSearchQuery(state, value) {
+    state.filterSearchQuery = value;
+}

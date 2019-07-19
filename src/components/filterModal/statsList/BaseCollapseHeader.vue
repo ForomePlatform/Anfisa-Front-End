@@ -2,6 +2,7 @@
     <div :class="[filled ? 'collapse-header__filled' : '','collapse-header']">
         <div
           v-b-toggle="name"
+          :hasFiltered="hasFiltered"
           :class="[
             primary ? 'collapse-header_primary' : 'collapse-header_secondary',
             disabled ? 'collapse-header_disabled' : '',
@@ -29,6 +30,7 @@ export default {
         className: String,
         filled: Boolean,
         disabled: Boolean,
+        hasFiltered: Boolean,
     },
     computed: {
         title() {
