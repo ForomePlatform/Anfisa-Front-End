@@ -27,6 +27,7 @@ const prepareEnumStatData = statItem => ({
     name: statItem[1].name,
     title: statItem[1].title,
     data: statItem[2],
+    render: statItem[1].render,
 });
 
 const prepareZygosityStatData = statItem => ({
@@ -54,6 +55,21 @@ export const prepareStatDataByType = (statItem) => {
         return null;
     }
 };
+
+export function getStatListWithOperativeStat(data) {
+    const statsToAdd = (data && data['avail-import']) || [];
+    let statList = data['stat-list'];
+    if (statList && Array.isArray(statList)) {
+        statsToAdd.forEach((statToAdd) => {
+            const dubbedHetStat = statList.findIndex(statItem => statItem[1].name === statToAdd);
+            if (dubbedHetStat === -1) {
+                const target = [STAT_TYPE_ENUM, { vgroup: 'Inheritance', name: statToAdd, render: 'operative' }, [['True', null]]];
+                statList = [...statList, target];
+            }
+        });
+    }
+    return statList;
+}
 
 export function prepareStatList(statList) {
     const tmpResult = [];

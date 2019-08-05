@@ -103,7 +103,8 @@ export function setAllCurrentConditions(state, conditions) {
 }
 
 export function setCurrentConditions(state, condition) {
-    const index = state.currentConditions.findIndex(item => item[1] === condition[1]);
+    const index = state.currentConditions
+        .findIndex(item => item[1] === condition[1] && item[0] === condition[0]);
     if (index === -1) {
         state.currentConditions.push(condition);
     } else {
@@ -111,8 +112,9 @@ export function setCurrentConditions(state, condition) {
     }
 }
 
-export function removeCurrentCondition(state, name) {
-    const index = state.currentConditions.findIndex(item => item[1] === name);
+export function removeCurrentCondition(state, { name, type = null }) {
+    const index = state.currentConditions
+        .findIndex(item => item[1] === name && (!type || item[0] === type));
     if (index > -1) {
         state.currentConditions.splice(index, 1);
     }
@@ -219,4 +221,8 @@ export function setVariantsPanelCollapsed(state, value) {
 
 export function setFilterSearchQuery(state, value) {
     state.filterSearchQuery = value;
+}
+
+export function setCompiled(state, value = null) {
+    state.compiled = value;
 }

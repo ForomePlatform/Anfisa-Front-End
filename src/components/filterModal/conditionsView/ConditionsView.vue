@@ -7,12 +7,12 @@
         >
             <BaseConditionWrapper :onRemove="() => removeHandler(condition[1])">
                 <BaseViewFloat
-                  v-if="condition[0] === statTypes.numeric"
+                  v-if="displayNumeric(condition)"
                   :name="condition[1]"
                   :data="condition[2]"
                 />
                 <BaseViewEnum
-                  v-else-if="condition[0] === statTypes.enum || condition[0] === statTypes.status"
+                  v-else-if="displayEnum(condition)"
                   :type="condition[0]"
                   :name="condition[1]"
                   :selectedOperator="condition[2]"
@@ -21,7 +21,7 @@
                   :removeItem="removeEnumItem"
                 />
                 <BaseViewZygosity
-                  v-else-if="condition[0] === statTypes.zygosity"
+                  v-else-if="displayZygosity(condition)"
                   :name="condition[1]"
                   :data="condition[4]"
                   :removeItem="removeZygosityItem"
@@ -46,15 +46,10 @@ import BaseViewZygosity from './BaseViewZygosity.vue';
 export default {
     computed: {
         currentConditions() {
-            return this.$store.state.currentConditions;
-        },
-        statTypes() {
-            return {
-                enum: STAT_TYPE_ENUM,
-                status: STAT_TYPE_STATUS,
-                numeric: STAT_NUMERIC,
-                zygosity: STAT_TYPE_ZYGOSITY,
-            };
+            return this.$store.state.currentConditions.filter(condition =>
+                this.displayEnum(condition)
+                || this.displayNumeric(condition)
+                || this.displayZygosity(condition));
         },
     },
     components: {
@@ -64,8 +59,21 @@ export default {
         BaseViewZygosity,
     },
     methods: {
+        displayEnum(condition) {
+            if (condition[0] === STAT_TYPE_ENUM || condition[0] === STAT_TYPE_STATUS) {
+                const inheritanceGroup = this.$store.state.stats.find(group => group.title === 'Inheritance');
+                return inheritanceGroup.data.findIndex(stat => stat.name === condition[1] && stat.render === 'operative') === -1;
+            }
+            return false;
+        },
+        displayNumeric(condition) {
+            return condition[0] === STAT_NUMERIC;
+        },
+        displayZygosity(condition) {
+            return condition[0] === STAT_TYPE_ZYGOSITY;
+        },
         removeHandler(name) {
-            this.$store.commit('removeCurrentCondition', name);
+            this.$store.commit('removeCurrentCondition', { name });
             this.$store.dispatch('getListByConditions');
         },
         changeOperatorHandler(name, operator) {
@@ -75,7 +83,7 @@ export default {
         removeEnumItem(name, itemIndex, data) {
             this.$store.commit('removeConditionItem', { name, itemIndex });
             if (!data.length) {
-                this.$store.commit('removeCurrentCondition', name);
+                this.$store.commit('removeCurrentCondition', { name });
             }
             this.$store.dispatch('getListByConditions');
         },

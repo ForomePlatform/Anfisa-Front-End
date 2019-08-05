@@ -81,3 +81,11 @@ export const ANNOTATION_SERVICE_CONTS = {
 };
 
 export const ANNOTATION_SERVICE = 'ANNOTATION SERVICE';
+
+export const IMPORT_STAT_MODAL = {
+    ref: 'importStatWarning',
+    title: 'ATTENTION',
+    text: `We strongly recommend selecting Compound_Het as the last condition when building a filter, adding conditions after applying Compound_Het = True, might cause confusing results.
+        (If you wish to add more conditions after Compound_Het, please remove it first. Then added it again after all other conditions were added )`,
+    ok: 'SUBMIT',
+};

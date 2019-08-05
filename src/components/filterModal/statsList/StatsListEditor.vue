@@ -33,7 +33,10 @@
                 :list="data"
                 :preselectedData="preselectedData"
                 :onSubmit="submitEnumHandler"
+                :removeImport="removeImportHandler"
                 :buttonText="buttonText"
+                :render="render"
+                :name="name"
                 ref="editorEnum"
         />
         <BaseEditorZygosity
@@ -159,7 +162,14 @@ export default {
         },
         clearSearchQuery() {
             this.$store.commit('setFilterSearchQuery', '');
-        }
+        },
+        removeImportHandler(name) {
+            this.$store.commit('removeCurrentCondition', { name, type: STAT_TYPE_ENUM });
+            this.$store.dispatch('getListByConditions').then(() => {
+                this.$store.commit('removeCurrentCondition', { name, type: 'import' });
+                this.$store.dispatch('getListByConditions');
+            });
+        },
     },
 };
 </script>

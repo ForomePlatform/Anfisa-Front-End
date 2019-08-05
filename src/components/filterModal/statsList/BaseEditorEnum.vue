@@ -8,16 +8,16 @@
               v-if="list.length > 10"
             />
         </div>
-
-            <b-form-checkbox
-              class="enum-editor_select-all"
-              @change="selectAll"
-              :checked="list.length === selected.length"
-            >
-                <span class="enum-editor_select-all_title">
-                    Select all
-                </span>
-            </b-form-checkbox>
+        <b-form-checkbox
+            v-if="!isOperativeRender"
+            class="enum-editor_select-all"
+            @change="selectAll"
+            :checked="list.length === selected.length"
+        >
+            <span class="enum-editor_select-all_title">
+                Select all
+            </span>
+        </b-form-checkbox>
 
         <div class="separator"/>
         <div class="enum-editor_list">
@@ -32,7 +32,7 @@
                     <span>
                         {{prop}}
                     </span>
-                    <span>
+                    <span v-if="!isOperativeRender || count">
                         ({{count}})
                     </span>
                 </div>
@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import EventBus from '@/eventBus';
+
 export default {
     data() {
         return {
@@ -52,7 +54,7 @@ export default {
             selected: this.preselectedData.slice() || [],
         };
     },
-    props: ['list', 'onSubmit', 'preselectedData', 'buttonText'],
+    props: ['list', 'onSubmit', 'preselectedData', 'buttonText', 'render', 'name', 'removeImport'],
     computed: {
         filteredList() {
             if (this.query) {
@@ -61,10 +63,21 @@ export default {
             }
             return this.list;
         },
+        isOperativeRender() {
+            return this.render === 'operative';
+        },
     },
     methods: {
         addData() {
-            this.onSubmit(this.selected);
+            if (this.isOperativeRender) {
+                if (this.selected.length) {
+                    EventBus.$emit('IMPORT_STAT', this.name);
+                } else {
+                    this.removeImport(this.name);
+                }
+            } else {
+                this.onSubmit(this.selected);
+            }
         },
         changeHandler(prop) {
             if (this.selected.includes(prop)) {
