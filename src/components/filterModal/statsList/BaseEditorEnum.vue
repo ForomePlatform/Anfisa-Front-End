@@ -74,6 +74,9 @@ export default {
                 this.selected.push(prop);
             }
         },
+        clearQuery() {
+            this.query = '';
+        },
         selectAll(value) {
             let result = [];
             if (value) {

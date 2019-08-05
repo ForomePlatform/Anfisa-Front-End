@@ -36,6 +36,7 @@ export default new Vuex.Store({
         version: '',
         listMounting: false,
         tagFilterValue: '',
+        filterSearchQuery: '',
         annotations: {
             showFinished: false,
             error: {
