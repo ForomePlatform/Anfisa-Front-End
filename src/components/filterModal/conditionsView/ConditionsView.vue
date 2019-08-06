@@ -51,6 +51,9 @@ export default {
                 || this.displayNumeric(condition)
                 || this.displayZygosity(condition));
         },
+        importedConditions() {
+            return this.$store.state.currentConditions.filter(condition => condition[0] === 'import');
+        },
     },
     components: {
         BaseConditionWrapper,
@@ -60,11 +63,7 @@ export default {
     },
     methods: {
         displayEnum(condition) {
-            if (condition[0] === STAT_TYPE_ENUM || condition[0] === STAT_TYPE_STATUS) {
-                const inheritanceGroup = this.$store.state.stats.find(group => group.title === 'Inheritance');
-                return inheritanceGroup.data.findIndex(stat => stat.name === condition[1] && stat.render === 'operative') === -1;
-            }
-            return false;
+            return condition[0] === STAT_TYPE_ENUM || condition[0] === STAT_TYPE_STATUS;
         },
         displayNumeric(condition) {
             return condition[0] === STAT_NUMERIC;
@@ -73,19 +72,31 @@ export default {
             return condition[0] === STAT_TYPE_ZYGOSITY;
         },
         removeHandler(name) {
-            this.$store.commit('removeCurrentCondition', { name });
-            this.$store.dispatch('getListByConditions');
+            if (this.importedConditions.find(condition => condition[1] === name)) {
+                this.$store.commit('removeCurrentCondition', { name, type: STAT_TYPE_ENUM });
+                this.$store.dispatch('getListByConditions').then(() => {
+                    this.$store.commit('removeCurrentCondition', { name, type: 'import' });
+                    this.$store.dispatch('getListByConditions');
+                });
+            } else {
+                this.$store.commit('removeCurrentCondition', { name });
+                this.$store.dispatch('getListByConditions');
+            }
         },
         changeOperatorHandler(name, operator) {
             this.$store.commit('changeConditionOperator', { name, operator });
             this.$store.dispatch('getListByConditions');
         },
         removeEnumItem(name, itemIndex, data) {
-            this.$store.commit('removeConditionItem', { name, itemIndex });
-            if (!data.length) {
-                this.$store.commit('removeCurrentCondition', { name });
+            if (this.importedConditions.find(condition => condition[1] === name)) {
+                this.removeHandler(name);
+            } else {
+                this.$store.commit('removeConditionItem', { name, itemIndex });
+                if (!data.length) {
+                    this.$store.commit('removeCurrentCondition', { name });
+                }
+                this.$store.dispatch('getListByConditions');
             }
-            this.$store.dispatch('getListByConditions');
         },
         removeZygosityItem(name, itemIndex) {
             this.$store.commit('removeZygosityItem', { name, itemIndex });

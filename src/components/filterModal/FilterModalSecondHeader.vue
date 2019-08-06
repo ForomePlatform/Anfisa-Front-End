@@ -51,7 +51,7 @@ export default {
             return this.$store.state.filtered;
         },
         conditionsLength() {
-            return this.$store.state.currentConditions.length;
+            return this.$store.state.currentConditions.filter(condition => condition[0] !== 'import').length;
         },
         currentFilter() {
             return this.$store.state.selectedPreset;
