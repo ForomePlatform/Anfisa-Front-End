@@ -62,21 +62,23 @@ export function getListByConditions(context, zoneChanged) {
         conditions: context.state.currentConditions,
         zones: context.state.zones,
     });
-    context.dispatch('getStatList', { conditions: context.state.currentConditions });
     if (context.state.compiled) {
         params.append('compiled', JSON.stringify(context.state.compiled));
     }
-    return commonHttp.post('/list', params).then((response) => {
-        const { data } = response;
-        context.commit('setRecords', data.records);
-        context.commit('setTotal', data.total);
-        context.commit('setFiltered', data.filtered);
-        context.commit('clearSelectedVariant');
-        if (!zoneChanged) {
-            const { selectedPreset, currentConditions } = context.state;
-            context.commit('changePresetSaved', !selectedPreset && !currentConditions.length);
-        }
-    }).catch((error) => {
+    return Promise.all([
+        context.dispatch('getStatList', { conditions: context.state.currentConditions }),
+        commonHttp.post('/list', params).then((response) => {
+            const { data } = response;
+            context.commit('setRecords', data.records);
+            context.commit('setTotal', data.total);
+            context.commit('setFiltered', data.filtered);
+            context.commit('clearSelectedVariant');
+            if (!zoneChanged) {
+                const { selectedPreset, currentConditions } = context.state;
+                context.commit('changePresetSaved', !selectedPreset && !currentConditions.length);
+            }
+        }),
+    ]).catch((error) => {
         console.log(error);
     });
 }
@@ -461,7 +463,7 @@ export function getStatList(context, { conditions = null, filter = null }) {
     if (context.state.compiled) {
         params.append('compiled', JSON.stringify(context.state.compiled));
     }
-    commonHttp.post('/stat', params).then((response) => {
+    return commonHttp.post('/stat', params).then((response) => {
         context.commit('setCompiled', response.data.compiled);
         const statList = utils.getStatListWithOperativeStat(response.data);
         context.commit('setStats', utils.prepareStatList(statList));
