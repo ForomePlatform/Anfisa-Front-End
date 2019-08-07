@@ -74,12 +74,10 @@
             <BaseUserControl />
         </div>
         </div>
-		
-		<BaseModal ref="versionModal" title="VERSION" >
-			<p class="mt-3 ml-3">Front-End version:</p>
-			<p class="mt-3 ml-3">Back-End-version: {{ version.slice(7) }}</p>
+		<BaseModal ref="versionModal" title="VERSION INFORMATION" :onSubmit="function(){}">
+			<p class="mt-3 ml-3">Front-End version: {{ frontendVersion }}</p>
+			<p class="mt-3 ml-3">Back-End version: {{ backendVersion }}</p>
 		</BaseModal>
-		
         <BaseModal ref="workspaceModal" title="SELECT WORKSPACE" :onSubmit="selectWorkspace">
             <div v-on:dblclick="selectWorkspaceByDblClick">
                 <b-form-select
@@ -115,6 +113,8 @@ import FilterModal from '../filterModal/FilterModal.vue';
 import LayoutControl from './LayoutControl.vue';
 import BaseModal from '../common/BaseModal.vue';
 import router from '../../router';
+import { version, backendVersion } from '../../../package.json';
+
 
 const collapseIcon = require('@/assets/collapseIcon.svg');
 const expandIcon = require('@/assets/expandIcon.svg');
@@ -124,7 +124,7 @@ export default {
     data() {
         return {
             panelCollapsed: false,
-            selectedWorkspace: '',
+            selectedWorkspace: ''
         };
     },
     mounted() {
@@ -155,6 +155,12 @@ export default {
         isAnnotationService() {
             return this.$store.state.workspace === ANNOTATION_SERVICE;
         },
+		backendVersion() {
+			return backendVersion;
+		},
+		frontendVersion() {
+			return version;
+		}
     },
     methods: {
         togglePanel() {
@@ -168,7 +174,7 @@ export default {
             router.push({ parh: '/', query: { ws: this.selectedWorkspace } });
         },
 		showVersionModal() {
-			this.$store.dispatch('showVersion');
+			console.log('back: ' + backendVersion);
 			this.$refs.versionModal.openModal();
 		},
         openWorkspacesModal() {
