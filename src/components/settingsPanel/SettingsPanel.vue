@@ -12,7 +12,7 @@
             Anfisa
         </div>
         <div class="mb-3 settings-panel_menu">
-            <span>ver {{version.slice(7)}}</span> |
+            <span v-on:click="showVersionModal">ver {{version.slice(7)}}</span> |
             <span> Help</span> |
             <span> About</span>
         </div>
@@ -74,6 +74,12 @@
             <BaseUserControl />
         </div>
         </div>
+		
+		<BaseModal ref="versionModal" title="VERSION" >
+			<p class="mt-3 ml-3">Front-End version:</p>
+			<p class="mt-3 ml-3">Back-End-version: {{ version.slice(7) }}</p>
+		</BaseModal>
+		
         <BaseModal ref="workspaceModal" title="SELECT WORKSPACE" :onSubmit="selectWorkspace">
             <div v-on:dblclick="selectWorkspaceByDblClick">
                 <b-form-select
@@ -161,6 +167,10 @@ export default {
         selectWorkspace() {
             router.push({ parh: '/', query: { ws: this.selectedWorkspace } });
         },
+		showVersionModal() {
+			this.$store.dispatch('showVersion');
+			this.$refs.versionModal.openModal();
+		},
         openWorkspacesModal() {
             this.$store.dispatch('getWorkspaces');
             this.$refs.workspaceModal.openModal();
