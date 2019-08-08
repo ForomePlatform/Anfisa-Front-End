@@ -155,12 +155,12 @@ export default {
         isAnnotationService() {
             return this.$store.state.workspace === ANNOTATION_SERVICE;
         },
-		backendVersion() {
-			return backendVersion;
-		},
-		frontendVersion() {
-			return version;
-		}
+        backendVersion() {
+            return backendVersion;
+        },
+        frontendVersion() {
+            return version;
+        }
     },
     methods: {
         togglePanel() {
@@ -173,10 +173,9 @@ export default {
         selectWorkspace() {
             router.push({ parh: '/', query: { ws: this.selectedWorkspace } });
         },
-		showVersionModal() {
-			console.log('back: ' + backendVersion);
-			this.$refs.versionModal.openModal();
-		},
+        showVersionModal() {
+            this.$refs.versionModal.openModal();
+        },
         openWorkspacesModal() {
             this.$store.dispatch('getWorkspaces');
             this.$refs.workspaceModal.openModal();
