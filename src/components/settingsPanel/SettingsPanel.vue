@@ -74,10 +74,13 @@
             <BaseUserControl />
         </div>
         </div>
-		<BaseModal ref="versionModal" title="VERSION INFORMATION" :onSubmit="function(){}">
-			<p class="mt-3 ml-3">Front-End version: {{ frontendVersion }}</p>
-			<p class="mt-3 ml-3">Back-End version: {{ backendVersion }}</p>
-		</BaseModal>
+        <BaseModal ref="versionModal"
+                   title="VERSION INFORMATION"
+                   :onSubmit="function(){}"
+                   :okOnly="true">
+            <p class="mt-3 ml-3">Front-End version: {{ frontendVersion }}</p>
+            <p class="mt-3 ml-3">Back-End version: {{ version.slice(7) }}</p>
+        </BaseModal>
         <BaseModal ref="workspaceModal" title="SELECT WORKSPACE" :onSubmit="selectWorkspace">
             <div v-on:dblclick="selectWorkspaceByDblClick">
                 <b-form-select
@@ -124,7 +127,7 @@ export default {
     data() {
         return {
             panelCollapsed: false,
-            selectedWorkspace: ''
+            selectedWorkspace: '',
         };
     },
     mounted() {
@@ -160,7 +163,7 @@ export default {
         },
         frontendVersion() {
             return version;
-        }
+        },
     },
     methods: {
         togglePanel() {
