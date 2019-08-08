@@ -108,7 +108,9 @@ export function setCurrentConditions(state, condition) {
     if (index === -1) {
         state.currentConditions.push(condition);
     } else {
-        Vue.set(state.currentConditions, index, condition);
+        let conditionFixed = condition;
+        conditionFixed[2] = state.currentConditions[index][2];
+        Vue.set(state.currentConditions, index, conditionFixed);
     }
 }
 
