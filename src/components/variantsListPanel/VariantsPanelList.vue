@@ -27,6 +27,11 @@ import BaseVariantIcon from './BaseVariantIcon.vue';
 
 export default {
     name: 'VariantList',
+    data() {
+        return {
+            
+        };
+    },
     props: {
         data: Array,
         selectedItem: Number,
@@ -40,6 +45,17 @@ export default {
         if (this.root) {
             this.$store.commit('setListMounting', false);
         }
+    },
+    updated() {
+        const item_element = document.querySelector('.variants-list > .variants-list_item__active');
+        const list_element = document.querySelector('.baron__scroller');
+        if ((!list_element) || (!item_element)) return;
+        const item_rect = item_element.getBoundingClientRect();
+        const list_rect = list_element.getBoundingClientRect();
+        let diff = 0;
+        if (list_rect.top > item_rect.top) diff = item_rect.top - list_rect.top;
+        if (item_rect.bottom > list_rect.bottom) diff = item_rect.bottom - list_rect.bottom;
+        list_element.scrollTop += diff;
     },
 };
 </script>
