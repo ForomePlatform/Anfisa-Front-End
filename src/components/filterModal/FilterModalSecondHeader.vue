@@ -64,6 +64,7 @@ export default {
     methods: {
         saveFilter(filterName) {
             this.$store.dispatch('updateFilter', filterName);
+            this.$store.commit('setFilterIsSaved', true);
         },
         removeFilterName() {
             this.$store.commit('setPreset', null);

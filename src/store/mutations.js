@@ -112,6 +112,7 @@ export function setCurrentConditions(state, condition) {
         conditionFixed[2] = state.currentConditions[index][2];
         Vue.set(state.currentConditions, index, conditionFixed);
     }
+    state.filterIsSaved = false;
 }
 
 export function removeCurrentCondition(state, { name, type = null }) {
@@ -119,11 +120,13 @@ export function removeCurrentCondition(state, { name, type = null }) {
         .findIndex(item => item[1] === name && (!type || item[0] === type));
     if (index > -1) {
         state.currentConditions.splice(index, 1);
+        state.filterIsSaved = false;
     }
 }
 
 export function removeAllCurrentConditions(state) {
     state.currentConditions = [];
+    state.filterIsSaved = false;
 }
 
 export function changeConditionOperator(state, { name, operator }) {
@@ -131,6 +134,7 @@ export function changeConditionOperator(state, { name, operator }) {
     if (index > -1) {
         state.currentConditions[index][2] = operator;
         Vue.set(state.currentConditions, index, state.currentConditions[index]);
+        state.filterIsSaved = false;
     }
 }
 
@@ -139,6 +143,7 @@ export function removeConditionItem(state, { name, itemIndex }) {
     if (index > -1) {
         state.currentConditions[index][3].splice(itemIndex, 1);
         Vue.set(state.currentConditions, index, state.currentConditions[index]);
+        state.filterIsSaved = false;
     }
 }
 
@@ -227,4 +232,8 @@ export function setFilterSearchQuery(state, value) {
 
 export function setCompiled(state, value = null) {
     state.compiled = value;
+}
+
+export function setFilterIsSaved(state, value) {
+    state.filterIsSaved = value;
 }

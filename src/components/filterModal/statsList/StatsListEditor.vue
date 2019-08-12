@@ -149,6 +149,7 @@ export default {
             const condition = [STAT_TYPE_ENUM, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
             this.$store.commit('setCurrentConditions', condition);
             this.$store.dispatch('getListByConditions');
+            this.$store.commit('setFilterIsSaved', false);
         },
         submitZygosityHandler(family, variants) {
             this.clearSearchQuery();

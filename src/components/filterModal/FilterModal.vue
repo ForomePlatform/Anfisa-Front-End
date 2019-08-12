@@ -92,7 +92,7 @@ export default {
                 && !(!this.selectedPreset && this.selectedPresetSaved);
         },
         enableSave() {
-            return !this.loadView && !this.advancedView
+            return !this.loadView && !this.advancedView && !this.$store.state.filterIsSaved
               && this.$store.state.currentConditions.length;
         },
         selectedPreset() {
