@@ -18,6 +18,7 @@ const prepareNumericStatData = statItem => ({
     type: statItem[0],
     name: statItem[1].name,
     title: statItem[1].title,
+    tooltip: statItem[1].tooltip,
     render: statItem[1].render ? statItem[1].render.split(',')[0] : NUMERIC_RENDER_TYPES.LINEAR,
     data: statItem.splice(2),
 });
@@ -26,6 +27,7 @@ const prepareEnumStatData = statItem => ({
     type: statItem[0],
     name: statItem[1].name,
     title: statItem[1].title,
+    tooltip: statItem[1].tooltip,
     data: statItem[2],
     render: statItem[1].render,
 });
@@ -74,13 +76,13 @@ export function getStatListWithOperativeStat(data) {
 export function prepareStatList(statList) {
     const tmpResult = [];
     const groupsData = {};
-    let result = [];
+    let result;
 
     if (statList && Array.isArray(statList)) {
         statList.filter(statItem => STAT_TYPES.includes(statItem[0])).forEach((statItem) => {
             const groupName = statItem[1].vgroup;
             if (groupName) {
-                if (!Object.keys(groupsData).includes(statItem[1].vgroup)) {
+                if (!Object.keys(groupsData).includes(groupName)) {
                     tmpResult.push({
                         title: groupName,
                         type: STAT_GROUP,
