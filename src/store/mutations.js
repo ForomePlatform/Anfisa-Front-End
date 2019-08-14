@@ -108,7 +108,14 @@ export function setCurrentConditions(state, condition) {
     if (index === -1) {
         state.currentConditions.push(condition);
     } else {
-        Vue.set(state.currentConditions, index, condition);
+        let ConditionFixed = condition;
+        if (condition[0] == 'enum') {
+            ConditionFixed[2] = state.currentConditions[index][2];
+        }
+        if (condition[0] == 'zygocity') {
+            ConditionFixed[3] = state.currentConditions[index][3];
+        }
+        Vue.set(state.currentConditions, index, ConditionFixed);
     }
 }
 
