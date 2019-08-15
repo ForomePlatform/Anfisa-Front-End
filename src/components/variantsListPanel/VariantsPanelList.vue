@@ -44,12 +44,18 @@ export default {
     updated() {
         const ItemElement = document.querySelector('.variants-list > .variants-list_item__active');
         const ListElement = document.querySelector('.baron__scroller');
-        if ((!ListElement) || (!ItemElement)) return;
+        if ((!ListElement) || (!ItemElement)) {
+            return;
+        }
         const ItemRect = ItemElement.getBoundingClientRect();
         const ListRect = ListElement.getBoundingClientRect();
         let diff = 0;
-        if (ListRect.top > ItemRect.top) diff = ItemRect.top - ListRect.top;
-        if (ItemRect.bottom > ListRect.bottom) diff = ItemRect.bottom - ListRect.bottom;
+        if (ListRect.top > ItemRect.top) {
+            diff = ItemRect.top - ListRect.top;
+        }
+        if (ItemRect.bottom > ListRect.bottom) {
+            diff = ItemRect.bottom - ListRect.bottom;
+        }
         ListElement.scrollTop += diff;
     },
 };
