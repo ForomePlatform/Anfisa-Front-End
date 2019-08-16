@@ -1,49 +1,54 @@
 <template>
     <div>
         <BaseEditorLinear
-          v-if="render === statTypes.linear || name === 'Dist_from_Exon'"
-          :simple="name === 'Dist_from_Exon'"
-          :int="type === statTypes.int"
-          :min="data[0]"
-          :max="data[1]"
-          :preselectedMin="preselectedLinearMin"
-          :preselectedMax="preselectedLinearMax"
-          :onSubmit="submitHandler"
-          :active="Boolean(oCurrentCondition)"
-          :buttonText="buttonText"
+                v-if="render === statTypes.linear || name === 'Dist_from_Exon'"
+                :simple="name === 'Dist_from_Exon'"
+                :int="type === statTypes.int"
+                :min="data[0]"
+                :max="data[1]"
+                :preselectedMin="preselectedLinearMin"
+                :preselectedMax="preselectedLinearMax"
+                :onSubmit="submitHandler"
+                :active="Boolean(oCurrentCondition)"
+                :buttonText="buttonText"
         />
         <BaseEditorLogarithmic
-          v-else-if="render === statTypes.logarithmic"
-          :preselectedMin="preselectedLogMin"
-          :preselectedMax="preselectedLogMax"
-          :onSubmit="submitHandler"
-          :buttonText="buttonText"
+                v-else-if="render === statTypes.logarithmic"
+                :preselectedMin="preselectedLogMin"
+                :preselectedMax="preselectedLogMax"
+                :onSubmit="submitHandler"
+                :buttonText="buttonText"
         />
         <BaseEditorCoordinate
-          v-else-if="render === statTypes.coordinate"
-          :min="data[0]"
-          :max="data[1]"
-          :preselectedMin="preselectedCoordMin"
-          :preselectedMax="preselectedCoordMax"
-          :onSubmit="submitHandler"
-          :buttonText="buttonText"
+                v-else-if="render === statTypes.coordinate"
+                :min="data[0]"
+                :max="data[1]"
+                :preselectedMin="preselectedCoordMin"
+                :preselectedMax="preselectedCoordMax"
+                :onSubmit="submitHandler"
+                :buttonText="buttonText"
         />
         <BaseEditorEnum
-          v-else-if="type === statTypes.enum || type === statTypes.status"
-          :list="data"
-          :preselectedData="preselectedData"
-          :onSubmit="submitEnumHandler"
-          :buttonText="buttonText"
+                v-else-if="type === statTypes.enum || type === statTypes.status"
+                :list="data"
+                :preselectedData="preselectedData"
+                :onSubmit="submitEnumHandler"
+                :removeImport="removeImportHandler"
+                :buttonText="buttonText"
+                :render="render"
+                :name="name"
+                ref="editorEnum"
         />
         <BaseEditorZygosity
-          v-else-if="type === statTypes.zygosity"
-          :family="data.family"
-          :variants="data.variants"
-          :preselectedFamily="preselectedFamily"
-          :preselectedVariants="preselectedVariants"
-          :onSubmit="submitZygosityHandler"
-          :onFamilyChange = "changeFamily"
-          :buttonText="buttonText"
+                v-else-if="type === statTypes.zygosity"
+                :family="data.family"
+                :variants="data.variants"
+                :preselectedFamily="preselectedFamily"
+                :preselectedVariants="preselectedVariants"
+                :onSubmit="submitZygosityHandler"
+                :onFamilyChange = "changeFamily"
+                :buttonText="buttonText"
+                ref="editorZygosity"
         />
     </div>
 </template>
@@ -106,7 +111,7 @@ export default {
         },
         preselectedFamily() {
             return (this.oCurrentCondition && this.oCurrentCondition.family)
-                || this.data.selectedFamily || [];
+                    || this.data.selectedFamily || [];
         },
         preselectedVariants() {
             return (this.oCurrentCondition && this.oCurrentCondition.variants) || [];
@@ -129,7 +134,7 @@ export default {
     methods: {
         conditionByIndex(index) {
             return this.oCurrentCondition && this.oCurrentCondition.data
-                && this.oCurrentCondition.data[index];
+                    && this.oCurrentCondition.data[index];
         },
         // Apply float editor changes: min and max values
         submitHandler(min, max) {
@@ -139,17 +144,31 @@ export default {
         },
         // Apply  enum editor changes: selected list of items
         submitEnumHandler(data) {
+            this.clearSearchQuery();
+            this.$refs.editorEnum.clearQuery();
             const condition = [STAT_TYPE_ENUM, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
             this.$store.commit('setCurrentConditions', condition);
             this.$store.dispatch('getListByConditions');
         },
         submitZygosityHandler(family, variants) {
+            this.clearSearchQuery();
+            this.$refs.editorZygosity.clearQuery();
             const condition = [STAT_TYPE_ZYGOSITY, this.name, family, '', variants];
             this.$store.commit('setCurrentConditions', condition);
             this.$store.dispatch('getListByConditions');
         },
         changeFamily(family) {
             this.$store.dispatch('getZygosityByFamily', { family, name: this.name });
+        },
+        clearSearchQuery() {
+            this.$store.commit('setFilterSearchQuery', '');
+        },
+        removeImportHandler(name) {
+            this.$store.commit('removeCurrentCondition', { name, type: STAT_TYPE_ENUM });
+            this.$store.dispatch('getListByConditions').then(() => {
+                this.$store.commit('removeCurrentCondition', { name, type: 'import' });
+                this.$store.dispatch('getListByConditions');
+            });
         },
     },
 };

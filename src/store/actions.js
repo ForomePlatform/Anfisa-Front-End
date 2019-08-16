@@ -41,6 +41,9 @@ export function getListByFilter(context) {
         zones: context.state.zones,
     });
     context.dispatch('getStatList', { filter: context.state.selectedPreset });
+    if (context.state.compiled) {
+        params.append('compiled', JSON.stringify(context.state.compiled));
+    }
     return commonHttp.post('/list', params).then((response) => {
         const { data } = response;
         context.commit('setRecords', data.records);
@@ -59,18 +62,23 @@ export function getListByConditions(context, zoneChanged) {
         conditions: context.state.currentConditions,
         zones: context.state.zones,
     });
-    context.dispatch('getStatList', { conditions: context.state.currentConditions });
-    return commonHttp.post('/list', params).then((response) => {
-        const { data } = response;
-        context.commit('setRecords', data.records);
-        context.commit('setTotal', data.total);
-        context.commit('setFiltered', data.filtered);
-        context.commit('clearSelectedVariant');
-        if (!zoneChanged) {
-            const { selectedPreset, currentConditions } = context.state;
-            context.commit('changePresetSaved', !selectedPreset && !currentConditions.length);
-        }
-    }).catch((error) => {
+    if (context.state.compiled) {
+        params.append('compiled', JSON.stringify(context.state.compiled));
+    }
+    return Promise.all([
+        context.dispatch('getStatList', { conditions: context.state.currentConditions }),
+        commonHttp.post('/list', params).then((response) => {
+            const { data } = response;
+            context.commit('setRecords', data.records);
+            context.commit('setTotal', data.total);
+            context.commit('setFiltered', data.filtered);
+            context.commit('clearSelectedVariant');
+            if (!zoneChanged) {
+                const { selectedPreset, currentConditions } = context.state;
+                context.commit('changePresetSaved', !selectedPreset && !currentConditions.length);
+            }
+        }),
+    ]).catch((error) => {
         console.log(error);
     });
 }
@@ -320,6 +328,9 @@ function getFilterDetail(context, filter) {
         const params = new URLSearchParams();
         params.append('ws', context.state.workspace);
         params.append('filter', filter);
+        if (context.state.compiled) {
+            params.append('compiled', JSON.stringify(context.state.compiled));
+        }
         commonHttp.post('/stat', params).then((response) => {
             const { data } = response;
             resolve({
@@ -334,21 +345,28 @@ function getFilterDetail(context, filter) {
 }
 
 export function getFilters(context, ws) {
-    const params = new URLSearchParams();
-    params.append('ws', ws || context.state.workspace);
-    commonHttp.post('/stat', params)
-        .then((response) => {
-            const filterList = response.data['filter-list'];
-            if (filterList && Array.isArray(filterList)) {
-                const data = filterList.map(item => item[0]);
-                context.commit('setPresets', [null, ...data]);
-            }
-            const statList = response.data['stat-list'];
-            context.commit('setStats', utils.prepareStatList(statList));
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    return new Promise((resolve, reject) => {
+        const params = new URLSearchParams();
+        params.append('ws', ws || context.state.workspace);
+        if (context.state.compiled) {
+            params.append('compiled', JSON.stringify(context.state.compiled));
+        }
+        commonHttp.post('/stat', params)
+            .then((response) => {
+                const filterList = response.data['filter-list'];
+                if (filterList && Array.isArray(filterList)) {
+                    const data = filterList.map(item => item[0]);
+                    context.commit('setPresets', [null, ...data]);
+                }
+                const statList = utils.getStatListWithOperativeStat(response.data);
+                context.commit('setStats', utils.prepareStatList(statList));
+                context.commit('setCompiled', response.data.compiled);
+                resolve();
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
 }
 
 export function getFilterDetails(context) {
@@ -363,13 +381,17 @@ export function removeFilter(context, filterName) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
     params.append('instr', `DELETE/${filterName}`);
+    if (context.state.compiled) {
+        params.append('compiled', JSON.stringify(context.state.compiled));
+    }
     commonHttp.post('/stat', params).then((response) => {
         const filterList = response.data['filter-list'];
         if (filterList && Array.isArray(filterList)) {
             const data = filterList.map(item => item[0]);
             context.commit('setPresets', [null, ...data]);
         }
-        const statList = response.data['stat-list'];
+        const statList = utils.getStatListWithOperativeStat(response.data);
+        context.commit('setCompiled', response.data.compiled);
         context.commit('setStats', utils.prepareStatList(statList));
         context.commit('removeAllCurrentConditions');
         context.dispatch('getFilterDetails');
@@ -392,6 +414,9 @@ export function updateFilter(context, filterName) {
             params.append('ctx', JSON.stringify(ctx));
         }
     }
+    if (context.state.compiled) {
+        params.append('compiled', JSON.stringify(context.state.compiled));
+    }
     commonHttp.post('/stat', params).then((response) => {
         const filterList = response.data['filter-list'];
         if (filterList && Array.isArray(filterList)) {
@@ -411,6 +436,9 @@ export function getConditionsByFilter(context, filter) {
         ws: context.state.workspace,
         filter,
     });
+    if (context.state.compiled) {
+        params.append('compiled', JSON.stringify(context.state.compiled));
+    }
     commonHttp.post('/stat', params).then((response) => {
         const { data } = response;
         context.commit('setAllCurrentConditions', data.conditions || []);
@@ -432,8 +460,12 @@ export function getStatList(context, { conditions = null, filter = null }) {
             params.append('ctx', JSON.stringify(ctx));
         }
     }
-    commonHttp.post('/stat', params).then((response) => {
-        const statList = response.data['stat-list'];
+    if (context.state.compiled) {
+        params.append('compiled', JSON.stringify(context.state.compiled));
+    }
+    return commonHttp.post('/stat', params).then((response) => {
+        context.commit('setCompiled', response.data.compiled);
+        const statList = utils.getStatListWithOperativeStat(response.data);
         context.commit('setStats', utils.prepareStatList(statList));
     }).catch((error) => {
         console.log(error);

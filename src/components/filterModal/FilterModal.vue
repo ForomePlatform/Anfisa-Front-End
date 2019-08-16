@@ -51,10 +51,21 @@
       :onSubmit="clearAllSubmit"
       :preset="selectedPreset"
     />
+    <BaseModal
+      ref="importStatWarning"
+      :title="IMPORT_STAT_MODAL.title"
+      :onSubmit="importStat"
+      :okTitle="IMPORT_STAT_MODAL.ok"
+    >
+        <p class="mt-3 ml-3">{{ IMPORT_STAT_MODAL.text }}</p>
+    </BaseModal>
     </div>
 </template>
 
 <script>
+import EventBus from '@/eventBus';
+import { IMPORT_STAT_MODAL } from '@/common/constants';
+import BaseModal from '@/components/common/BaseModal.vue';
 import FilterModalHeader from './FilterModalHeader.vue';
 import FilterModalSecondHeader from './FilterModalSecondHeader.vue';
 import StatsList from './statsList/StatsList.vue';
@@ -71,6 +82,8 @@ export default {
             CLEAR_MODAL_ID: 'filterModalClearWarning',
             LOAD_MODAL_ID: 'filterModalLoadWarning',
             modalContentHeight: 620,
+            IMPORT_STAT_MODAL,
+            importedStat: null,
         };
     },
     computed: {
@@ -79,7 +92,7 @@ export default {
                 && !(!this.selectedPreset && this.selectedPresetSaved);
         },
         enableSave() {
-            return !this.loadView && !this.advancedView
+            return !this.loadView && !this.advancedView && !this.selectedPresetSaved
               && this.$store.state.currentConditions.length;
         },
         selectedPreset() {
@@ -97,6 +110,7 @@ export default {
         LoadView,
         FilterModalAdvancedView,
         BaseWarningModal,
+        BaseModal,
     },
     methods: {
         openModal() {
@@ -146,6 +160,19 @@ export default {
         clearAllSubmit() {
             this.$store.dispatch('getList');
         },
+        importStat() {
+            this.$store.commit('setCurrentConditions', ['import', this.importedStat]);
+            this.$store.dispatch('getListByConditions').then(() => {
+                this.$store.commit('setCurrentConditions', ['enum', this.importedStat, null, ['True']]);
+                this.$store.dispatch('getListByConditions');
+            });
+        },
+    },
+    mounted() {
+        EventBus.$on('IMPORT_STAT', (statName) => {
+            this.importedStat = statName;
+            this.$refs.importStatWarning.openModal();
+        });
     },
 };
 </script>

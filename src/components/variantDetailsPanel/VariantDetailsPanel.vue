@@ -14,7 +14,7 @@
         <NotesFixedPanel v-if="showNotes" />
         <div class="variant-details_tables">
             <BaseTable
-            v-if="variantDetails.view_gen"
+            v-if="isDataFilled(variantDetails.view_gen)"
             :title="variantDetails.view_gen.title"
             id="view_gen"
             :data="variantDetails.view_gen.data"
@@ -22,13 +22,13 @@
             <b-row no-gutters>
                 <b-col cols="8">
                     <BaseTable
-                    v-if="variantDetails.view_qsamples"
+                    v-if="isDataFilled(variantDetails.view_qsamples)"
                     :title="variantDetails.view_qsamples.title"
                     id="view_qsamples"
                     :data="variantDetails.view_qsamples.data"
                     />
                     <BaseTable
-                    v-if="variantDetails.view_genetics"
+                    v-if="isDataFilled(variantDetails.view_genetics)"
                     :title="variantDetails.view_genetics.title"
                     id="view_genetics"
                     :data="variantDetails.view_genetics.data"
@@ -36,13 +36,13 @@
                 </b-col>
                 <b-col cols="4">
                     <BaseTable
-                    v-if="variantDetails.view_gnomAD"
+                    v-if="isDataFilled(variantDetails.view_gnomAD)"
                     :title="variantDetails.view_gnomAD.title"
                     id="view_gnomAD"
                     :data="variantDetails.view_gnomAD.data"
                     />
                     <BaseTable
-                    v-if="variantDetails.view_db"
+                    v-if="isDataFilled(variantDetails.view_db)"
                     :title="variantDetails.view_db.title"
                     id="view_db"
                     :data="variantDetails.view_db.data"
@@ -52,14 +52,14 @@
             <b-row no-gutters>
                 <b-col cols="6">
                     <BaseTable
-                    v-if="variantDetails.colocated_v"
+                    v-if="isDataFilled(variantDetails.colocated_v)"
                     :title="variantDetails.colocated_v.title"
                     id="colocated_v"
                     :data="variantDetails.colocated_v.data"
                     secondary
                     />
                     <BaseTable
-                        v-if="variantDetails.view_pred"
+                        v-if="isDataFilled(variantDetails.view_pred)"
                         :title="variantDetails.view_pred.title"
                         id="view_pred"
                         :data="variantDetails.view_pred.data"
@@ -68,7 +68,7 @@
                 </b-col>
                 <b-col cols="6">
                     <BaseTable
-                    v-if="variantDetails._main"
+                    v-if="isDataFilled(variantDetails._main)"
                     :title="variantDetails._main.title"
                     id="table_main"
                     :data="variantDetails._main.data"
@@ -77,7 +77,7 @@
                 </b-col>
             </b-row>
             <BaseTable
-            v-if="variantDetails.transcripts"
+            v-if="isDataFilled(variantDetails.transcripts)"
             :title="variantDetails.transcripts.title"
             id="transcripts"
             :data="variantDetails.transcripts.data"
@@ -132,6 +132,9 @@ export default {
     methods: {
         openNote() {
             this.showNotes = !this.showNotes;
+        },
+        isDataFilled(obj) {
+            return obj && obj.data && obj.data.length;
         },
     },
 };

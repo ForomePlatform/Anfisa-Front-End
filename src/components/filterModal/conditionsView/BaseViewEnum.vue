@@ -2,23 +2,25 @@
     <div class="enum-view">
         <div class="enum-view_descr">
             <span class="enum-view_descr_text">{{name}} </span>
-            is
-            <b-dropdown :text="operators[this.selectedOperator]" class="m-md-2" size="sm">
-                <b-dropdown-item
-                  v-for="operator in Object.entries(operators)"
-                  :key="operator[1]"
-                  @click="() => changeOperator(name, operator[0])"
-                >
-                    {{operator[1]}}
-                </b-dropdown-item>
-            </b-dropdown>
-            of the following:
+            <span v-if="selectedOperator">
+                is
+                <b-dropdown :text="operators[this.selectedOperator]" class="m-md-2" size="sm">
+                    <b-dropdown-item
+                    v-for="operator in Object.entries(operators)"
+                    :key="operator[1]"
+                    @click="() => changeOperator(name, operator[0])"
+                    >
+                        {{operator[1]}}
+                    </b-dropdown-item>
+                </b-dropdown>
+                of the following:
+            </span>
         </div>
         <div
          v-for="(item, index) in data"
          v-bind:key="item + '-' + index"
          class="enum-view_item"
-         @click="() => removeItem(name, index)"
+         @click="() => removeItem(name, index, data)"
         >
             {{item}}
             <div class="enum-view_item_cross"/>

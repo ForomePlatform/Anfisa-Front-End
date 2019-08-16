@@ -11,8 +11,8 @@ npm install
 
 ### Compiles and hot-reloads for development
 ```
-configure DEV_SERVER_PROXY in .env.development.local
-npm run serve
+create .env.development.local file in the project root and configure BASIC_AUTH inside. (Ask team for the value)
+run the command: npm run serve
 ```
 
 ### Compiles and minifies for production

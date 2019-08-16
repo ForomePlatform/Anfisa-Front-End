@@ -12,6 +12,7 @@
           @hide="hideHandler"
           :no-close-on-backdrop="noBgClose || false"
           @keyup.enter.native="enterKeyHandler"
+          :ok-only="okOnly || false"
         >
             <slot />
         </b-modal>
@@ -19,7 +20,7 @@
 
 <script>
 export default {
-    props: ['id', 'title', 'onSubmit', 'okDisabled', 'onHide', 'cancelTitle', 'ok-title', 'noBgClose', 'enterKeyFunc'],
+    props: ['id', 'title', 'onSubmit', 'okDisabled', 'onHide', 'cancelTitle', 'ok-title', 'noBgClose', 'enterKeyFunc', 'okOnly'],
     methods: {
         openModal() {
             this.$refs.customPopup.show();
