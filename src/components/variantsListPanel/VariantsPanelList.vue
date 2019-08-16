@@ -42,21 +42,21 @@ export default {
         }
     },
     updated() {
-        const ItemElement = document.querySelector('.variants-list > .variants-list_item__active');
-        const ListElement = document.querySelector('.baron__scroller');
-        if ((!ListElement) || (!ItemElement)) {
+        const itemElement = document.querySelector('.variants-list > .variants-list_item__active');
+        const listElement = document.querySelector('.variants-list').parentNode;
+        if ((!listElement) || (!itemElement)) {
             return;
         }
-        const ItemRect = ItemElement.getBoundingClientRect();
-        const ListRect = ListElement.getBoundingClientRect();
+        const itemRect = itemElement.getBoundingClientRect();
+        const listRect = listElement.getBoundingClientRect();
         let diff = 0;
-        if (ListRect.top > ItemRect.top) {
-            diff = ItemRect.top - ListRect.top;
+        if (listRect.top > itemRect.top) {
+            diff = itemRect.top - listRect.top;
         }
-        if (ItemRect.bottom > ListRect.bottom) {
-            diff = ItemRect.bottom - ListRect.bottom;
+        if (itemRect.bottom > listRect.bottom) {
+            diff = itemRect.bottom - listRect.bottom;
         }
-        ListElement.scrollTop += diff;
+        listElement.scrollTop += diff;
     },
 };
 </script>
