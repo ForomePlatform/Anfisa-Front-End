@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { STAT_GROUP } from '../common/constants';
+import { STAT_GROUP, STAT_TYPE_ENUM, STAT_TYPE_ZYGOSITY } from '../common/constants';
 import * as utils from '../common/utils';
 
 /* eslint-disable no-param-reassign */
@@ -108,7 +108,14 @@ export function setCurrentConditions(state, condition) {
     if (index === -1) {
         state.currentConditions.push(condition);
     } else {
-        Vue.set(state.currentConditions, index, condition);
+        let conditionFixed = JSON.parse(JSON.stringify(condition));
+        if (condition[0] === STAT_TYPE_ENUM) {
+            conditionFixed[2] = state.currentConditions[index][2];
+        }
+        if (condition[0] === STAT_TYPE_ZYGOSITY) {
+            conditionFixed[3] = state.currentConditions[index][3];
+        }
+        Vue.set(state.currentConditions, index, conditionFixed);
     }
 }
 
