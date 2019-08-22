@@ -3,8 +3,8 @@
         <div class="load-view_header">
             <div class="load-view_header_sort">
                 Sort By:
-                <div class="load-view_header_sort_btn">Data saved</div>
-                <div class="load-view_header_sort_btn">A-Z</div>
+                <div class="load-view_header_sort_btn" @click="onClickDateSort">Data saved</div>
+                <div class="load-view_header_sort_btn" @click="onClickNameSort">A-Z</div>
             </div>
             <div class="load-view_header_cancel" @click="onCancel">
                 CANCEL
@@ -28,17 +28,41 @@
 import LoadViewCard from './LoadViewCard.vue';
 
 export default {
+    data() {
+        return {
+            sortField: 'date'
+        }
+    },
     props: ['onCancel', 'onLoad', 'onRemove'],
     components: {
         LoadViewCard,
     },
     computed: {
         filterDetails() {
-            return this.$store.state.filterDetails;
+            const field = this.sortField;
+            let initialFilterDetails = this.$store.state.filterDetails.slice();
+            return initialFilterDetails.sort(function(filter1, filter2) {
+                if (filter1[field] === null) {
+                    return 1;
+                }
+                if (filter2[field] === null) {
+                    return -1;
+                }
+                const result = (filter1[field] > filter2[field] ? 1 : -1);
+                return (field === 'date' ? -result : result);
+            });
         },
     },
     mounted() {
         this.$store.dispatch('getFilterDetails');
+    },
+    methods: {
+        onClickDateSort() {
+            this.sortField = 'date';
+        },
+        onClickNameSort() {
+            this.sortField = 'name';
+        },
     },
 };
 </script>

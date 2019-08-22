@@ -333,9 +333,10 @@ function getFilterDetail(context, filter) {
         }
         commonHttp.post('/stat', params).then((response) => {
             const { data } = response;
+            const date = data['filter-list'].find((item) => item[0] == filter)[3];
             resolve({
                 name: filter,
-                date: data.date,
+                date: date,
                 conditions: data.conditions,
             });
         }).catch((error) => {
