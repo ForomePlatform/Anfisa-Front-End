@@ -3,8 +3,8 @@
         <div class="load-view_header">
             <div class="load-view_header_sort">
                 Sort By:
-                <div class="load-view_header_sort_btn" @click="onClickDateSort">Data saved</div>
-                <div class="load-view_header_sort_btn" @click="onClickNameSort">A-Z</div>
+                <div class="load-view_header_sort_btn" :style="{'background-color': sortButtonStyle('date')}" @click="onClickDateSort">Data saved</div>
+                <div class="load-view_header_sort_btn" :style="{'background-color': sortButtonStyle('name')}" @click="onClickNameSort">A-Z</div>
             </div>
             <div class="load-view_header_cancel" @click="onCancel">
                 CANCEL
@@ -42,6 +42,9 @@ export default {
             const field = this.sortField;
             let initialFilterDetails = this.$store.state.filterDetails.slice();
             return initialFilterDetails.sort(function(filter1, filter2) {
+                if (filter1.isCommon != filter2.isCommon) {
+                    return (filter1.isCommon ? 1 : -1);
+                }
                 if (filter1[field] === null) {
                     return 1;
                 }
@@ -62,6 +65,9 @@ export default {
         },
         onClickNameSort() {
             this.sortField = 'name';
+        },
+        sortButtonStyle(field) {
+            return (this.sortField === field ? '#2bb3ed' : '');  
         },
     },
 };
