@@ -29,7 +29,6 @@
         </div>
         <div v-else-if="loadView" class="filter-modal_load-view">
             <LoadView
-              :onCancel="loadViewToggle"
               :onLoad="onFilterLoad"
               :onRemove="removeFilter"
             />

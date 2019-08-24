@@ -38,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="loadView" :class="['second-header_load__active', 'second-header_load']" @click="onCancel">
+        <div v-if="loadView" :class="['second-header_load__active', 'second-header_load', 'cancel']" @click="onCancel">
             <img alt="cancel" src="@/assets/crossIcon.svg"/> 
             CANCEL
         </div>
@@ -171,5 +171,9 @@ export default {
     }
     .tools {
         width: 100%;
+    }
+    .cancel {
+        float: left;
+        width: 113px;
     }
 </style>
