@@ -15,6 +15,7 @@
                 v-for="(filterData, index) in filterDetails"
                 v-bind:key="index + '-' + filterData.name"
                 :name="filterData.name"
+                :isCommon="filterData.isCommon"
                 :conditions="filterData.conditions"
                 :date="filterData.date"
                 :onLoad="() => onLoad(filterData.name, filterData.conditions)"
