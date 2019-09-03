@@ -12,6 +12,7 @@
           :onClose="closeModal"
           :onAdvancedClick="advancedViewToggle"
           :advancedView="advancedView"
+          :loadView="loadView"
         />
         <FilterModalSecondHeader
           v-if="!advancedView"
@@ -21,13 +22,13 @@
           :clearAll="clearAllHandler"
           :enableSave="enableSave"
           :onShowClick="closeModal"
+          :onCancel="loadViewToggle"
         />
         <div v-if="advancedView" class="filter-modal_advanced-view">
             <FilterModalAdvancedView />
         </div>
         <div v-else-if="loadView" class="filter-modal_load-view">
             <LoadView
-              :onCancel="loadViewToggle"
               :onLoad="onFilterLoad"
               :onRemove="removeFilter"
             />

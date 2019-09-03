@@ -6,9 +6,6 @@
                 <div class="load-view_header_sort_btn">Data saved</div>
                 <div class="load-view_header_sort_btn">A-Z</div>
             </div>
-            <div class="load-view_header_cancel" @click="onCancel">
-                CANCEL
-            </div>
         </div>
         <div class="load-view_cards">
             <LoadViewCard
@@ -28,7 +25,7 @@
 import LoadViewCard from './LoadViewCard.vue';
 
 export default {
-    props: ['onCancel', 'onLoad', 'onRemove'],
+    props: ['onLoad', 'onRemove'],
     components: {
         LoadViewCard,
     },
@@ -72,24 +69,6 @@ export default {
                         background-color: #a5b7c6;
                         cursor: pointer;
                     }
-                }
-            }
-            &_cancel {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 11px;
-                letter-spacing: 0px;
-                color: #0a1c34;
-                font-weight: 800;
-                text-align: center;
-                width: 77px;
-                height: 25px;
-                border-radius: 13px;
-                background-color: #e7e7e7;
-                &:hover {
-                    background-color: #ededed;
-                    cursor: pointer;
                 }
             }
         }
