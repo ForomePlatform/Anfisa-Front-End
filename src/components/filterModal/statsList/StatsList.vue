@@ -158,7 +158,7 @@ export default {
                     return nonCheckedRes && (isSubstat ? item[0].toLowerCase() :
                         item[0].toLowerCase().includes(query));
                 }
-                return false;
+                return true;
             });
         },
         toggleNonzeroCheckbox() {
