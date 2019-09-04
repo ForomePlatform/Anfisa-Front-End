@@ -46,7 +46,7 @@ export default {
             sortField: 'date'
         }
     },
-    props: ['onCancel', 'onLoad', 'onRemove'],
+    props: ['onLoad', 'onRemove', 'onCancel'],
     components: {
         LoadViewCard,
     },
