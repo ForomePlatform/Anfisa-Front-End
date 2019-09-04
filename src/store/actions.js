@@ -333,7 +333,7 @@ function getFilterDetail(context, filter) {
         }
         commonHttp.post('/stat', params).then((response) => {
             const { data } = response;
-            const info = data['filter-list'].find((item) => item[0] == filter);
+            const info = data['filter-list'].find((item) => item[0] === filter);
             resolve({
                 name: filter,
                 isCommon: info[1],
