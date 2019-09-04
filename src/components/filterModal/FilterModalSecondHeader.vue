@@ -1,11 +1,11 @@
 <template>
     <div class="second-header">
-        <div class="second-header_separator">
+        <div v-if="!loadView" class="second-header_separator">
             <div class="second-header_variants" @click="onShowClick">
                 SEE {{variants || 0}} VARIANTS
             </div>
         </div>
-        <div class="tools">
+        <div v-if="!loadView" class="tools">
             <div class="second-header_filters">
                 <b>{{conditionsLength || 0}}</b> Active Filters
             </div>
@@ -38,6 +38,10 @@
                 </div>
             </div>
         </div>
+        <div v-if="loadView" :class="['second-header_load__active', 'second-header_load', 'cancel']" @click="onCancel">
+            <img alt="cancel" src="@/assets/crossIcon.svg"/> 
+            CANCEL
+        </div>
     </div>
 </template>
 
@@ -45,7 +49,7 @@
 import BaseSaveFilterDropdown from './BaseSaveFilterDropdown.vue';
 
 export default {
-    props: ['onLoadClick', 'enableClearAll', 'enableSave', 'onShowClick', 'loadView', 'clearAll'],
+    props: ['onLoadClick', 'enableClearAll', 'enableSave', 'onShowClick', 'loadView', 'clearAll', 'onCancel'],
     computed: {
         variants() {
             return this.$store.state.filtered;
@@ -167,5 +171,9 @@ export default {
     }
     .tools {
         width: 100%;
+    }
+    .cancel {
+        float: left;
+        width: 113px;
     }
 </style>
