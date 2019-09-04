@@ -3,8 +3,20 @@
         <div class="load-view_header">
             <div class="load-view_header_sort">
                 Sort By:
-                <div class="load-view_header_sort_btn">Data saved</div>
-                <div class="load-view_header_sort_btn">A-Z</div>
+                <div
+                     class="load-view_header_sort_btn"
+                     :style="{'background-color': sortButtonStyle('date')}"
+                     @click="onClickDateSort"
+                >
+                    Data saved
+                </div>
+                <div
+                     class="load-view_header_sort_btn"
+                     :style="{'background-color': sortButtonStyle('name')}"
+                     @click="onClickNameSort"
+                >
+                    A-Z
+                </div>
             </div>
         </div>
         <div class="load-view_cards">
@@ -12,6 +24,7 @@
                 v-for="(filterData, index) in filterDetails"
                 v-bind:key="index + '-' + filterData.name"
                 :name="filterData.name"
+                :isCommon="filterData.isCommon"
                 :conditions="filterData.conditions"
                 :date="filterData.date"
                 :onLoad="() => onLoad(filterData.name, filterData.conditions)"
@@ -25,17 +38,47 @@
 import LoadViewCard from './LoadViewCard.vue';
 
 export default {
-    props: ['onLoad', 'onRemove'],
+    data() {
+        return {
+            sortField: 'date'
+        }
+    },
+    props: ['onLoad', 'onRemove', 'onCancel'],
     components: {
         LoadViewCard,
     },
     computed: {
         filterDetails() {
-            return this.$store.state.filterDetails;
+            const field = this.sortField;
+            let initialFilterDetails = this.$store.state.filterDetails.slice();
+            return initialFilterDetails.sort(function(filter1, filter2) {
+                if (filter1.isCommon !== filter2.isCommon) {
+                    return filter1.isCommon ? 1 : -1;
+                }
+                if (filter1[field] === null) {
+                    return 1;
+                }
+                if (filter2[field] === null) {
+                    return -1;
+                }
+                const result = (filter1[field] > filter2[field] ? 1 : -1);
+                return (field === 'date' ? -result : result);
+            });
         },
     },
     mounted() {
         this.$store.dispatch('getFilterDetails');
+    },
+    methods: {
+        onClickDateSort() {
+            this.sortField = 'date';
+        },
+        onClickNameSort() {
+            this.sortField = 'name';
+        },
+        sortButtonStyle(field) {
+            return (this.sortField === field ? '#2bb3ed' : '');  
+        },
     },
 };
 </script>
