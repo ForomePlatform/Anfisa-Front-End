@@ -137,7 +137,7 @@ export function prepareVariantDetails(data) {
     const getValuesForRow = row => (Array.isArray(row) ? row.map(val => val[0]) : []);
     data.forEach((item) => {
         if (item.type === 'table') {
-            const tableData = item.rows.map(row => [row[1], ...getValuesForRow(row[2])]);
+            const tableData = item.rows.map(row => [{data:row[1], title: row[3]}, ...getValuesForRow(row[2])]);
             result[item.name] = {
                 title: item.title,
                 data: tableData,

@@ -16,7 +16,7 @@
                     </div>
                     <table v-else class="base-table_table">
                         <tr v-for="(row, index) in data" v-bind:key="index">
-                            <td v-for="(cell, index) in row" v-html="cell" v-bind:key="index"/>
+                            <td v-for="(cell, index) in row" v-html="cell.data ? cell.data : cell" :title="cell.title ? cell.title : ''" v-bind:key="index"/>
                         </tr>
                     </table>
                 </BaseScrollHorizontal>
