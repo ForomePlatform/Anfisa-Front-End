@@ -77,12 +77,12 @@ export default {
             return this.$store.getters.oCurrentConditions;
         },
         searchQuery: {
-            get: function () {
+            get() {
                 return this.$store.state.filterSearchQuery;
             },
-            set: function (newValue) {
+            set(newValue) {
                 this.$store.commit('setFilterSearchQuery', newValue);
-            }
+            },
         },
     },
     components: {
@@ -158,7 +158,7 @@ export default {
                     return nonCheckedRes && (isSubstat ? item[0].toLowerCase() :
                         item[0].toLowerCase().includes(query));
                 }
-                return false;
+                return true;
             });
         },
         toggleNonzeroCheckbox() {

@@ -2,7 +2,7 @@
         <div class="modal-header">
             <div class="modal-header_title">
                 FILTER VARIANTS
-                <span class="modal-header_title_descr">
+                <span v-if="!loadView" class="modal-header_title_descr">
                     {{ title }}
                 </span>
             </div>
@@ -26,7 +26,7 @@
 
 <script>
 export default {
-    props: ['onClose', 'onAdvancedClick', 'advancedView'],
+    props: ['onClose', 'onAdvancedClick', 'advancedView', 'loadView'],
     computed: {
         title() {
             const { selectedPreset, selectedPresetSaved } = this.$store.state;

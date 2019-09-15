@@ -5,17 +5,19 @@
                 <div class="filter-card_header_left_name">
                     {{name}}
                 </div>
-                <div class="filter-card_header_left_date">
-                    Created
+                <div v-if="!isCommon" class="filter-card_header_left_date">
+                    Last Updated on
                     <br/>
                     {{date}}
                 </div>
+                <div v-else class="filter-card_header_left_date">System Defined</div>
             </div>
             <div class="filter-card_header_right">
                 <div @click="onLoad" class="filter-card_header_right_load">
                     LOAD FILTER
                 </div>
-                <div @click="onRemove" class="filter-card_header_right_remove"/>
+                <div v-if="!isCommon" @click="onRemove" class="filter-card_header_right_remove"/>
+                <div v-else class="place-holder"></div>
             </div>
         </div>
         <div class="filter-card_conditions">
@@ -57,7 +59,7 @@ import BaseCardEnum from './BaseCardEnum.vue';
 import BaseCardZygosity from './BaseCardZygosity.vue';
 
 export default {
-    props: ['name', 'conditions', 'onLoad', 'onRemove', 'date'],
+    props: ['name', 'isCommon', 'conditions', 'onLoad', 'onRemove', 'date'],
     computed: {
         constants() {
             return {
@@ -163,5 +165,11 @@ export default {
             margin: 0;
             flex-wrap: wrap;
         }
+    }
+    .place-holder {
+        margin: 0px;
+        padding: 0px;
+        width: 46px;
+        height: 1em;
     }
 </style>

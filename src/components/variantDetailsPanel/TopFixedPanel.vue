@@ -2,8 +2,8 @@
     <div class="top-fixed-panel" ref="fixedPanel">
         <table class="annotation-table">
             <tr v-for="(item, index) in data" v-bind:key="index">
-                <th>
-                    {{item[0]}}
+                <th :title="item[0].title ? item[0].title : ''">
+                    {{item[0].data ? item[0].data : item[0]}}
                 </th>
                 <td v-html="item[1]"/>
             </tr>
