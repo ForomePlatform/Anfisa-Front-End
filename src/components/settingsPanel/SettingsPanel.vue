@@ -214,7 +214,7 @@ export default {
             }
         },
         defaultValue(zone) {
-            return 'Select a ' + zone.defaultValue.toLowerCase();
+            return `Select ${zone.defaultValue}`;
         },
     },
     components: {

@@ -8,8 +8,9 @@
             @click="onCheck(item)"
             disabled
         >
-            <div сlass="multiselect_item">
-                Clear all
+            <div сlass="multiselect_item" @click="clearAll">
+                <img class="multiselect_item_img" src="@/assets/clear_all.svg"/>
+                <span class="clear_all">CLEAR ALL</span>
             </div>
         </b-dropdown-item-button>
         <b-dropdown-divider/>
@@ -17,21 +18,27 @@
             v-if="multiselect && item"
             v-for="item in data"
             :key="item"
+            class="multiselect_item"
             @click="onCheck(item)"
             disabled
         >
-            <div сlass="multiselect_item">
-                <label>
-                    <input
-                        type="checkbox"
-                        class="multiselect_checkbox"
-                        :ref="item"
-                        :checked="isChecked(item)"
-                        @change="onCheck(item)"
-                    />
-                    {{item}}
-                </label>
-            </div>
+            <b-form-checkbox
+                    :class="{multiselect_item_checkbox:isChecked(item)}"
+                    @change="onCheck(item)"
+                    :checked="isChecked(item)"
+            >
+                {{item}}
+            </b-form-checkbox>
+            <!--label class="multiselect_item_label">
+                <input
+                    type="checkbox"
+                    class="multiselect_checkbox"
+                    :ref="item"
+                    :checked="isChecked(item)"
+                    @change="onCheck(item)"
+                />
+                {{item}}
+            </label-->
         </b-dropdown-item-button>
         <b-dropdown-item-button
             v-if="!multiselect"
@@ -47,11 +54,6 @@
 <script>
 export default{
     name: 'BaseDropdownButton',
-    data() {
-        return {
-            selectedItems: this.selected,
-        }
-    },
     props: {
         defaultText: {
             default: 'SELECT',
@@ -72,18 +74,20 @@ export default{
     },
     methods: {
         onCheck(item) {
+            let array = this.selected.slice();
             if (!this.selected.find(el => el === item)) {
-                console.log('Checked');
-                this.selectedItems.push(item);
+                array.push(item);
             }
             else {
-                this.selectedItems = this.selectedItems.filter(el => el !== item);
+                array = array.filter(el => el !== item);
             }
-            console.log(item + ' was checked. Items: ' + this.selectedItems);
-            this.onChange(this.selectedItems);
+            this.onChange(array);
         },
         isChecked(item) {
             return this.selected.find(el => el === item) !== undefined;
+        },
+        clearAll() {
+            this.onChange([]);
         },
     },
     computed: {
@@ -169,5 +173,23 @@ export default{
         &:hover {
             background-color:#2bb3ed;
         }
+        &_label {
+            margin: 0px;
+            padding: 0px;
+        }
+        &_img {
+            height: 1.3em;
+            width: 1.3em;
+            opacity: 0.6;
+        }
+        &_checkbox {
+            color: #1a3e6c;
+        }
+    }
+    .clear_all {
+        margin: 5px;
+        padding: 5px;
+        color: #1a3e6c;
+        cursor: pointer;
     }
 </style>
