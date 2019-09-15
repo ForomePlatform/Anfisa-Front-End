@@ -77,12 +77,12 @@ export default {
             return this.$store.getters.oCurrentConditions;
         },
         searchQuery: {
-            get: function () {
+            get() {
                 return this.$store.state.filterSearchQuery;
             },
-            set: function (newValue) {
+            set(newValue) {
                 this.$store.commit('setFilterSearchQuery', newValue);
-            }
+            },
         },
     },
     components: {

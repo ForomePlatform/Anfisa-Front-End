@@ -76,7 +76,6 @@ export function getStatListWithOperativeStat(data) {
 export function prepareStatList(statList) {
     const tmpResult = [];
     const groupsData = {};
-    let result;
 
     if (statList && Array.isArray(statList)) {
         statList.filter(statItem => STAT_TYPES.includes(statItem[0])).forEach((statItem) => {
@@ -97,7 +96,7 @@ export function prepareStatList(statList) {
         });
     }
 
-    result = tmpResult.map((item) => {
+    return tmpResult.map((item) => {
         if (item.type === STAT_GROUP) {
             return ({
                 ...item,
@@ -106,7 +105,6 @@ export function prepareStatList(statList) {
         }
         return item;
     });
-    return result;
 }
 
 export function prepareParams({
@@ -137,7 +135,12 @@ export function prepareVariantDetails(data) {
     const getValuesForRow = row => (Array.isArray(row) ? row.map(val => val[0]) : []);
     data.forEach((item) => {
         if (item.type === 'table') {
-            const tableData = item.rows.map(row => [row[1], ...getValuesForRow(row[2])]);
+            const tableData = item.rows.map(row => [{
+                data: row[1],
+                title: row[3],
+            },
+            ...getValuesForRow(row[2]),
+            ]);
             result[item.name] = {
                 title: item.title,
                 data: tableData,
@@ -206,7 +209,7 @@ export function generateJsonFromInputData(data) {
             if (rangeArray.length === 1) {
                 end = start;
             } else if (Number.isNaN(Number(rangeArray[1]))) {
-                end = rangeArray[1];
+                [, end] = rangeArray;
             } else {
                 end = Number(rangeArray[1]);
             }
@@ -215,7 +218,7 @@ export function generateJsonFromInputData(data) {
             const alternative = elementArray[2];
             if (alternative) {
                 if (alternative.indexOf('>') !== -1) {
-                    element.alternative = alternative.split('>')[1];
+                    [, element.alternative] = alternative.split('>');
                 } else {
                     element.alternative = alternative;
                 }
