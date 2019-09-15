@@ -277,7 +277,7 @@ function getZoneData(context, aZone) {
             const { data } = response;
             const oZone = {
                 [zone]: {
-                    selectedValue: null,
+                    selectedValues: [],
                     defaultValue: value,
                     values: [null, ...data.variants],
                 },

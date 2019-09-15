@@ -41,9 +41,10 @@
             />
             <div class="d-flex justify-content-between mt-3">
                 <BaseDropdownButton
-                    :text="selectedPreset"
+                    :defaultText="selectedPreset"
                     :data="presets"
                     :onChange="changePreset"
+                    :multiselect="false"
                 />
                 <!-- <div class="settings-panel_icon-button">
                     <img alt="presets icon" src="@/assets/presetsIcon.svg" />
@@ -55,9 +56,11 @@
               class="d-flex justify-content-between mt-3"
             >
                 <BaseDropdownButton
-                  :text="getZoneText(zones[zone])"
+                  :defaultText="defaultValue(zones[zone])"
+                  :selected="zones[zone].selectedValues"
                   :data="zones[zone].values"
-                  :onChange="value =>changeZoneValue(zone, value)"
+                  :onChange="value => changeZoneValue(zone, value)"
+                  :multiselect="true"
                 />
                 <!-- <div class="settings-panel_icon-button">
                     <img alt="presets icon" src="@/assets/tagsIcon.svg" />
@@ -200,9 +203,6 @@ export default {
             this.$store.dispatch('getListByFilter');
             this.$store.dispatch('getConditionsByFilter', preset);
         },
-        getZoneText(item) {
-            return item.selectedValue === null ? item.defaultValue : String(item.selectedValue);
-        },
         openFilterModal() {
             this.$store.commit('resetZones');
             this.$refs.filterModal.openModal();
@@ -212,6 +212,9 @@ export default {
                 this.selectWorkspace();
                 this.$refs.workspaceModal.closeModal();
             }
+        },
+        defaultValue(zone) {
+            return 'Select a ' + zone.defaultValue.toLowerCase();
         },
     },
     components: {

@@ -1,9 +1,44 @@
 <template>
     <b-dropdown size="sm">
         <template slot="button-content">
-            <div class="dropdown-toggle-slot">{{text}}</div>
+            <div class="dropdown-toggle-slot">{{labelText}}</div>
         </template>
-        <b-dropdown-item-button v-for="item in data" :key="item" @click="onChange(item)">
+        <b-dropdown-item-button
+            v-if="multiselect"
+            @click="onCheck(item)"
+            disabled
+        >
+            <div сlass="multiselect_item">
+                Clear all
+            </div>
+        </b-dropdown-item-button>
+        <b-dropdown-divider/>
+        <b-dropdown-item-button
+            v-if="multiselect && item"
+            v-for="item in data"
+            :key="item"
+            @click="onCheck(item)"
+            disabled
+        >
+            <div сlass="multiselect_item">
+                <label>
+                    <input
+                        type="checkbox"
+                        class="multiselect_checkbox"
+                        :ref="item"
+                        :checked="isChecked(item)"
+                        @change="onCheck(item)"
+                    />
+                    {{item}}
+                </label>
+            </div>
+        </b-dropdown-item-button>
+        <b-dropdown-item-button
+            v-if="!multiselect"
+            v-for="item in data"
+            :key="item"
+            @click="onChange(item)"
+        >
             {{item}}
         </b-dropdown-item-button>
     </b-dropdown>
@@ -12,8 +47,13 @@
 <script>
 export default{
     name: 'BaseDropdownButton',
+    data() {
+        return {
+            selectedItems: this.selected,
+        }
+    },
     props: {
-        text: {
+        defaultText: {
             default: 'SELECT',
             type: String,
         },
@@ -22,6 +62,46 @@ export default{
         },
         onChange: {
             type: Function,
+        },
+        multiselect: {
+            type: Boolean,
+        },
+        selected: {
+            type: Array,
+        }
+    },
+    methods: {
+        onCheck(item) {
+            if (!this.selected.find(el => el === item)) {
+                console.log('Checked');
+                this.selectedItems.push(item);
+            }
+            else {
+                this.selectedItems = this.selectedItems.filter(el => el !== item);
+            }
+            console.log(item + ' was checked. Items: ' + this.selectedItems);
+            this.onChange(this.selectedItems);
+        },
+        isChecked(item) {
+            return this.selected.find(el => el === item) !== undefined;
+        },
+    },
+    computed: {
+        labelText() {
+            if (this.multiselect) {
+                if (this.selected.length === 0) {
+                    return this.defaultText;
+                }
+                else if (this.selected.length === 1) {
+                    return this.selected[0];
+                }
+                else {
+                    return '(' + this.selected.length + ') Options Selected';
+                }
+            }
+            else {
+                return this.selected ? this.selected : this.defaultText;
+            }
         },
     },
 };
@@ -76,6 +156,18 @@ export default{
             vertical-align: 0m;
             font-size: 14px;
 
+        }
+    }
+    .multiselect_checkbox {
+        position: relative;
+        top: 0.2em;
+        margin-right: 0.5em;
+    }
+    .multiselect_item {
+        margin: 0px;
+        padding: 0px;
+        &:hover {
+            background-color:#2bb3ed;
         }
     }
 </style>
