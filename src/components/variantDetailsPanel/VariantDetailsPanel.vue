@@ -12,100 +12,90 @@
             <img v-else src="@/assets/bookIcon.svg"/>
         </BaseFixedButton>
         <NotesFixedPanel v-if="showNotes" />
-        <div class="variant-details_tables">
-            <BaseTable
-            v-if="isDataFilled(variantDetails.view_gen)"
-            :title="variantDetails.view_gen.title"
-            id="view_gen"
-            :data="variantDetails.view_gen.data"
-            />
-            <b-row no-gutters>
-                <b-col cols="8">
-                    <BaseTable
-                    v-if="isDataFilled(variantDetails.view_qsamples)"
-                    :title="variantDetails.view_qsamples.title"
-                    id="view_qsamples"
-                    :data="variantDetails.view_qsamples.data"
-                    />
-                    <BaseTable
-                    v-if="isDataFilled(variantDetails.view_genetics)"
-                    :title="variantDetails.view_genetics.title"
-                    id="view_genetics"
-                    :data="variantDetails.view_genetics.data"
-                    />
-                </b-col>
-                <b-col cols="4">
-                    <BaseTable
-                    v-if="isDataFilled(variantDetails.view_gnomAD)"
-                    :title="variantDetails.view_gnomAD.title"
-                    id="view_gnomAD"
-                    :data="variantDetails.view_gnomAD.data"
-                    />
-                    <BaseTable
-                    v-if="isDataFilled(variantDetails.view_db)"
-                    :title="variantDetails.view_db.title"
-                    id="view_db"
-                    :data="variantDetails.view_db.data"
-                    />
-                </b-col>
-            </b-row>
-            <b-row no-gutters>
-                <b-col cols="6">
-                    <BaseTable
-                    v-if="isDataFilled(variantDetails.colocated_v)"
-                    :title="variantDetails.colocated_v.title"
-                    id="colocated_v"
-                    :data="variantDetails.colocated_v.data"
-                    secondary
-                    />
-                    <BaseTable
-                        v-if="isDataFilled(variantDetails.view_pred)"
-                        :title="variantDetails.view_pred.title"
-                        id="view_pred"
-                        :data="variantDetails.view_pred.data"
-                        secondary
-                    />
-                </b-col>
-                <b-col cols="6">
-                    <BaseTable
-                    v-if="isDataFilled(variantDetails._main)"
-                    :title="variantDetails._main.title"
-                    id="table_main"
-                    :data="variantDetails._main.data"
-                    secondary
-                    />
-                </b-col>
-            </b-row>
-            <BaseTable
-            v-if="isDataFilled(variantDetails.transcripts)"
-            :title="variantDetails.transcripts.title"
-            id="transcripts"
-            :data="variantDetails.transcripts.data"
-            secondary
-            />
-            <BaseTable
-            v-if="variantDetails.VCF"
-            :title="variantDetails.VCF.title"
-            id="vcf"
-            :content="variantDetails.VCF.content"
-            secondary
-            />
+        <div v-if="isSelected" class="variant-details_tables">
+            <grid-layout
+                :layout.sync="layout"
+                :col-num="6"
+                :is-draggable="true"
+                :is-resizable="true"
+                :vertical-compact="true"
+                :use-css-transforms="true"
+                :row-height="1"
+            >
+                <grid-item
+                    v-for="item in layout"
+                    :x="item.x"
+                    :y="item.y"
+                    :w="item.w"
+                    :h="item.h"
+                    :i="item.i"
+                    :key="item.i"
+                    :min-h="5"
+                    :min-w="2"
+                    dragAllowFrom=".js-table-draggable"
+                >
+                    <BaseResizeSensor>
+                        <BaseTable
+                            v-if="variantDetails[item.name]"
+                            :title="variantDetails[item.name].title"
+                            :id="item.name"
+                            :data="variantDetails[item.name].data"
+                            :secondary="item.secondary"
+                            :content="variantDetails[item.name].content"
+                        />
+                    </BaseResizeSensor>
+                </grid-item>
+            </grid-layout>
         </div>
         <NewTagModal/>
     </div>
 </template>
 
 <script>
+import VueGridLayout from 'vue-grid-layout';
 import BaseTable from './BaseTable.vue';
 import TopFixedPanel from './TopFixedPanel.vue';
 import BaseFixedButton from './BaseFixedButton.vue';
 import NotesFixedPanel from './NotesFixedPanel.vue';
 import NewTagModal from './NewTagModal.vue';
+import BaseResizeSensor from './BaseResizeSensor.vue';
 
 export default {
     data() {
         return {
             showNotes: false,
+            layout: [
+                {
+                    x: 0, y: 0, w: 6, h: 5, i: 0, name: 'view_gen',
+                },
+                {
+                    x: 0, y: 5, w: 4, h: 5, i: 1, name: 'view_qsamples',
+                },
+                {
+                    x: 4, y: 5, w: 2, h: 5, i: 2, name: 'view_gnomAD',
+                },
+                {
+                    x: 0, y: 10, w: 4, h: 5, i: 3, name: 'view_genetics',
+                },
+                {
+                    x: 4, y: 10, w: 2, h: 5, i: 4, name: 'view_db',
+                },
+                {
+                    x: 0, y: 15, w: 3, h: 5, i: 5, name: 'colocated_v', secondary: true,
+                },
+                {
+                    x: 3, y: 15, w: 3, h: 5, i: 6, name: '_main', secondary: true,
+                },
+                {
+                    x: 0, y: 20, w: 6, h: 5, i: 7, name: 'view_pred', secondary: true,
+                },
+                {
+                    x: 0, y: 25, w: 6, h: 5, i: 8, name: 'transcripts', secondary: true,
+                },
+                {
+                    x: 0, y: 30, w: 6, h: 5, i: 9, name: 'VCF', secondary: true,
+                },
+            ],
         };
     },
     components: {
@@ -114,6 +104,9 @@ export default {
         BaseFixedButton,
         NotesFixedPanel,
         NewTagModal,
+        GridLayout: VueGridLayout.GridLayout,
+        GridItem: VueGridLayout.GridItem,
+        BaseResizeSensor,
     },
     computed: {
         variantDetails() {
@@ -170,5 +163,11 @@ export default {
     }
     .igv_comment {
         font-size:12px;
+    }
+    .vue-grid-item {
+        overflow: hidden;
+        /deep/ .vue-resizable-handle {
+            background-origin: unset;
+        }
     }
 </style>

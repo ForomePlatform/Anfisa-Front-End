@@ -6,9 +6,12 @@
             secondary ? 'base-table_header-secondary' : '']"
         >
             {{title.toUpperCase()}}
-            <div class="base-table_header_icon" />
+            <div class="base-table_icons">
+                <div @click.stop class="base-table_icons_draggable js-table-draggable" />
+                <div class="base-table_icons_collapse" />
+            </div>
         </div>
-        <b-collapse :id="'table_'+id" class="cubasestom-table_collapse">
+        <b-collapse :id="'table_'+id" class="js-table_body">
             <div class="base-table_table-wrapper">
                 <BaseScrollHorizontal :id="id">
                     <div v-if="content" class="base-table_html">
@@ -16,7 +19,13 @@
                     </div>
                     <table v-else class="base-table_table">
                         <tr v-for="(row, index) in data" v-bind:key="index">
-                            <td v-for="(cell, index) in row" v-html="cell" v-bind:key="index"/>
+                            <td
+                                v-for="(cell, index) in row"
+                                v-html="cell.data ? cell.data : cell"
+                                :title="cell.title ? cell.title : false"
+                                v-bind:key="index"
+                                nowrap
+                            />
                         </tr>
                     </table>
                 </BaseScrollHorizontal>
@@ -44,11 +53,9 @@ export default {
 
 <style lang="scss" scoped>
     .base-table {
-            border-radius: 5px;
-            box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
-            background-color: #ffffff;
-            margin: 0 10px 20px 10px;
-
+        border-radius: 5px;
+        box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
+        background-color: #ffffff;
         &_header {
             display: flex;
             justify-content: space-between;
@@ -63,6 +70,7 @@ export default {
             box-shadow: 0px 2px 24px rgba(24,64,104,0.06);
             background-color: #ffffff;
             padding: 0 20px;
+            user-select: none;
             &:hover {
                 cursor: pointer;
                 background-color: #12aaeb;
@@ -80,19 +88,17 @@ export default {
                     }
                 }
             }
-            &_icon {
-                width: 0;
-                height: 0;
-                border-top: 0;
-                border-right: 5px solid transparent;
-                border-bottom: 7px solid #b8cedd;
-                border-left: 5px solid transparent;
-            }
             &[aria-expanded=false] {
                 background-color: #a4b6c5;
                 color: #ffffff;
                 border-bottom: 0;
-                .base-table_header_icon {
+                .base-table_icons_draggable {
+                    width: 16px;
+                    height: 16px;
+                    margin-right: 8px;
+                    background-image: url('../../assets/arrowsAlt.svg')
+                }
+                .base-table_icons_collapse {
                     border-top: 7px solid #ffffff;
                     border-bottom: 0;
                 }
@@ -109,6 +115,26 @@ export default {
                         border-bottom-color: #fff;
                     }
                 }
+            }
+        }
+        &_icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &_collapse {
+                margin-top: 2px;
+                width: 0;
+                height: 0;
+                border-top: 0;
+                border-right: 5px solid transparent;
+                border-bottom: 7px solid #b8cedd;
+                border-left: 5px solid transparent;
+            }
+            &_draggable {
+                width: 16px;
+                height: 16px;
+                margin-right: 8px;
+                background-image: url('../../assets/arrowsAltActive.svg')
             }
         }
         &_html {

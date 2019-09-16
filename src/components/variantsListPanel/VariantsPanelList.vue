@@ -41,6 +41,23 @@ export default {
             this.$store.commit('setListMounting', false);
         }
     },
+    updated() {
+        const itemElement = document.querySelector('.variants-list > .variants-list_item__active');
+        const listElement = document.querySelector('.variants-list').parentNode;
+        if ((!listElement) || (!itemElement)) {
+            return;
+        }
+        const itemRect = itemElement.getBoundingClientRect();
+        const listRect = listElement.getBoundingClientRect();
+        let diff = 0;
+        if (listRect.top > itemRect.top) {
+            diff = itemRect.top - listRect.top;
+        }
+        if (itemRect.bottom > listRect.bottom) {
+            diff = itemRect.bottom - listRect.bottom;
+        }
+        listElement.scrollTop += diff;
+    },
 };
 </script>
 

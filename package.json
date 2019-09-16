@@ -1,7 +1,7 @@
 {
   "name": "anfisa-front-end",
-  "version": "0.4.9",
-  "backendVersion": "0.4.1",
+  "version": "0.4.10",
+  "backendVersion": "0.4.10",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -14,8 +14,10 @@
     "baron": "^3.0.3",
     "bootstrap": "4.1.3",
     "bootstrap-vue": "2.0.0-rc.13",
+    "css-element-queries": "^1.2.1",
     "vue": "2.5.17",
     "vue-cookie-law": "1.10.0",
+    "vue-grid-layout": "^2.3.6",
     "vue-router": "3.0.1",
     "vue-slider-component": "3.0.3",
     "vuex": "3.0.1"

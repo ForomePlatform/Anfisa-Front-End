@@ -49,6 +49,7 @@ export default {
         -webkit-overflow-scrolling: touch;
         height:  fit-content !important;
         min-height: fit-content !important;
+        max-height: fit-content !important;
     }
     .baron__scroller::-webkit-scrollbar {
         width: 0;
