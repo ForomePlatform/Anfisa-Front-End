@@ -16,6 +16,7 @@ const commonHttp = axios.create({
 export function getList(context) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
+    console.log('params: ' + JSON.stringify(params, '', 4), 'context: ' + JSON.stringify(context, '', 4));
     commonHttp.post('/list', params)
         .then((response) => {
             const { data } = response;
@@ -23,6 +24,7 @@ export function getList(context) {
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.commit('setTranscripts', data.transcripts);
             context.commit('setPreset', null);
             context.commit('clearSelectedVariant');
             context.commit('changePresetSaved', true);
