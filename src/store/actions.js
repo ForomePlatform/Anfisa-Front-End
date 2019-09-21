@@ -29,6 +29,7 @@ export function getList(context) {
             context.commit('clearSelectedVariant');
             context.commit('changePresetSaved', true);
             context.commit('removeAllCurrentConditions');
+            console.log('list: ' + JSON.stringify(data.transcripts, '', 4));
         })
         .catch((error) => {
             context.commit('resetListDependencies');
@@ -110,6 +111,7 @@ export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
     params.append('ds', context.state.workspace);
     params.append('rec', variant);
+    console.log('reccnt: ' + JSON(params, '', 4));
     context.commit('setSelectedVariant', variant);
     commonHttp.post('/reccnt', params)
         .then((response) => {
