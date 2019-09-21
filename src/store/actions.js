@@ -111,7 +111,7 @@ export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
     params.append('ds', context.state.workspace);
     params.append('rec', variant);
-    console.log('reccnt: ' + JSON(params, '', 4));
+    console.log('reccnt: ' + JSON.stringify(params, '', 4));
     context.commit('setSelectedVariant', variant);
     commonHttp.post('/reccnt', params)
         .then((response) => {
