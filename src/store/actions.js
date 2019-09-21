@@ -106,7 +106,7 @@ export function setVariantsDetails(context, data) {
 
 export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
-    params.append('ws', context.state.workspace);
+    params.append('ds', context.state.workspace);
     params.append('rec', variant);
     context.commit('setSelectedVariant', variant);
     commonHttp.post('/reccnt', params)
