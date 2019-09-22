@@ -16,7 +16,6 @@ const commonHttp = axios.create({
 export function getList(context) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
-    console.log('context: ' + JSON.stringify(context, '', 4));
     commonHttp.post('/list', params)
         .then((response) => {
             const { data } = response;
@@ -29,7 +28,6 @@ export function getList(context) {
             context.commit('clearSelectedVariant');
             context.commit('changePresetSaved', true);
             context.commit('removeAllCurrentConditions');
-            console.log('list: ' + JSON.stringify(data.transcripts, '', 4));
         })
         .catch((error) => {
             context.commit('resetListDependencies');
@@ -52,6 +50,7 @@ export function getListByFilter(context) {
         context.commit('setRecords', data.records);
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
+        context.commit('setTranscripts', data.transcripts);
         context.commit('clearSelectedVariant');
         context.commit('changePresetSaved', true);
     }).catch((error) => {
@@ -75,6 +74,7 @@ export function getListByConditions(context, zoneChanged) {
             context.commit('setRecords', data.records);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.commit('setTranscripts', data.transcripts);
             context.commit('clearSelectedVariant');
             if (!zoneChanged) {
                 const { selectedPreset, currentConditions } = context.state;
@@ -336,7 +336,7 @@ function getFilterDetail(context, filter) {
         }
         commonHttp.post('/stat', params).then((response) => {
             const { data } = response;
-            const info = data['filter-list'].find((item) => item[0] === filter);
+            const info = data['filter-list'].find(item => item[0] === filter);
             resolve({
                 name: filter,
                 isCommon: info[1],
@@ -399,6 +399,7 @@ export function removeFilter(context, filterName) {
         context.commit('setCompiled', response.data.compiled);
         context.commit('setStats', utils.prepareStatList(statList));
         context.commit('removeAllCurrentConditions');
+        context.commit('setTranscripts', data.transcripts);
         context.dispatch('getFilterDetails');
         context.dispatch('getListByFilter');
         context.commit('setPreset', null);
