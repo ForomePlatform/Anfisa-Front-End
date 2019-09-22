@@ -16,7 +16,7 @@ const commonHttp = axios.create({
 export function getList(context) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
-    console.log('params: ' + JSON.stringify(params, '', 4), 'context: ' + JSON.stringify(context, '', 4));
+    console.log('context: ' + JSON.stringify(context, '', 4));
     commonHttp.post('/list', params)
         .then((response) => {
             const { data } = response;
@@ -111,8 +111,6 @@ export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
     params.append('ds', context.state.workspace);
     params.append('rec', variant);
-    params.append('details', context.state.transcripts[0]);
-    console.log('reccnt: ' + JSON.stringify(params, '', 4));
     context.commit('setSelectedVariant', variant);
     commonHttp.post('/reccnt', params)
         .then((response) => {
