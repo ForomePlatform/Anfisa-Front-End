@@ -399,7 +399,7 @@ export function removeFilter(context, filterName) {
         context.commit('setCompiled', response.data.compiled);
         context.commit('setStats', utils.prepareStatList(statList));
         context.commit('removeAllCurrentConditions');
-        context.commit('setTranscripts', data.transcripts);
+        context.commit('setTranscripts', response.data.transcripts);
         context.dispatch('getFilterDetails');
         context.dispatch('getListByFilter');
         context.commit('setPreset', null);
