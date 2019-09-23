@@ -487,7 +487,6 @@ export function getZygosityByFamily(context, { name, family }) {
         params.append('conditions', JSON.stringify(context.state.currentConditions));
     }
     commonHttp.post('/statunits', params).then((response) => {
-        console.log('getZygosity: ' + JSON.stringify(response.data));
         context.commit('setZygosityVariants', response.data);
     }).catch((error) => {
         console.log(error);
