@@ -481,7 +481,7 @@ export function getStatList(context, { conditions = null, filter = null }) {
 export function getZygosityByFamily(context, { name, family }) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
-    params.append('units', [name]);
+    params.append('units', JSON.stringify([name]));
     params.append('ctx', JSON.stringify({ problem_group: family }));
     if (context.state.currentConditions.length) {
         params.append('conditions', JSON.stringify(context.state.currentConditions));
