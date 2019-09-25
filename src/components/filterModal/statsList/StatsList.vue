@@ -206,6 +206,7 @@ export default {
             this.$store.commit('setFilterSearchQuery', '');
             const elements = document.getElementsByClassName(this.className);
             const expandSet = new Set();
+            console.log('Before stats');
             this.stats.forEach((stat) => {
                 if (this.oCurrentConditions[stat.name]) {
                     expandSet.add(getStatName(stat));
@@ -218,6 +219,7 @@ export default {
                     });
                 }
             });
+            console.log('After stats');
             Array.from(elements).forEach((element) => {
                 const statName = element.getAttribute('aria-controls');
                 const currentExpand = isStringTrue('aria-expanded');
@@ -226,6 +228,7 @@ export default {
                     element.click();
                 }
             });
+            console.log('After presets');
         },
         clicks() {
             if (this.searchQuery === '') {
@@ -249,6 +252,8 @@ export default {
         },
     },
     mounted() {
+        console.log(`oCurrentConditions: ${this.oCurrentConditions}`);
+        console.log(`searchQuery: ${this.searchQuery}`);
         this.expandPreselectedStats();
     },
     watch: {
