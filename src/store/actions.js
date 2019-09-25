@@ -279,7 +279,7 @@ function getZoneData(context, aZone) {
                 [zone]: {
                     selectedValues: [],
                     defaultValue: value,
-                    values: [null, ...data.variants],
+                    values: data.variants,
                 },
             };
             context.commit('setZone', oZone);
