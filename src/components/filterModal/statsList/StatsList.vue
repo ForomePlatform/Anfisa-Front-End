@@ -184,7 +184,7 @@ export default {
             return !this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery);
         },
         primaryDisabled(stat) {
-            console.log('`stat: ${stat.name}`);
+            console.log(`stat: ${stat.name}`);
             return !this.filledStat(stat) && (
                 (stat.type === STAT_GROUP && this.inheritanceHandler(stat))
                 || (stat.type !== STAT_GROUP && !this.showStat(stat))
