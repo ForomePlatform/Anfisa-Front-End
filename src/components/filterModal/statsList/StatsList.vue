@@ -184,6 +184,7 @@ export default {
             return !this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery);
         },
         primaryDisabled(stat) {
+            console.log('`stat: ${stat.name}`);
             return !this.filledStat(stat) && (
                 (stat.type === STAT_GROUP && this.inheritanceHandler(stat))
                 || (stat.type !== STAT_GROUP && !this.showStat(stat))
@@ -252,7 +253,7 @@ export default {
         },
     },
     mounted() {
-        console.log(`oCurrentConditions: ${this.oCurrentConditions}`);
+        console.log(`oCurrentConditions: ${JSON.stringify(this.oCurrentConditions, '', 4)}`);
         console.log(`searchQuery: ${this.searchQuery}`);
         this.expandPreselectedStats();
     },
