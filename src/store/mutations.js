@@ -74,12 +74,12 @@ export function setZone(state, oZone) {
 }
 
 export function changeZoneValue(state, aZone) {
-    const [zone, value] = aZone;
-    state.zones[zone].selectedValue = value;
+    const [zone, values] = aZone;
+    state.zones[zone].selectedValues = values;
 }
 
 export function resetZones(state) {
-    Object.keys(state.zones).forEach((zone) => { state.zones[zone].selectedValue = null; });
+    Object.keys(state.zones).forEach((zone) => { state.zones[zone].selectedValues = []; });
 }
 
 export function setPresets(state, filters) {
@@ -108,11 +108,13 @@ export function setCurrentConditions(state, condition) {
     if (index === -1) {
         state.currentConditions.push(condition);
     } else {
-        let conditionFixed = JSON.parse(JSON.stringify(condition));
+        const conditionFixed = JSON.parse(JSON.stringify(condition));
         if (condition[0] === STAT_TYPE_ENUM) {
+            // eslint-disable-next-line
             conditionFixed[2] = state.currentConditions[index][2];
         }
         if (condition[0] === STAT_TYPE_ZYGOSITY) {
+            // eslint-disable-next-line
             conditionFixed[3] = state.currentConditions[index][3];
         }
         Vue.set(state.currentConditions, index, conditionFixed);
