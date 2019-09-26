@@ -66,7 +66,8 @@ export default {
     },
     computed: {
         marks() {
-            return LOG_EDITOR_MARKS;
+            const innerMarks = LOG_EDITOR_MARKS.filter(item => item > this.preselectedMin && item < this.preselectedMax);
+            return [this.preselectedMin, ...innerMarks, this.preselectedMax];
         },
         sliderValues() {
             if (LOG_EDITOR_MARKS.includes(this.selectedMin)

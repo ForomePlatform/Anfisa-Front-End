@@ -1,7 +1,7 @@
 <template>
     <div>
         <BaseEditorLinear
-                v-if="render === statTypes.linear || name === 'Dist_from_Exon'"
+                v-if="isLinear"
                 :simple="name === 'Dist_from_Exon'"
                 :int="type === statTypes.int"
                 :min="data[0]"
@@ -13,7 +13,7 @@
                 :buttonText="buttonText"
         />
         <BaseEditorLogarithmic
-                v-else-if="render === statTypes.logarithmic"
+                v-else-if="render === statTypes.logarithmic && type !== statTypes.int"
                 :preselectedMin="preselectedLogMin"
                 :preselectedMax="preselectedLogMax"
                 :onSubmit="submitHandler"
@@ -129,6 +129,11 @@ export default {
         },
         buttonText() {
             return this.oCurrentCondition ? 'UPDATE' : 'ADD';
+        },
+        isLinear() {
+            const isInitiallyLinear = this.render === this.statTypes.linear || this.name === 'Dist_from_Exon';
+            const isLog = this.type === this.statTypes.int && this.render === this.statTypes.logarithmic;
+            return isInitiallyLinear || isLog;
         },
     },
     methods: {
