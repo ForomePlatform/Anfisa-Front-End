@@ -12,7 +12,8 @@
             Anfisa
         </div>
         <div class="mb-3 settings-panel_menu">
-            <span v-on:click="showVersionModal">ver {{version.slice(7)}}</span> |
+            <!--span v-on:click="showVersionModal">ver {{version.slice(7)}}</span-->
+            <span v-on:click="showVersionModal">ver 0.5.1</span> |
             <span> Help</span> |
             <span> About</span>
         </div>
@@ -79,7 +80,8 @@
                    :onSubmit="function(){}"
                    :okOnly="true">
             <p class="mt-3 ml-3">Front-End version: {{ frontendVersion }}</p>
-            <p class="mt-3 ml-3">Back-End version: {{ version.slice(7) }}</p>
+            <!--p class="mt-3 ml-3">Back-End version: {{ version.slice(7) }}</p-->
+            <p class="mt-3 ml-3">Back-End version: 0.5.1</p>
         </BaseModal>
         <BaseModal ref="workspaceModal" title="SELECT WORKSPACE" :onSubmit="selectWorkspace">
             <div v-on:dblclick="selectWorkspaceByDblClick">

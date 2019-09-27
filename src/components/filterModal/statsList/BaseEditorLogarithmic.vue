@@ -21,8 +21,8 @@
         </div>
         <vue-slider
           :value="sliderValues"
-          :enable-cross="false"
-          :marks="true"
+          :enable-cross="true"
+          :marks="marks"
           :data="marks"
           :min="min"
           :max="max"
@@ -66,12 +66,7 @@ export default {
     },
     computed: {
         marks() {
-            //const innerMarks = LOG_EDITOR_MARKS.filter(item => item > this.preselectedMin && item < this.preselectedMax);
             let marks = LOG_EDITOR_MARKS;
-            /*if (marks.indexOf(this.preselectedMin) === -1) marks.push(this.preselectedMin);
-            if (marks.indexOf(this.preselectedMax) === -1) marks.push(this.preselectedMax);*/
-            return marks;
-            //return [this.preselectedMin, ...LOG_EDITOR_MARKS, this.preselectedMax];
         },
         sliderValues() {
             if (LOG_EDITOR_MARKS.includes(this.selectedMin)
