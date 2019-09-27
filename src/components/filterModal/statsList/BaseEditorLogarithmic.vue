@@ -3,7 +3,7 @@
         <div class="float-editor_inputs">
             <b-form-input
               type="number"
-              v-model.number="selectedMin"
+              v-model.number="Math.round(selectedMin * 10000) / 10000"
               :step="0.0001"
               :min="min"
               :max="selectedMax"
@@ -12,7 +12,7 @@
             &mdash;
             <b-form-input
               type="number"
-              v-model.number="selectedMax"
+              v-model.number="Math.round(selectedMax * 10000) / 10000"
               :step="0.0001"
               :min="selectedMin"
               :max="max"
@@ -66,8 +66,12 @@ export default {
     },
     computed: {
         marks() {
-            const innerMarks = LOG_EDITOR_MARKS.filter(item => item > this.preselectedMin && item < this.preselectedMax);
-            return [this.preselectedMin, ...innerMarks, this.preselectedMax];
+            //const innerMarks = LOG_EDITOR_MARKS.filter(item => item > this.preselectedMin && item < this.preselectedMax);
+            let marks = LOG_EDITOR_MARKS;
+            /*if (marks.indexOf(this.preselectedMin) === -1) marks.push(this.preselectedMin);
+            if (marks.indexOf(this.preselectedMax) === -1) marks.push(this.preselectedMax);*/
+            return marks;
+            //return [this.preselectedMin, ...LOG_EDITOR_MARKS, this.preselectedMax];
         },
         sliderValues() {
             if (LOG_EDITOR_MARKS.includes(this.selectedMin)

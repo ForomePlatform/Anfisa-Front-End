@@ -108,6 +108,7 @@ export default new Vuex.Store({
                     };
                 }
             });
+            console.log(JSON.stringify(result, '', 4));
             return result;
         },
         getFilteredStats(state) {

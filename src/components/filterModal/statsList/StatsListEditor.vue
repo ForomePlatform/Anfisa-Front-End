@@ -95,10 +95,10 @@ export default {
             return condition ? Math.min(Math.max(condition, min), max) : max;
         },
         preselectedLogMin() {
-            return this.conditionByIndex(0) || 0;
+            return this.conditionByIndex(0) || this.data[0];
         },
         preselectedLogMax() {
-            return this.conditionByIndex(1) || 1;
+            return this.conditionByIndex(1) || this.data[1];
         },
         preselectedCoordMin() {
             return this.conditionByIndex(0) || this.data[0];
