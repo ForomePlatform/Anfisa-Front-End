@@ -65,7 +65,7 @@ export default {
     data() {
         return {
             className: 'js-toggle-filters',
-            nonzeroChecked: false,
+            nonzeroChecked: true,
         };
     },
     computed: {
@@ -202,7 +202,7 @@ export default {
         expandPreselectedStats() {
             const isStringTrue = value => value === 'true';
             const getStatName = stat => stat.title || stat.name;
-            this.nonzeroChecked = false;
+            this.nonzeroChecked = true;
             this.$store.commit('setFilterSearchQuery', '');
             const elements = document.getElementsByClassName(this.className);
             const expandSet = new Set();
