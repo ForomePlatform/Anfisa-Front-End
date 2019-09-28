@@ -53,6 +53,8 @@ export default {
         return {
             min: MIN,
             max: MAX,
+            currentMin: this.preselectedMin,
+            currentMax: this.preselectedMax,
             selectedMin: this.closestLeftMark(this.preselectedMin),
             selectedMax: this.closestRightMark(this.preselectedMax),
             key: 0,
@@ -63,13 +65,15 @@ export default {
             this.onSubmit(this.selectedMin, this.selectedMax);
         },
         changeValues([min, max]) {
+            this.currentMin = min;
+            this.currentMax = max;
             this.selectedMin = (min < this.preselectedMin ? this.closestLeftMark(this.preselectedMin) : this.closestLeftMark(min));
             this.selectedMax = (max > this.preselectedMax ? this.closestRightMark(this.preselectedMax) : this.closestRightMark(max));
         },
         closestLeftMark(value) {
             const arr = LOG_EDITOR_MARKS;
             for (let i=0; i<arr.length; i++) {
-                if (value <= arr[i]) return arr[i<1 ? 0 : i-1];
+                if (value < arr[i]) return arr[i<1 ? 0 : i-1];
             }
             return arr[0];
         },
