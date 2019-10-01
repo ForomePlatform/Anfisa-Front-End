@@ -30,6 +30,7 @@
           :interval="0.0001"
           @change="changeValues"
           tooltip="none"
+          @mouseup="onDragEnd"
           @drag-end="onDragEnd"
           :class="[defaultSlider ? 'float-editor_slider__default' : '', 'float-editor_slider']"
         />
@@ -70,12 +71,12 @@ export default {
             this.selectedMin = (min < this.preselectedMin ? this.closestLeftMark(this.preselectedMin) : this.closestLeftMark(min));
             this.selectedMax = (max > this.preselectedMax ? this.closestRightMark(this.preselectedMax) : this.closestRightMark(max));
         },
-                closestLeftMark(value) {
+        closestLeftMark(value) {
             const arr = LOG_EDITOR_MARKS;
             for (let i=0; i<arr.length; i++) {
                 if (value < arr[i]) return arr[i<1 ? 0 : i-1];
             }
-            return arr[0];
+            return arr[arr.length-1];
         },
         closestRightMark(value) {
             const arr = LOG_EDITOR_MARKS;
