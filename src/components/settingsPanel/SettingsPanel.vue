@@ -110,7 +110,6 @@ import { mapState } from 'vuex';
 import { DEMO_NOTIFICATION, ANNOTATION_SERVICE } from '@/common/constants';
 import AnnotationSearchDialog from '../annotationService/AnnotationSearchDialog.vue';
 import BaseDropdownButton from '../common/BaseDropdownButton.vue';
-// eslint-disable-next-line
 import BaseMultiselectDropdown from '../common/BaseMultiselectDropdown.vue';
 import BaseButton from '../common/BaseButton.vue';
 import BaseUserControl from './BaseUserControl.vue';

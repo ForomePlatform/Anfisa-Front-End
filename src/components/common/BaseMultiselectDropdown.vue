@@ -57,7 +57,6 @@ export default{
             } else {
                 newSelectedValues = newSelectedValues.filter(el => el !== item);
             }
-            console.log('new: ' + newSelectedValues);
             this.onChange(newSelectedValues);
         },
         isChecked(item) {
