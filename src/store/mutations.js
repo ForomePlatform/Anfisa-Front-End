@@ -110,12 +110,10 @@ export function setCurrentConditions(state, condition) {
     } else {
         const conditionFixed = JSON.parse(JSON.stringify(condition));
         if (condition[0] === STAT_TYPE_ENUM) {
-            // eslint-disable-next-line
-            conditionFixed[2] = state.currentConditions[index][2];
+            [,, conditionFixed[2]] = state.currentConditions[index];
         }
         if (condition[0] === STAT_TYPE_ZYGOSITY) {
-            // eslint-disable-next-line
-            conditionFixed[3] = state.currentConditions[index][3];
+            [,,, conditionFixed[3]] = state.currentConditions[index];
         }
         Vue.set(state.currentConditions, index, conditionFixed);
     }
