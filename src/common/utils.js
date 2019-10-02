@@ -124,8 +124,8 @@ export function prepareParams({
     }
     if (zones) {
         Object.keys(zones).forEach((currentZone) => {
-            if (zones[currentZone].selectedValue !== null) {
-                params.append('zone', JSON.stringify([currentZone, [zones[currentZone].selectedValue]]));
+            if (zones[currentZone].selectedValues.length !== -1) {
+                params.append('zone', JSON.stringify([currentZone, zones[currentZone].selectedValues]));
             }
         });
     }
