@@ -197,6 +197,7 @@ export function addNewTag(context, newTagTitle) {
             context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
             context.commit('clearTagFilterValue');
+            getZoneList(context);
         })
         .catch((error) => {
             context.commit('setAllTags', []);
