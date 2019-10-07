@@ -54,8 +54,9 @@
               :key="zone"
               class="d-flex justify-content-between mt-3"
             >
-                <BaseDropdownButton
-                  :text="getZoneText(zones[zone])"
+                <BaseMultiselectDropdown
+                  :defaultText="getZoneText(zones[zone])"
+                  :selectedValues="zones[zone].selectedValues"
                   :data="zones[zone].values"
                   :onChange="value =>changeZoneValue(zone, value)"
                 />
@@ -109,6 +110,7 @@ import { mapState } from 'vuex';
 import { DEMO_NOTIFICATION, ANNOTATION_SERVICE } from '@/common/constants';
 import AnnotationSearchDialog from '../annotationService/AnnotationSearchDialog.vue';
 import BaseDropdownButton from '../common/BaseDropdownButton.vue';
+import BaseMultiselectDropdown from '../common/BaseMultiselectDropdown.vue';
 import BaseButton from '../common/BaseButton.vue';
 import BaseUserControl from './BaseUserControl.vue';
 import BaseHeader from './BaseHeader.vue';
@@ -201,7 +203,7 @@ export default {
             this.$store.dispatch('getConditionsByFilter', preset);
         },
         getZoneText(item) {
-            return item.selectedValue === null ? item.defaultValue : String(item.selectedValue);
+            return `Select ${item.defaultValue}`;
         },
         openFilterModal() {
             this.$store.commit('resetZones');
@@ -216,6 +218,7 @@ export default {
     },
     components: {
         BaseDropdownButton,
+        BaseMultiselectDropdown,
         BaseButton,
         BaseUserControl,
         BaseHeader,
