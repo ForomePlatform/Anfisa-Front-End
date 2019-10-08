@@ -1,25 +1,28 @@
 <template>
-    <div class="float-editor">
+    <div class="float-editor" @mouseup="onDragEnd">
         <div class="float-editor_inputs">
             <b-form-input
               type="number"
-              v-model.number="Math.round(selectedMin * 10000) / 10000"
+              :value="selectedMin"
               :step="0.0001"
-              :min="min"
+              :min="closestLeftMark(preselectedMin)"
               :max="selectedMax"
+              @change="onChangeMin"
               class="mr-2"
             />
             &mdash;
             <b-form-input
               type="number"
-              v-model.number="Math.round(selectedMax * 10000) / 10000"
+              :value="selectedMax"
               :step="0.0001"
               :min="selectedMin"
-              :max="max"
+              :max="closestRightMark(preselectedMax)"
+              @change="onChangeMax"
               class="ml-2"
             />
         </div>
         <vue-slider
+          ref="slider"
           :value="sliderValues"
           :enable-cross="false"
           :marks="true"
@@ -54,8 +57,6 @@ export default {
         return {
             min: MIN,
             max: MAX,
-            currentMin: this.preselectedMin,
-            currentMax: this.preselectedMax,
             selectedMin: this.closestLeftMark(this.preselectedMin),
             selectedMax: this.closestRightMark(this.preselectedMax),
             key: 0,
@@ -66,27 +67,41 @@ export default {
             this.onSubmit(this.selectedMin, this.selectedMax);
         },
         changeValues([min, max]) {
-            this.currentMin = min;
-            this.currentMax = max;
             this.selectedMin = (min < this.preselectedMin ? this.closestLeftMark(this.preselectedMin) : this.closestLeftMark(min));
             this.selectedMax = (max > this.preselectedMax ? this.closestRightMark(this.preselectedMax) : this.closestRightMark(max));
         },
         closestLeftMark(value) {
-            const arr = LOG_EDITOR_MARKS;
-            for (let i=0; i<arr.length; i++) {
-                if (value < arr[i]) return arr[i<1 ? 0 : i-1];
+            const marks = LOG_EDITOR_MARKS;
+            for (let i=0; i<marks.length; i++) {
+                if (value < marks[i]) return marks[i<1 ? 0 : i-1];
             }
-            return arr[arr.length-1];
+            return marks[marks.length-1];
         },
         closestRightMark(value) {
-            const arr = LOG_EDITOR_MARKS;
-            for (let i=0; i<arr.length; i++) {
-                if (value <= arr[i]) return arr[i];
+            const marks = LOG_EDITOR_MARKS;
+            for (let i=0; i<marks.length; i++) {
+                if (value <= marks[i]) return marks[i];
             }
-            return arr[0];
+            return marks[0];
         },
         onDragEnd() {
             this.key += 1;
+        },
+        onChangeMin(value) {
+            if (value < this.closestRightMark(this.preselectedMin)) {
+                this.selectedMin = this.closetsLeftMark(this.preselectedMin);
+            }
+            else {
+                this.selectedMin = (value > this.selectedMin ? this.closestRightMark(value) : this.closestLeftMark(value));
+            }
+        },
+        onChangeMax(value) {
+            if (value > this.closestRightMark(this.preselectedMax)) {
+                this.selectedMax = this.closetsRightMark(this.preselectedMax);
+            }
+            else {
+                this.selectedMax = (value > this.selectedMax ? this.closestRightMark(value) : this.closestLeftMark(value));
+            }
         },
     },
     computed: {
