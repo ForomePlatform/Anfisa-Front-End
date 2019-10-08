@@ -67,22 +67,28 @@ export default {
             this.onSubmit(this.selectedMin, this.selectedMax);
         },
         changeValues([min, max]) {
-            this.selectedMin = (min < this.preselectedMin ? this.closestLeftMark(this.preselectedMin) : this.closestLeftMark(min));
-            this.selectedMax = (max > this.preselectedMax ? this.closestRightMark(this.preselectedMax) : this.closestRightMark(max));
+            if (min < this.preselectedMin) {
+                this.selectedMin = this.closestLeftMark(this.preselectedMin);
+            } else {
+                this.selectedMin = this.closestLeftMark(min);
+            }
+
+            if (max > this.preselectedMax) {
+                this.selectedMax = this.closestRightMark(this.preselectedMax);
+            } else {
+                this.selectedMax = this.closestRightMark(max);
+            }
         },
         closestLeftMark(value) {
             const marks = LOG_EDITOR_MARKS;
-            for (let i=0; i<marks.length; i++) {
-                if (value < marks[i]) return marks[i<1 ? 0 : i-1];
-            }
-            return marks[marks.length-1];
+            const index = marks.findIndex(mark => value < mark);
+            const lastMark = marks[marks.length - 1];
+            return (value >= lastMark ? lastMark : marks[index < 1 ? 0 : index - 1]);
         },
         closestRightMark(value) {
             const marks = LOG_EDITOR_MARKS;
-            for (let i=0; i<marks.length; i++) {
-                if (value <= marks[i]) return marks[i];
-            }
-            return marks[0];
+            const mark = marks.find(mark => value <= mark);
+            return mark || marks[0];
         },
         onDragEnd() {
             this.key += 1;
@@ -90,17 +96,19 @@ export default {
         onChangeMin(value) {
             if (value < this.closestRightMark(this.preselectedMin)) {
                 this.selectedMin = this.closetsLeftMark(this.preselectedMin);
-            }
-            else {
-                this.selectedMin = (value > this.selectedMin ? this.closestRightMark(value) : this.closestLeftMark(value));
+            } else if (value > this.selectedMin) {
+                this.selectedMin = this.closestRightMark(value);
+            } else {
+                this.selectedMin = this.closestLeftMark(value);
             }
         },
         onChangeMax(value) {
             if (value > this.closestRightMark(this.preselectedMax)) {
                 this.selectedMax = this.closetsRightMark(this.preselectedMax);
-            }
-            else {
-                this.selectedMax = (value > this.selectedMax ? this.closestRightMark(value) : this.closestLeftMark(value));
+            } else if (value > this.selectedMax) {
+                this.selectedMax = this.closestRightMark(value);
+            } else {
+                this.selectedMax = this.closestLeftMark(value);
             }
         },
     },
