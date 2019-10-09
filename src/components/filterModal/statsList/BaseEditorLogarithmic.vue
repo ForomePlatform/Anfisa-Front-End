@@ -33,7 +33,6 @@
           :interval="0.0001"
           @change="changeValues"
           tooltip="none"
-          @mouseup="onDragEnd"
           @drag-end="onDragEnd"
           :class="[defaultSlider ? 'float-editor_slider__default' : '', 'float-editor_slider']"
         />
