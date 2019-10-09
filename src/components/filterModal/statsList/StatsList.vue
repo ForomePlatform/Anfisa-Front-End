@@ -55,7 +55,7 @@
 
 <script>
 import { checkNonzeroStat } from '@/common/utils';
-import { STAT_GROUP } from '@/common/constants';
+import { STAT_GROUP, STAT_TYPE_ZYGOSITY } from '@/common/constants';
 import BaseCollapseHeader from './BaseCollapseHeader.vue';
 import BaseExpandButton from './BaseExpandButton.vue';
 import StatsListEditor from './StatsListEditor.vue';
@@ -181,7 +181,7 @@ export default {
                 && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
         },
         showStat(stat) {
-            return !this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery);
+            return !this.hasProblemGroup(stat) && (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery));
         },
         primaryDisabled(stat) {
             return !this.filledStat(stat) && (
@@ -191,13 +191,16 @@ export default {
         },
         inheritanceHandler(stat) {
             if (stat.title === 'Inheritance') {
-                return !stat.data.filter(item => this.filteredData(item).variants).length
+                return !stat.data.filter(item => !this.hasProblemGroup(item) && this.filteredData(item).variants).length
                     || !stat.data.length;
             }
             return !stat.data.length;
         },
+        hasProblemGroup(stat) {
+            return (stat.type === STAT_TYPE_ZYGOSITY) && (stat.data.variants === null);
+        },
         secondaryDisabled(stat) {
-            return !this.filledStat(stat) && !this.showStat(stat) && this.inheritanceHandler(stat);
+            return this.hasProblemGroup(stat) || !this.filledStat(stat) && !this.showStat(stat) && this.inheritanceHandler(stat);
         },
         expandPreselectedStats() {
             const isStringTrue = value => value === 'true';
