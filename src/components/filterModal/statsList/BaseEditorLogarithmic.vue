@@ -127,7 +127,7 @@ export default {
         scale() {
             let scale = {};
             this.marks.forEach((item, index) => 
-                Object.defineProperty(scale, String(index), String(item)));
+                scale[String(index)] = String(item));
             return scale;
         },
     },
