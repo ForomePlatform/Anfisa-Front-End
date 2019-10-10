@@ -98,17 +98,13 @@ export default {
             if (this.conditionByIndex(0) && (this.conditionByIndex(0) > this.data[0])) {
                 return this.conditionByIndex(0);
             }
-            else {
-                return this.data[0];
-            }
+            return this.data[0];
         },
         preselectedLogMax() {
             if (this.conditionByIndex(1) && (this.conditionByIndex(1) > this.data[1])) {
                 return this.conditionByIndex(1);
             }
-            else {
-                return this.data[1];
-            }
+            return this.data[1];
         },
         preselectedCoordMin() {
             return this.conditionByIndex(0) || this.data[0];

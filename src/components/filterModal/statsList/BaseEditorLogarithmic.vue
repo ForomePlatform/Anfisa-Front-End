@@ -5,7 +5,7 @@
               type="number"
               v-model.number="selectedMin"
               :step="0.0001"
-              :min="round(preselectedMin)"
+              :min="0"
               :max="selectedMax"
               class="mr-2"
             />
@@ -15,7 +15,7 @@
               v-model.number="selectedMax"
               :step="0.0001"
               :min="selectedMin"
-              :max="round(preselectedMax)"
+              :max="1"
               class="ml-2"
             />
         </div>
@@ -97,8 +97,8 @@ export default {
             if (x <= this.marks[0]) {
                 return 0;
             }
-            if (x >= this.marks[this.marks.length-1]) {
-                return this.marks.length-1;
+            if (x >= this.marks[this.marks.length - 1]) {
+                return this.marks.length - 1;
             }
             const left = this.closestLeftMark(x);
             const right = this.closestRightMark(x);
@@ -125,7 +125,7 @@ export default {
             return this.min === this.sliderValues[0] && this.max === this.sliderValues[1];
         },
         scale() {
-            let scale = {};
+            const scale = {};
             this.marks.forEach((item, index) => {
                 scale[String(index)] = String(item);
             });
