@@ -277,9 +277,9 @@ function getZoneData(context, aZone) {
             const { data } = response;
             const oZone = {
                 [zone]: {
-                    selectedValue: null,
+                    selectedValues: [],
                     defaultValue: value,
-                    values: [null, ...data.variants],
+                    values: data.variants,
                 },
             };
             context.commit('setZone', oZone);
@@ -333,7 +333,7 @@ function getFilterDetail(context, filter) {
         }
         commonHttp.post('/stat', params).then((response) => {
             const { data } = response;
-            const info = data['filter-list'].find((item) => item[0] === filter);
+            const info = data['filter-list'].find(item => item[0] === filter);
             resolve({
                 name: filter,
                 isCommon: info[1],
