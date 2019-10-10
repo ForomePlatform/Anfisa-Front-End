@@ -1,11 +1,11 @@
 <template>
-    <div class="float-editor">
+    <div class="float-editor" @mouseup="onDragEnd">
         <div class="float-editor_inputs">
             <b-form-input
               type="number"
               v-model.number="selectedMin"
               :step="0.0001"
-              :min="min"
+              :min="round(preselectedMin)"
               :max="selectedMax"
               class="mr-2"
             />
@@ -15,20 +15,22 @@
               v-model.number="selectedMax"
               :step="0.0001"
               :min="selectedMin"
-              :max="max"
+              :max="round(preselectedMax)"
               class="ml-2"
             />
         </div>
         <vue-slider
+          ref="slider"
           :value="sliderValues"
           :enable-cross="false"
-          :marks="true"
-          :data="marks"
-          :min="min"
-          :max="max"
+          :marks="scale"
+          :min="0"
+          :max="marks.length-1"
+          :key="key"
           :interval="0.0001"
           @change="changeValues"
           tooltip="none"
+          @drag-end="onDragEnd"
           :class="[defaultSlider ? 'float-editor_slider__default' : '', 'float-editor_slider']"
         />
         <div class="float-editor_button" @click="addData">
@@ -51,8 +53,9 @@ export default {
         return {
             min: MIN,
             max: MAX,
-            selectedMin: this.preselectedMin || MIN,
-            selectedMax: this.preselectedMax || MAX,
+            selectedMin: this.round(this.preselectedMin),
+            selectedMax: this.round(this.preselectedMax),
+            key: 0,
         };
     },
     methods: {
@@ -60,8 +63,54 @@ export default {
             this.onSubmit(this.selectedMin, this.selectedMax);
         },
         changeValues([min, max]) {
-            this.selectedMin = min;
-            this.selectedMax = max;
+            this.selectedMin = this.interpolation(min);
+            this.selectedMax = this.interpolation(max);
+        },
+        closestLeftMark(value) {
+            const marks = LOG_EDITOR_MARKS;
+            const index = marks.findIndex(item => value < item);
+            const lastMark = marks[marks.length - 1];
+            return (value >= lastMark ? lastMark : marks[index < 1 ? 0 : index - 1]);
+        },
+        closestRightMark(value) {
+            const marks = LOG_EDITOR_MARKS;
+            const mark = marks.find(item => value <= item);
+            return mark || marks[0];
+        },
+        onDragEnd() {
+            this.key += 1;
+        },
+        interpolation(x) {
+            if (x <= 0) {
+                return this.round(this.preselectedMin);
+            }
+            if (x >= this.marks.length - 1) {
+                return this.round(this.preselectedMax);
+            }
+            const dot = Math.floor(x);
+            let result = (this.marks[dot] * ((dot + 1) - x)) + (this.marks[dot + 1] * (x - dot));
+            result = result < this.preselectedMin ? this.preselectedMin : result;
+            result = result > this.preselectedMax ? this.preselectedMax : result;
+            return this.round(result);
+        },
+        reverseInterpolation(x) {
+            if (x <= this.marks[0]) {
+                return 0;
+            }
+            if (x >= this.marks[this.marks.length-1]) {
+                return this.marks.length-1;
+            }
+            const left = this.closestLeftMark(x);
+            const right = this.closestRightMark(x);
+            const index = this.marks.findIndex(item => left <= item);
+            if (right === left) {
+                return index;
+            }
+            const result = ((index * (right - x)) + ((index + 1) * (x - left))) / (right - left);
+            return this.round(result);
+        },
+        round(value) {
+            return Math.round(value * 10000) / 10000;
         },
     },
     computed: {
@@ -69,14 +118,18 @@ export default {
             return LOG_EDITOR_MARKS;
         },
         sliderValues() {
-            if (LOG_EDITOR_MARKS.includes(this.selectedMin)
-              && LOG_EDITOR_MARKS.includes(this.selectedMax)) {
-                return [this.selectedMin, this.selectedMax];
-            }
-            return [this.min, this.max];
+            const values = [this.selectedMin, this.selectedMax];
+            return values.map(item => this.reverseInterpolation(item));
         },
         defaultSlider() {
             return this.min === this.sliderValues[0] && this.max === this.sliderValues[1];
+        },
+        scale() {
+            let scale = {};
+            this.marks.forEach((item, index) => {
+                scale[String(index)] = String(item);
+            });
+            return scale;
         },
     },
     components: {
@@ -87,12 +140,12 @@ export default {
     watch: {
         preselectedMin(newVal, oldVal) {
             if (newVal !== oldVal) {
-                this.selectedMin = newVal;
+                this.selectedMin = this.round(newVal);
             }
         },
         preselectedMax(newVal, oldVal) {
             if (newVal !== oldVal) {
-                this.selectedMax = newVal;
+                this.selectedMax = this.round(newVal);
             }
         },
     },

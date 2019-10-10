@@ -1,7 +1,7 @@
 <template>
     <div>
         <BaseEditorLinear
-                v-if="render === statTypes.linear || name === 'Dist_from_Exon'"
+                v-if="isLinear"
                 :simple="name === 'Dist_from_Exon'"
                 :int="type === statTypes.int"
                 :min="data[0]"
@@ -13,7 +13,7 @@
                 :buttonText="buttonText"
         />
         <BaseEditorLogarithmic
-                v-else-if="render === statTypes.logarithmic"
+                v-else-if="render === statTypes.logarithmic && type !== statTypes.int"
                 :preselectedMin="preselectedLogMin"
                 :preselectedMax="preselectedLogMax"
                 :onSubmit="submitHandler"
@@ -95,10 +95,20 @@ export default {
             return condition ? Math.min(Math.max(condition, min), max) : max;
         },
         preselectedLogMin() {
-            return this.conditionByIndex(0) || 0;
+            if (this.conditionByIndex(0) && (this.conditionByIndex(0) > this.data[0])) {
+                return this.conditionByIndex(0);
+            }
+            else {
+                return this.data[0];
+            }
         },
         preselectedLogMax() {
-            return this.conditionByIndex(1) || 1;
+            if (this.conditionByIndex(1) && (this.conditionByIndex(1) > this.data[1])) {
+                return this.conditionByIndex(1);
+            }
+            else {
+                return this.data[1];
+            }
         },
         preselectedCoordMin() {
             return this.conditionByIndex(0) || this.data[0];
@@ -129,6 +139,13 @@ export default {
         },
         buttonText() {
             return this.oCurrentCondition ? 'UPDATE' : 'ADD';
+        },
+        isLinear() {
+            const isInitiallyLinear = this.render === this.statTypes.linear ||
+                  this.name === 'Dist_from_Exon';
+            const isLog = this.type === this.statTypes.int &&
+                  this.render === this.statTypes.logarithmic;
+            return isInitiallyLinear || isLog;
         },
     },
     methods: {
