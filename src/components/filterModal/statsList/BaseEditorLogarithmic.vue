@@ -68,13 +68,13 @@ export default {
         },
         closestLeftMark(value) {
             const marks = LOG_EDITOR_MARKS;
-            const index = marks.findIndex(mark => value < mark);
+            const index = marks.findIndex(item => value < item);
             const lastMark = marks[marks.length - 1];
             return (value >= lastMark ? lastMark : marks[index < 1 ? 0 : index - 1]);
         },
         closestRightMark(value) {
             const marks = LOG_EDITOR_MARKS;
-            const mark = marks.find(mark => value <= mark);
+            const mark = marks.find(item => value <= item);
             return mark || marks[0];
         },
         onDragEnd() {
@@ -126,8 +126,8 @@ export default {
         },
         scale() {
             let scale = {};
-            this.marks.forEach((item, index) => scale[String(index)] = String(item));
-            console.log(`scale: ${JSON.stringify(scale, '', 4)}`);
+            this.marks.forEach((item, index) => 
+                Object.defineProperty(scale, String(index), String(item)));
             return scale;
         },
     },
