@@ -197,6 +197,7 @@ export function addNewTag(context, newTagTitle) {
             context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
             context.commit('clearTagFilterValue');
+            getZoneList(context);
         })
         .catch((error) => {
             context.commit('setAllTags', []);
@@ -280,9 +281,9 @@ function getZoneData(context, aZone) {
             const { data } = response;
             const oZone = {
                 [zone]: {
-                    selectedValue: null,
+                    selectedValues: [],
                     defaultValue: value,
-                    values: [null, ...data.variants],
+                    values: data.variants,
                 },
             };
             context.commit('setZone', oZone);
