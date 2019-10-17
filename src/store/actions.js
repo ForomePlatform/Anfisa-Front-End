@@ -23,6 +23,7 @@ export function getList(context) {
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.commit('setTranscripts', data.transcripts);
             context.commit('setPreset', null);
             context.commit('clearSelectedVariant');
             context.commit('changePresetSaved', true);
@@ -49,6 +50,7 @@ export function getListByFilter(context) {
         context.commit('setRecords', data.records);
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
+        context.commit('setTranscripts', data.transcripts);
         context.commit('clearSelectedVariant');
         context.commit('changePresetSaved', true);
     }).catch((error) => {
@@ -72,6 +74,7 @@ export function getListByConditions(context, zoneChanged) {
             context.commit('setRecords', data.records);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
+            context.commit('setTranscripts', data.transcripts);
             context.commit('clearSelectedVariant');
             if (!zoneChanged) {
                 const { selectedPreset, currentConditions } = context.state;
@@ -106,7 +109,7 @@ export function setVariantsDetails(context, data) {
 
 export function getVariantDetails(context, variant) {
     const params = new URLSearchParams();
-    params.append('ws', context.state.workspace);
+    params.append('ds', context.state.workspace);
     params.append('rec', variant);
     context.commit('setSelectedVariant', variant);
     commonHttp.post('/reccnt', params)
@@ -194,6 +197,7 @@ export function addNewTag(context, newTagTitle) {
             context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
             context.commit('clearTagFilterValue');
+            getZoneList(context);
         })
         .catch((error) => {
             context.commit('setAllTags', []);
@@ -396,6 +400,7 @@ export function removeFilter(context, filterName) {
         context.commit('setCompiled', response.data.compiled);
         context.commit('setStats', utils.prepareStatList(statList));
         context.commit('removeAllCurrentConditions');
+        context.commit('setTranscripts', response.data.transcripts);
         context.dispatch('getFilterDetails');
         context.dispatch('getListByFilter');
         context.commit('setPreset', null);
@@ -477,12 +482,12 @@ export function getStatList(context, { conditions = null, filter = null }) {
 export function getZygosityByFamily(context, { name, family }) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
-    params.append('unit', name);
+    params.append('units', JSON.stringify([name]));
     params.append('ctx', JSON.stringify({ problem_group: family }));
     if (context.state.currentConditions.length) {
         params.append('conditions', JSON.stringify(context.state.currentConditions));
     }
-    commonHttp.post('/statunit', params).then((response) => {
+    commonHttp.post('/statunits', params).then((response) => {
         context.commit('setZygosityVariants', response.data);
     }).catch((error) => {
         console.log(error);

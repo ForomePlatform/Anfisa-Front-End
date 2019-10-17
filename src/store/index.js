@@ -49,6 +49,7 @@ export default new Vuex.Store({
         },
         panels: {},
         compiled: null,
+        transcripts: null,
     },
     actions,
     mutations,
