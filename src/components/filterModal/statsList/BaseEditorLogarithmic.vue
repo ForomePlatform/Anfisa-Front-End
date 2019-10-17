@@ -3,7 +3,7 @@
         <div class="float-editor_inputs">
             <b-form-input
               type="number"
-              v-model.number="Math.round(selectedMin * 10000) / 10000"
+              v-model.number="selectedMin"
               :step="0.0001"
               :min="min"
               :max="selectedMax"
@@ -12,7 +12,7 @@
             &mdash;
             <b-form-input
               type="number"
-              v-model.number="Math.round(selectedMax * 10000) / 10000"
+              v-model.number="selectedMax"
               :step="0.0001"
               :min="selectedMin"
               :max="max"
