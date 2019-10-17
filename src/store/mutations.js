@@ -233,3 +233,7 @@ export function setFilterSearchQuery(state, value) {
 export function setCompiled(state, value = null) {
     state.compiled = value;
 }
+
+export function setTranscripts(state, transcripts) {
+    state.transcripts = transcripts;
+}
