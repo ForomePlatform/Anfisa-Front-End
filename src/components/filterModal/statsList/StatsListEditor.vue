@@ -141,6 +141,7 @@ export default {
                   this.name === 'Dist_from_Exon';
             const isLog = this.type === this.statTypes.int &&
                   this.render === this.statTypes.logarithmic;
+            return isInitiallyLinear || isLog;
         },
     },
     methods: {
