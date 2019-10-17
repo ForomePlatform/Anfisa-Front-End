@@ -74,12 +74,12 @@ export function setZone(state, oZone) {
 }
 
 export function changeZoneValue(state, aZone) {
-    const [zone, value] = aZone;
-    state.zones[zone].selectedValue = value;
+    const [zone, values] = aZone;
+    state.zones[zone].selectedValues = values;
 }
 
 export function resetZones(state) {
-    Object.keys(state.zones).forEach((zone) => { state.zones[zone].selectedValue = null; });
+    Object.keys(state.zones).forEach((zone) => { state.zones[zone].selectedValues = []; });
 }
 
 export function setPresets(state, filters) {
@@ -185,14 +185,13 @@ export function clearTagFilterValue(state) {
 
 export function setZygosityVariants(state, payload) {
     let list = state.stats;
-    const data = payload.units[0];
-    if (data[1].vgroup) {
-        const targetGroup = list.find(item => item.title === data[1].vgroup
+    if (payload[1].vgroup) {
+        const targetGroup = list.find(item => item.title === payload[1].vgroup
             && item.type === STAT_GROUP);
         list = targetGroup.data;
     }
-    const targetItemIndex = list.findIndex(item => item.name === data[1].name);
-    Vue.set(list, targetItemIndex, utils.prepareStatDataByType(data));
+    const targetItemIndex = list.findIndex(item => item.name === payload[1].name);
+    Vue.set(list, targetItemIndex, utils.prepareStatDataByType(payload));
 }
 
 export function resetListDependencies(state) {

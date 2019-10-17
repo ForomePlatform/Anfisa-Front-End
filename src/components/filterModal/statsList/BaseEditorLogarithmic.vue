@@ -1,11 +1,11 @@
 <template>
-    <div class="float-editor">
+    <div class="float-editor" @mouseup="onDragEnd">
         <div class="float-editor_inputs">
             <b-form-input
               type="number"
               v-model.number="Math.round(selectedMin * 10000) / 10000"
               :step="0.0001"
-              :min="min"
+              :min="0"
               :max="selectedMax"
               class="mr-2"
             />
@@ -15,17 +15,17 @@
               v-model.number="Math.round(selectedMax * 10000) / 10000"
               :step="0.0001"
               :min="selectedMin"
-              :max="max"
+              :max="1"
               class="ml-2"
             />
         </div>
         <vue-slider
+          ref="slider"
           :value="sliderValues"
           :enable-cross="false"
-          :marks="true"
-          :data="marks"
-          :min="closestLeftMark(preselectedMin)"
-          :max="closestRightMark(preselectedMax)"
+          :marks="scale"
+          :min="0"
+          :max="marks.length-1"
           :key="key"
           :interval="0.0001"
           @change="changeValues"
@@ -53,10 +53,8 @@ export default {
         return {
             min: MIN,
             max: MAX,
-            currentMin: this.preselectedMin,
-            currentMax: this.preselectedMax,
-            selectedMin: this.closestLeftMark(this.preselectedMin),
-            selectedMax: this.closestRightMark(this.preselectedMax),
+            selectedMin: this.round(this.preselectedMin),
+            selectedMax: this.round(this.preselectedMax),
             key: 0,
         };
     },
@@ -65,27 +63,54 @@ export default {
             this.onSubmit(this.selectedMin, this.selectedMax);
         },
         changeValues([min, max]) {
-            this.currentMin = min;
-            this.currentMax = max;
-            this.selectedMin = (min < this.preselectedMin ? this.closestLeftMark(this.preselectedMin) : this.closestLeftMark(min));
-            this.selectedMax = (max > this.preselectedMax ? this.closestRightMark(this.preselectedMax) : this.closestRightMark(max));
+            this.selectedMin = this.interpolation(min);
+            this.selectedMax = this.interpolation(max);
         },
         closestLeftMark(value) {
-            const arr = LOG_EDITOR_MARKS;
-            for (let i=0; i<arr.length; i++) {
-                if (value < arr[i]) return arr[i<1 ? 0 : i-1];
-            }
-            return arr[0];
+            const marks = LOG_EDITOR_MARKS;
+            const index = marks.findIndex(item => value < item);
+            const lastMark = marks[marks.length - 1];
+            return (value >= lastMark ? lastMark : marks[index < 1 ? 0 : index - 1]);
         },
         closestRightMark(value) {
-            const arr = LOG_EDITOR_MARKS;
-            for (let i=0; i<arr.length; i++) {
-                if (value <= arr[i]) return arr[i];
-            }
-            return arr[0];
+            const marks = LOG_EDITOR_MARKS;
+            const mark = marks.find(item => value <= item);
+            return mark || marks[0];
         },
         onDragEnd() {
             this.key += 1;
+        },
+        interpolation(x) {
+            if (x <= 0) {
+                return this.round(this.preselectedMin);
+            }
+            if (x >= this.marks.length - 1) {
+                return this.round(this.preselectedMax);
+            }
+            const dot = Math.floor(x);
+            let result = (this.marks[dot] * ((dot + 1) - x)) + (this.marks[dot + 1] * (x - dot));
+            result = result < this.preselectedMin ? this.preselectedMin : result;
+            result = result > this.preselectedMax ? this.preselectedMax : result;
+            return this.round(result);
+        },
+        reverseInterpolation(x) {
+            if (x <= this.marks[0]) {
+                return 0;
+            }
+            if (x >= this.marks[this.marks.length - 1]) {
+                return this.marks.length - 1;
+            }
+            const left = this.closestLeftMark(x);
+            const right = this.closestRightMark(x);
+            const index = this.marks.findIndex(item => left <= item);
+            if (right === left) {
+                return index;
+            }
+            const result = ((index * (right - x)) + ((index + 1) * (x - left))) / (right - left);
+            return this.round(result);
+        },
+        round(value) {
+            return Math.round(value * 10000) / 10000;
         },
     },
     computed: {
@@ -93,17 +118,18 @@ export default {
             return LOG_EDITOR_MARKS;
         },
         sliderValues() {
-            /*if (LOG_EDITOR_MARKS.includes(this.selectedMin)
-              && LOG_EDITOR_MARKS.includes(this.selectedMax)) {
-                return [this.selectedMin, this.selectedMax];
-            }
-            return [this.min, this.max];*/
-            
-            
-            return [this.selectedMin, this.selectedMax];
+            const values = [this.selectedMin, this.selectedMax];
+            return values.map(item => this.reverseInterpolation(item));
         },
         defaultSlider() {
             return this.min === this.sliderValues[0] && this.max === this.sliderValues[1];
+        },
+        scale() {
+            const scale = {};
+            this.marks.forEach((item, index) => {
+                scale[String(index)] = String(item);
+            });
+            return scale;
         },
     },
     components: {
@@ -114,12 +140,12 @@ export default {
     watch: {
         preselectedMin(newVal, oldVal) {
             if (newVal !== oldVal) {
-                this.selectedMin = this.closestLeftMark(newVal);
+                this.selectedMin = this.round(newVal);
             }
         },
         preselectedMax(newVal, oldVal) {
             if (newVal !== oldVal) {
-                this.selectedMax = this.closestRightMark(newVal);
+                this.selectedMax = this.round(newVal);
             }
         },
     },
