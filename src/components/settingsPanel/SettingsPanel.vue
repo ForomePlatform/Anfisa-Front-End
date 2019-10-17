@@ -79,8 +79,7 @@
                    title="VERSION INFORMATION"
                    :onSubmit="function(){}"
                    :okOnly="true">
-            <!--p class="mt-3 ml-3">Front-End version: {{ frontendVersion }}</p-->
-            <p class="mt-3 ml-3">Front-End version: 0.5.1</p>
+            <p class="mt-3 ml-3">Front-End version: {{ frontendVersion }}</p>
             <p class="mt-3 ml-3">Back-End version: {{ version.slice(7) }}</p>
         </BaseModal>
         <BaseModal ref="workspaceModal" title="SELECT WORKSPACE" :onSubmit="selectWorkspace">
