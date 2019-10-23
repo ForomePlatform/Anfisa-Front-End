@@ -1,8 +1,9 @@
 <template>
   <div class="home">
     <SettingsPanel />
-    <VariantsPanel />
-    <VariantDetailsPanel />
+    <Desktop />
+    <!--<VariantsPanel />-->
+    <!--<VariantDetailsPanel />-->
     <BaseModal
       v-if="displayDisclaymer"
       ref="disclaymerModal"
@@ -24,6 +25,7 @@
 import SettingsPanel from '@/components/settingsPanel/SettingsPanel.vue';
 import VariantsPanel from '@/components/variantsListPanel/VariantsPanel.vue';
 import VariantDetailsPanel from '@/components/variantDetailsPanel/VariantDetailsPanel.vue';
+import Desktop from '@/views/Desktop.vue';
 import BaseModal from '@/components/common/BaseModal.vue';
 import { DISCLAIMER } from '@/common/constants';
 import { expired } from '@/common/utils';
@@ -33,6 +35,7 @@ export default {
     name: 'home',
     components: {
         SettingsPanel,
+        Desktop,
         VariantsPanel,
         VariantDetailsPanel,
         BaseModal,

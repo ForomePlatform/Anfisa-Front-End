@@ -36,6 +36,9 @@
             <LayoutControl />
         </div>
         <div class="settings-panel_block">
+            <view-control />
+        </div>
+        <div class="settings-panel_block">
             <BaseHeader title="FILTERS" :onClick="openFilterModal" type="filter"
                 :active="!selectedPresetSaved"
             />
@@ -116,16 +119,28 @@ import BaseUserControl from './BaseUserControl.vue';
 import BaseHeader from './BaseHeader.vue';
 import FilterModal from '../filterModal/FilterModal.vue';
 import LayoutControl from './LayoutControl.vue';
+import ViewControl from './ViewControl.vue';
 import BaseModal from '../common/BaseModal.vue';
 import router from '../../router';
 import { version, backendVersion } from '../../../package.json';
-
 
 const collapseIcon = require('@/assets/collapseIcon.svg');
 const expandIcon = require('@/assets/expandIcon.svg');
 
 export default {
     name: 'SettingsPanel',
+    components: {
+        BaseMultiselectDropdown,
+        BaseDropdownButton,
+        BaseButton,
+        BaseUserControl,
+        BaseHeader,
+        FilterModal,
+        LayoutControl,
+        ViewControl,
+        BaseModal,
+        AnnotationSearchDialog,
+    },
     data() {
         return {
             panelCollapsed: false,
@@ -176,7 +191,7 @@ export default {
             window.open(this.exportFileUrl);
         },
         selectWorkspace() {
-            router.push({ parh: '/', query: { ws: this.selectedWorkspace } });
+            router.push({ path: '/', query: { ws: this.selectedWorkspace } });
         },
         showVersionModal() {
             this.$refs.versionModal.openModal();
@@ -215,17 +230,6 @@ export default {
                 this.$refs.workspaceModal.closeModal();
             }
         },
-    },
-    components: {
-        BaseDropdownButton,
-        BaseMultiselectDropdown,
-        BaseButton,
-        BaseUserControl,
-        BaseHeader,
-        FilterModal,
-        LayoutControl,
-        BaseModal,
-        AnnotationSearchDialog,
     },
 };
 </script>

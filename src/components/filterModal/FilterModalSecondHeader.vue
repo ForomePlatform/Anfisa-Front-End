@@ -38,8 +38,11 @@
                 </div>
             </div>
         </div>
-        <div v-if="loadView" :class="['second-header_load__active', 'second-header_load', 'cancel']" @click="onCancel">
-            <img alt="cancel" src="@/assets/crossIcon.svg"/> 
+        <div
+                v-if="loadView"
+                :class="['second-header_load__active', 'second-header_load', 'cancel']"
+                @click="onCancel">
+            <img alt="cancel" src="@/assets/crossIcon.svg"/>
             CANCEL
         </div>
     </div>

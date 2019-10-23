@@ -121,6 +121,38 @@ export function getVariantDetails(context, variant) {
             console.log(error);
         });
 }
+export function setDetails(context, data, id) {
+    const details = utils.prepareVariantDetails(data);
+    const result = {
+        id,
+        details,
+    };
+    context.commit('addDetailsToListView', result);
+}
+export function getListViewDetails(context, id) {
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('rec', id);
+    commonHttp.post('/reccnt', params)
+        .then((response) => {
+            setDetails(context, response.data, id);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+export function getMeta(context) {
+    const params = new URLSearchParams();
+    params.append('ds', context.state.workspace);
+    commonHttp.post('/dsmeta', params)
+        .then((response) => {
+            context.commit('setMeta', response.data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
 
 export function getVariantTags(context, variant) {
     const params = new URLSearchParams();
@@ -132,11 +164,21 @@ export function getVariantTags(context, variant) {
             const NOTE_TAG = '_note';
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
+            const notes = {
+                id: variant,
+                note: data['rec-tags'][NOTE_TAG] || ''
+            };
+            const tags = {
+                id: variant,
+                tags: selectedTags
+            };
             const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
             context.commit('clearTagFilterValue');
             context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
             context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
+            context.commit('addNotes', notes);
+            context.commit('addTags', tags);
         })
         .catch((error) => {
             context.commit('setAllTags', []);
@@ -145,6 +187,7 @@ export function getVariantTags(context, variant) {
             console.log(error);
         });
 }
+
 
 function saveNoteStatus(context, response, timeout) {
     context.commit('setSaveNoteStatus', response);
@@ -172,6 +215,35 @@ export function saveNote(context) {
         .catch((error) => {
             saveNoteStatus(context, error, 10000);
             console.log(error);
+        });
+}
+
+function getZoneData(context, aZone) {
+    const [zone, value] = aZone;
+    const params = new URLSearchParams();
+    params.append('ws', context.state.workspace);
+    params.append('zone', zone);
+    commonHttp.post('/zone_list', params)
+        .then((response) => {
+            const { data } = response;
+            const oZone = {
+                [zone]: {
+                    selectedValues: [],
+                    defaultValue: value,
+                    values: data.variants,
+                },
+            };
+            context.commit('setZone', oZone);
+        });
+}
+
+export function getZoneList(context, ws) {
+    const params = new URLSearchParams();
+    params.append('ws', ws || context.state.workspace);
+    commonHttp.post('/zone_list', params)
+        .then((response) => {
+            response.data.forEach(zone => getZoneData(context, zone));
+            context.commit('resetZones');
         });
 }
 
@@ -268,35 +340,6 @@ export function getExportFile(context) {
         .catch((error) => {
             console.log(error);
             context.commit('setExportFileLoading', false);
-        });
-}
-
-function getZoneData(context, aZone) {
-    const [zone, value] = aZone;
-    const params = new URLSearchParams();
-    params.append('ws', context.state.workspace);
-    params.append('zone', zone);
-    commonHttp.post('/zone_list', params)
-        .then((response) => {
-            const { data } = response;
-            const oZone = {
-                [zone]: {
-                    selectedValues: [],
-                    defaultValue: value,
-                    values: data.variants,
-                },
-            };
-            context.commit('setZone', oZone);
-        });
-}
-
-export function getZoneList(context, ws) {
-    const params = new URLSearchParams();
-    params.append('ws', ws || context.state.workspace);
-    commonHttp.post('/zone_list', params)
-        .then((response) => {
-            response.data.forEach(zone => getZoneData(context, zone));
-            context.commit('resetZones');
         });
 }
 

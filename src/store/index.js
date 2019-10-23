@@ -17,10 +17,13 @@ export default new Vuex.Store({
         listView: true,
         selectedVariant: null,
         variantDetails: {},
+        listViewDetails: [],
         allTags: [],
         selectedTags: [],
+        selectedGenTags: [],
         workspacesList: [],
         note: '',
+        notes: [],
         saveNoteStatus: null,
         exportFileUrl: null,
         exportFileLoading: false,
@@ -50,6 +53,7 @@ export default new Vuex.Store({
         panels: {},
         compiled: null,
         transcripts: null,
+        meta: null,
     },
     actions,
     mutations,
@@ -132,5 +136,30 @@ export default new Vuex.Store({
                 return result;
             };
         },
+        getVariantDetails(state) {
+            return state.variantDetails;
+        },
+        getListViewDetails(state) {
+            return state.listViewDetails;
+        },
+        getDetailsById: state => id => state.listViewDetails.filter(detail => detail.id === id),
+        getMeta(state) {
+            return state.meta;
+        },
+        getWorkspace(state) {
+            return state.workspace;
+        },
+        getNote(state) {
+            return state.note
+        },
+        getNotes(state) {
+            return state.notes
+        },
+        getNotesById: state => id => state.notes.filter(note => note.id === id),
+
+        getTags(state) {
+            return state.selectedGenTags
+        },
+        getTagsById: state => id => state.selectedGenTags.filter(tags => tags.id === id)
     },
 });

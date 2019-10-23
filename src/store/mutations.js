@@ -28,6 +28,14 @@ export function setVariantDetails(state, variantDetails) {
     state.variantDetails = variantDetails;
 }
 
+export function setListViewDetails(state, details) {
+    state.listViewDetails = details;
+}
+
+export function addDetailsToListView(state, details) {
+    state.listViewDetails.push(details);
+}
+
 export function setSelectedVariant(state, selectedVariant) {
     state.selectedVariant = selectedVariant;
 }
@@ -236,4 +244,16 @@ export function setCompiled(state, value = null) {
 
 export function setTranscripts(state, transcripts) {
     state.transcripts = transcripts;
+}
+
+export function setMeta(state, meta) {
+    state.meta = meta;
+}
+
+export function addNotes(state, notes) {
+    state.notes.push(notes);
+}
+
+export function addTags(state, tags) {
+    state.selectedGenTags.push(tags);
 }
