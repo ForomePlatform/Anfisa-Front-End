@@ -150,16 +150,16 @@ export default new Vuex.Store({
             return state.workspace;
         },
         getNote(state) {
-            return state.note
+            return state.note;
         },
         getNotes(state) {
-            return state.notes
+            return state.notes;
         },
         getNotesById: state => id => state.notes.filter(note => note.id === id),
 
         getTags(state) {
-            return state.selectedGenTags
+            return state.selectedGenTags;
         },
-        getTagsById: state => id => state.selectedGenTags.filter(tags => tags.id === id)
+        getTagsById: state => id => state.selectedGenTags.filter(tags => tags.id === id),
     },
 });

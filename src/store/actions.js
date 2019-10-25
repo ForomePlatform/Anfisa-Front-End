@@ -166,11 +166,11 @@ export function getVariantTags(context, variant) {
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
             const notes = {
                 id: variant,
-                note: data['rec-tags'][NOTE_TAG] || ''
+                note: data['rec-tags'][NOTE_TAG] || '',
             };
             const tags = {
                 id: variant,
-                tags: selectedTags
+                tags: selectedTags,
             };
             const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
             context.commit('clearTagFilterValue');

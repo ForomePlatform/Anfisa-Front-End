@@ -25,7 +25,7 @@
             <b-col class="d-flex flex-column">
                 <div>{{ getDetailsValue(viewGen, "hg19").split(/\s+/)[0] }}</div>
                 <div v-html="getDetailsValue(viewGen, 'hg19').split(/\s+/)[1]"></div>
-                <div>{{ getDetailsValue(viewGen, "IGV") }}</div>
+                <div v-html="getDetailsValue(viewGen, 'IGV')"></div>
             </b-col>
             <b-col class="d-flex flex-column">
                 <div style="font-weight: 600;">
@@ -121,124 +121,125 @@
 </template>
 
 <script>
-    import BaseTagButton from '../variantDetailsPanel/BaseTagButton.vue';
-    import { ANNOTATION_SERVICE } from '@/common/constants';
-    import router from '../../router';
+import BaseTagButton from '../variantDetailsPanel/BaseTagButton.vue';
+import { ANNOTATION_SERVICE } from '../../common/constants';
+import router from '../../router';
 
-    export default {
-        name: 'ViewListItem',
-        components: {
-            BaseTagButton
+export default {
+    name: 'ViewListItem',
+    components: {
+        BaseTagButton,
+    },
+    props: {
+        item: {
+            type: Object,
+            required: true,
         },
-        props: {
-            item: {
-                type: Object,
-                required: true,
-            },
+    },
+    data() {
+        return {
+            viewGen: 'view_gen',
+            viewQsamples: 'view_qsamples',
+            viewGnomAD: 'view_gnomAD',
+            viewGenetics: 'view_genetics',
+            viewDB: 'view_db',
+            viewColocatedV: 'colocated_v',
+            viewMain: '_main',
+            viewPred: 'view_pred',
+            transcripts: 'transcripts',
+            VCF: 'VCF',
+            greenColorValues: ['benign', 'B', 'tolerated', 'T', 'P', 'N', 'L'],
+            yellowColorValues: ['possibly_damaging', 'probably_damaging', 'P'],
+            redColorValues: ['damaging', 'D', 'deleterious', 'D', 'A', 'M', 'H'],
+        };
+    },
+    created() {
+        this.loadItemsDetails(this.item.id);
+    },
+    computed: {
+        getNote() {
+            const genNotes = this.$store.getters.getNotesById(this.item.id);
+            if (genNotes && genNotes[0]) {
+                return genNotes[0].note;
+            }
+            return '';
         },
-        data() {
-            return {
-                viewGen: 'view_gen',
-                viewQsamples: 'view_qsamples',
-                viewGnomAD: 'view_gnomAD',
-                viewGenetics: 'view_genetics',
-                viewDB: 'view_db',
-                viewColocatedV: 'colocated_v',
-                viewMain: '_main',
-                viewPred: 'view_pred',
-                transcripts: 'transcripts',
-                VCF: 'VCF',
-                greenColorValues: ['benign', 'B', 'tolerated', 'T', 'P', 'N', 'L'],
-                yellowColorValues: ['possibly_damaging', 'probably_damaging', 'P'],
-                redColorValues: ['damaging', 'D', 'deleterious', 'D', 'A', 'M', 'H'],
+        getTags() {
+            const genTags = this.$store.getters.getTagsById(this.item.id);
+            if (genTags && genTags[0]) {
+                return genTags[0].tags;
+            }
+            return [];
+        },
+        getSamples() {
+            const meta = this.$store.getters.getMeta;
+            if (meta && meta.samples) {
+                return meta.samples;
+            }
+            return '';
+        },
+        getDetailsValue() {
+            return (view, name) => {
+                let result = '';
+                const itemData = this.$store.getters.getDetailsById(this.item.id);
+                try {
+                    const { details } = itemData[0];
+                    const viewData = details[view].data;
+                    viewData.forEach((data) => {
+                        const dataName = data[0];
+                        if (dataName && dataName.data === name) {
+                            [, result] = data;
+                        }
+                    });
+                } catch (err) {
+                    result = '';
+                }
+                return result;
             };
         },
-        created() {
-            this.loadItemsDetails(this.item.id);
+        getDetailsWithFixedValue() {
+            return (view, name, fractionDigits) => {
+                const details = this.getDetailsValue(view, name);
+                return parseFloat(details).toFixed(fractionDigits);
+            };
         },
-        computed: {
-            getNote() {
-                const genNotes = this.$store.getters.getNotesById(this.item.id);
-                if (genNotes && genNotes[0]) {
-                    return genNotes[0].note;
-                }
-                return '';
-            },
-            getTags() {
-                const genTags = this.$store.getters.getTagsById(this.item.id);
-                if (genTags && genTags[0]) {
-                    return genTags[0].tags
-                }
-            },
-            getSamples() {
-                const meta = this.$store.getters.getMeta;
-                if (meta && meta.samples) {
-                    return meta.samples
-                }
-                return '';
-            },
-            getDetailsValue() {
-                return (view, name) => {
-                    let result = '';
-                    const itemData = this.$store.getters.getDetailsById(this.item.id);
-                    try {
-                        const { details } = itemData[0];
-                        const viewData = details[view].data;
-                        viewData.forEach((data) => {
-                            const dataName = data[0];
-                            if (dataName && dataName.data === name) {
-                                [, result] = data;
-                            }
-                        });
-                    } catch (err) {
-                        result = '';
+        getColor() {
+            return (view, name) => {
+                let result = '';
+                const detailsValue = this.getDetailsValue(view, name).split(',')[0];
+                if (detailsValue) {
+                    if (this.greenColorValues.includes(detailsValue)) {
+                        result = 'circle-green';
+                    } else if (this.yellowColorValues.includes(detailsValue)) {
+                        result = 'circle-yellow';
+                    } else if (this.redColorValues.includes(detailsValue)) {
+                        result = 'circle-red';
                     }
-                    return result;
-                };
-            },
-            getDetailsWithFixedValue() {
-                return (view, name, fractionDigits) => {
-                    const details = this.getDetailsValue(view, name);
-                    return parseFloat(details).toFixed(fractionDigits);
                 }
-            },
-            getColor() {
-                return (view, name) => {
-                    let result = '';
-                    const detailsValue = this.getDetailsValue(view, name).split(',')[0];
-                    if (detailsValue) {
-                        if (this.greenColorValues.includes(detailsValue)) {
-                            result = 'circle-green';
-                        } else if (this.yellowColorValues.includes(detailsValue)) {
-                            result = 'circle-yellow';
-                        } else if (this.redColorValues.includes(detailsValue)) {
-                            result = 'circle-red';
-                        }
-                    }
-                    return result;
-                };
+                return result;
+            };
+        },
+    },
+    methods: {
+        loadItemsDetails(id) {
+            this.$store.dispatch('getListViewDetails', id);
+            this.$store.dispatch('getVariantTags', id);
+        },
+        toggleToDetails() {
+            const { id } = this.item;
+            const ws = this.$store.getters.getWorkspace;
+            if (ws === ANNOTATION_SERVICE) {
+                const data = this.$store.state.annotations.annotationsSearchResult[id].result[0];
+                this.$store.commit('setSelectedVariant', id);
+                this.$store.dispatch('setVariantsDetails', data);
+            } else {
+                this.$store.dispatch('getVariantDetails', id);
+                // this.$store.dispatch('getVariantTags', id);
             }
+            router.push({ path: '/', query: { ws } });
         },
-        methods: {
-            loadItemsDetails(id) {
-                this.$store.dispatch('getListViewDetails', id);
-                this.$store.dispatch('getVariantTags', id);
-            },
-            toggleToDetails() {
-                const { id } = this.item;
-                const ws = this.$store.getters.getWorkspace;
-                if (ws === ANNOTATION_SERVICE) {
-                    const data = this.$store.state.annotations.annotationsSearchResult[id].result[0];
-                    this.$store.commit('setSelectedVariant', id);
-                    this.$store.dispatch('setVariantsDetails', data);
-                } else {
-                    this.$store.dispatch('getVariantDetails', id);
-                    // this.$store.dispatch('getVariantTags', id);
-                }
-                router.push({ path: '/', query: { ws } });
-            },
-        },
-    };
+    },
+};
 </script>
 
 <style lang="scss" scoped>
