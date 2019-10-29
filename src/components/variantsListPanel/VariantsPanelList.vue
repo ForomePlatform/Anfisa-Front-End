@@ -40,8 +40,10 @@ export default {
         if (this.root) {
             this.$store.commit('setListMounting', false);
         }
+        this.variantByUrl();
     },
     updated() {
+        this.variantByUrl();
         const itemElement = document.querySelector('.variants-list > .variants-list_item__active');
         const listElement = document.querySelector('.variants-list').parentNode;
         if ((!listElement) || (!itemElement)) {
@@ -57,6 +59,24 @@ export default {
             diff = itemRect.bottom - listRect.bottom;
         }
         listElement.scrollTop += diff;
+    },
+    methods: {
+        variantByUrl() {
+            const urlAPI = require('url');
+            const parameters = window.location.search.slice(1).split('&');
+            const variant = parameters.find(item => {
+                const split = item.split('=');
+                if (split) {
+                    return split[0].trim() === 'variant';
+                }
+            });
+            if (variant && (variant.split('=').length > 1)) {
+                const id = Number(variant.split('=')[1]);
+                if (id && id >= 1 && id <= this.data.length) {
+                    this.selectItem(id-1);
+                }
+            }
+        },
     },
 };
 </script>
