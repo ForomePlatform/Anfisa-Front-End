@@ -58,6 +58,6 @@ export default {
         overflow-y:auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
-        font-size: 14px;
+        font-size: 12px;
     }
 </style>
