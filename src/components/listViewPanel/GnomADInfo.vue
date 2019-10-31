@@ -33,22 +33,20 @@
 </template>
 
 <script>
-    export default {
-        name: "GnomADInfo",
-        props: {
-            genome: {
-                type: Object,
-                required: true
-            }
+export default {
+    name: 'GnomADInfo',
+    props: {
+        genome: {
+            type: Object,
+            required: true,
         },
-        computed: {
-            getFixedValue() {
-                return (value, fractionDigits) => {
-                    return parseFloat(value).toFixed(fractionDigits);
-                };
-            },
-        }
-    }
+    },
+    computed: {
+        getFixedValue() {
+            return (value, fractionDigits) => parseFloat(value).toFixed(fractionDigits);
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>

@@ -40,51 +40,52 @@
 </template>
 
 <script>
-    import BaseTagButton from "../variantDetailsPanel/BaseTagButton";
-    export default {
-        name: "BaseInfo",
-        components: {
-            BaseTagButton
+import BaseTagButton from '../variantDetailsPanel/BaseTagButton.vue';
+
+export default {
+    name: 'BaseInfo',
+    components: {
+        BaseTagButton,
+    },
+    props: {
+        genome: {
+            type: Object,
+            required: true,
         },
-        props: {
-            genome: {
-                type: Object,
-                required: true
-            },
-            id: {
-                type: Number,
-                required: true
-            }
+        id: {
+            type: Number,
+            required: true,
         },
-        data() {
-            return {
-                notPresent: 'Not Present'
+    },
+    data() {
+        return {
+            notPresent: 'Not Present',
+        };
+    },
+    computed: {
+        getNote() {
+            const genNotes = this.$store.getters.getNotesById(this.id);
+            if (genNotes && genNotes[0]) {
+                return genNotes[0].note;
             }
+            return '';
         },
-        computed: {
-            getNote() {
-                const genNotes = this.$store.getters.getNotesById(this.id);
-                if (genNotes && genNotes[0]) {
-                    return genNotes[0].note;
-                }
-                return '';
-            },
-            getTags() {
-                const genTags = this.$store.getters.getTagsById(this.id);
-                if (genTags && genTags[0]) {
-                    return genTags[0].tags;
-                }
-                return [];
-            },
-            getIGVOpenLink() {
-                const igv = this.genome.igv;
-                const closeLinkTag = '</a>';
-                const startLink = igv.indexOf('<a')
-                const endLink = igv.indexOf(closeLinkTag)
-                return igv.substring(startLink, endLink + closeLinkTag.length)
+        getTags() {
+            const genTags = this.$store.getters.getTagsById(this.id);
+            if (genTags && genTags[0]) {
+                return genTags[0].tags;
             }
-        }
-    }
+            return [];
+        },
+        getIGVOpenLink() {
+            const { igv } = this.genome;
+            const closeLinkTag = '</a>';
+            const startLink = igv.indexOf('<a');
+            const endLink = igv.indexOf(closeLinkTag);
+            return igv.substring(startLink, endLink + closeLinkTag.length);
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>

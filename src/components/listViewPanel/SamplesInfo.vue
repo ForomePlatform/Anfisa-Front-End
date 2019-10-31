@@ -3,7 +3,11 @@
         <div class="samples-list">
             <div class="samples" v-for="sample in Object.values(getSamples)" :key="sample.id">
                 <div>
-                    <div :class="getAffectedIcon(sample.affected, sample.sex)" style="display: inline-block"></div>
+                    <div
+                            :class="getAffectedIcon(sample.affected, sample.sex)"
+                            style="display: inline-block">
+
+                    </div>
                     <div style="display: inline-block">{{ sample.name }}</div>
                     <div>{{ getValueByName(sample.name, genome.titles, genome.genotype) }}</div>
                     <div>{{ getValueByName(sample.name, genome.titles, genome.genotype_q) }}</div>
@@ -17,75 +21,74 @@
 </template>
 
 <script>
-    import {ANNOTATION_SERVICE} from '../../common/constants';
-    import router from '../../router';
+import { ANNOTATION_SERVICE } from '../../common/constants';
+import router from '../../router';
 
-    export default {
-        name: "SamplesInfo",
-        props: {
-            genome: {
-                type: Object,
-                required: true
-            },
-            id: {
-                type: Number,
-                required: true
-            }
+export default {
+    name: 'SamplesInfo',
+    props: {
+        genome: {
+            type: Object,
+            required: true,
         },
-        data() {
-            return {
-                pass: 'PASS',
-                failed: 'FAILED: '
-            }
+        id: {
+            type: Number,
+            required: true,
         },
-        computed: {
-            getSamples() {
-                const meta = this.$store.getters.getMeta;
-                if (meta && meta.samples) {
-                    return meta.samples;
+    },
+    data() {
+        return {
+            pass: 'PASS',
+            failed: 'FAILED: ',
+        };
+    },
+    computed: {
+        getSamples() {
+            const meta = this.$store.getters.getMeta;
+            if (meta && meta.samples) {
+                return meta.samples;
+            }
+            return '';
+        },
+        getValueByName() {
+            return (currentName, names, values) => {
+                for (let i = 2; i < names.length; i += 1) {
+                    if (values && names[i].toLowerCase().includes(currentName.toLowerCase())) {
+                        return values[i];
+                    }
                 }
                 return '';
-            },
-            getValueByName() {
-                return (currentName, names, values) => {
-                    for (let i = 2; i < names.length; i++) {
-                        if (values && names[i].toLowerCase().includes(currentName.toLowerCase())) {
-                            return values[i];
-                        }
-                    }
-                    return '';
-                }
-            },
-            getFilters() {
-                const filtersString = this.genome.filters.toString();
-                if (filtersString.toLowerCase() !== this.pass.toLowerCase()) {
-                    return this.failed + filtersString
-                } else {
-                    return this.pass;
-                }
-            }
+            };
         },
-        methods: {
-            getAffectedIcon(affected, sex) {
-                if (affected) {
-                    return sex === 1 ? 'fill-rect' : 'outline-rect';
-                } else {
-                    return sex === 1 ? 'fill-circle' : 'outline-circle';
-                }
-            },
-            toggleToDetails() {
-                const ws = this.$store.getters.getWorkspace;
-                if (ws === ANNOTATION_SERVICE) {
-                    const data = this.$store.state.annotations.annotationsSearchResult[this.id].result[0];
-                    this.$store.commit('setSelectedVariant', this.id);
-                    this.$store.dispatch('setVariantsDetails', data);
-                } else {
-                    this.$store.dispatch('getVariantDetails', this.id);
-                }
-                router.push({ path: '/', query: { ws } });
+        getFilters() {
+            const filtersString = this.genome.filters.toString();
+            if (filtersString.toLowerCase() !== this.pass.toLowerCase()) {
+                return this.failed + filtersString;
             }
-        }
-    }
+            return this.pass;
+        },
+    },
+    methods: {
+        getAffectedIcon(affected, sex) {
+            if (affected) {
+                return sex === 1 ? 'fill-rect' : 'outline-rect';
+            }
+            return sex === 1 ? 'fill-circle' : 'outline-circle';
+        },
+        toggleToDetails() {
+            const ws = this.$store.getters.getWorkspace;
+            if (ws === ANNOTATION_SERVICE) {
+                const { annotations } = this.$store.state.annotations;
+                const data = annotations.annotationsSearchResult[this.id].result[0];
+                this.$store.commit('setSelectedVariant', this.id);
+                this.$store.dispatch('setVariantsDetails', data);
+            } else {
+                this.$store.dispatch('getVariantDetails', this.id);
+            }
+            router.push({ path: '/', query: { ws } });
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>

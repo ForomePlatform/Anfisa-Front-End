@@ -36,38 +36,38 @@
 </template>
 
 <script>
-    export default {
-        name: "PredicationInfo",
-        props: {
-            genome: {
-                type: Object,
-                required: true
-            }
+export default {
+    name: 'PredicationInfo',
+    props: {
+        genome: {
+            type: Object,
+            required: true,
         },
-        data() {
-            return {
-                greenColorValues: ['benign', 'B', 'tolerated', 'T', 'P', 'N', 'L', 'tolerated_low_confidence'],
-                yellowColorValues: ['possibly_damaging', 'probably_damaging'],
-                redColorValues: ['damaging', 'D', 'deleterious', 'D', 'A', 'M', 'H'],
-            }
+    },
+    data() {
+        return {
+            greenColorValues: ['benign', 'B', 'tolerated', 'T', 'P', 'N', 'L', 'tolerated_low_confidence'],
+            yellowColorValues: ['possibly_damaging', 'probably_damaging'],
+            redColorValues: ['damaging', 'D', 'deleterious', 'D', 'A', 'M', 'H'],
+        };
+    },
+    computed: {
+        getColor() {
+            return (values) => {
+                let result = '';
+                const value = values.split(',')[0];
+                if (this.greenColorValues.includes(value)) {
+                    result = 'circle-green';
+                } else if (this.yellowColorValues.includes(value)) {
+                    result = 'circle-yellow';
+                } else if (this.redColorValues.includes(value)) {
+                    result = 'circle-red';
+                }
+                return result;
+            };
         },
-        computed: {
-            getColor() {
-                return (value) => {
-                    let result = '';
-                    value = value.split(',')[0];
-                    if (this.greenColorValues.includes(value)) {
-                        result = 'circle-green';
-                    } else if (this.yellowColorValues.includes(value)) {
-                        result = 'circle-yellow';
-                    } else if (this.redColorValues.includes(value)) {
-                        result = 'circle-red';
-                    }
-                    return result;
-                };
-            },
-        }
-    }
+    },
+};
 </script>
 
 <style lang="scss" scoped>
