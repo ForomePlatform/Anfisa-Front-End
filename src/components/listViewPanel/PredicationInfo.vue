@@ -46,8 +46,8 @@
         },
         data() {
             return {
-                greenColorValues: ['benign', 'B', 'tolerated', 'T', 'P', 'N', 'L'],
-                yellowColorValues: ['possibly_damaging', 'probably_damaging', 'P'],
+                greenColorValues: ['benign', 'B', 'tolerated', 'T', 'P', 'N', 'L', 'tolerated_low_confidence'],
+                yellowColorValues: ['possibly_damaging', 'probably_damaging'],
                 redColorValues: ['damaging', 'D', 'deleterious', 'D', 'A', 'M', 'H'],
             }
         },

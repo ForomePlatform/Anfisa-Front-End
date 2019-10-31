@@ -2,7 +2,9 @@
     <b-container>
         <b-row>
             <b-col cols="4" class="d-flex flex-column">
-                <div>{{ genome.hgmd }}</div>
+                <div v-if="genome.hgmd.toLowerCase() !== notPresent.toLowerCase()">
+                    {{ genome.hgmd }}
+                </div>
                 <div class="title">
                     {{ genome.gene }}
                     <img
@@ -52,6 +54,11 @@
             id: {
                 type: Number,
                 required: true
+            }
+        },
+        data() {
+            return {
+                notPresent: 'Not Present'
             }
         },
         computed: {

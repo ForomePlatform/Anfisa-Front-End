@@ -2,8 +2,6 @@
   <div class="home">
     <SettingsPanel />
     <Desktop />
-    <!--<VariantsPanel />-->
-    <!--<VariantDetailsPanel />-->
     <BaseModal
       v-if="displayDisclaymer"
       ref="disclaymerModal"

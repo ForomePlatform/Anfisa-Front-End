@@ -5,7 +5,6 @@
         </template>
         <b-dropdown-item-button
             @click="onCheck(item)"
-            disabled
         >
             <div сlass="multiselect_item" @click="clearAll">
                 <img class="multiselect_item_img" src="@/assets/clearAll.svg"/>
@@ -18,7 +17,6 @@
             :key="item"
             class="multiselect_item"
             @click="onCheck(item)"
-            disabled
         >
             <b-form-checkbox
                 :class="{multiselect_item_checkbox:isChecked(item)}"

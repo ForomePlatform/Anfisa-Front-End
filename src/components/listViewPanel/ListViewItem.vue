@@ -1,10 +1,8 @@
 <template>
-    <b-container fluid>
+    <b-container v-if="getGenome" fluid>
         <b-row>
             <b-col cols="5">
-                <template v-if="getGenome">
-                    <BaseInfo :genome="getGenome" :id="item.id"></BaseInfo>
-                </template>
+                <BaseInfo :genome="getGenome" :id="item.id"></BaseInfo>
             </b-col>
             <b-col cols="2" class="d-flex flex-column">
                 <PredicationInfo :genome="getGenome"></PredicationInfo>
@@ -27,94 +25,102 @@
     import SamplesInfo from "./SamplesInfo.vue";
 
     export default {
-    name: 'ViewListItem',
-    components: {
-        SamplesInfo,
-        GnomADInfo,
-        PredicationInfo,
-        BaseInfo,
-        BaseTagButton,
-    },
-    props: {
-        item: {
-            type: Object,
-            required: true,
+        name: 'ViewListItem',
+        components: {
+            SamplesInfo,
+            GnomADInfo,
+            PredicationInfo,
+            BaseInfo,
+            BaseTagButton,
         },
-    },
-    data() {
-        return {
-            viewGen: 'view_gen',
-            viewQsamples: 'view_qsamples',
-            viewGnomAD: 'view_gnomAD',
-            viewGenetics: 'view_genetics',
-            viewDB: 'view_db',
-            viewColocatedV: 'colocated_v',
-            viewMain: '_main',
-            viewPred: 'view_pred',
-            transcripts: 'transcripts',
-            VCF: 'VCF',
-        };
-    },
-    created() {
-        this.loadItemsDetails(this.item.id);
-    },
-    computed: {
-        getGenome() {
-            const details = this.$store.getters.getDetailsById(this.item.id);
-            if (details) {
-                return {
-                    gene: this.getDetailsValue(this.viewGen, 'Gene(s)'),
-                    hg19: this.getDetailsValue(this.viewGen, 'hg19'),
-                    igv: this.getDetailsValue(this.viewGen, 'IGV'),
-                    canonicalAnnotation: this.getDetailsValue(this.viewGen, 'Canonical Annotation'),
-                    canonicalPpos: this.getDetailsValue(this.viewGen, 'pPos (Canonical)'),
-                    hgmd: this.getDetailsValue(this.viewDB, 'HGMD'),
-                    gtex: this.getDetailsValue(this.viewDB, 'View on GTEx'),
-                    polyphen: this.getDetailsValue(this.viewPred, 'Polyphen'),
-                    sift: this.getDetailsValue(this.viewPred, 'SIFT from dbNSFP'),
-                    mutation: this.getDetailsValue(this.viewPred, 'Mutation Taster'),
-                    fathmm: this.getDetailsValue(this.viewPred, 'FATHMM'),
-                    af: this.getDetailsValue(this.viewGnomAD, 'Overall AF'),
-                    af_popmax: this.getDetailsValue(this.viewGnomAD, 'Overall AF PopMax'),
-                    af_g: this.getDetailsValue(this.viewGnomAD, 'Genome AF'),
-                    af_g_popmax: this.getDetailsValue(this.viewGnomAD, 'Genome AF PopMax'),
-                    af_e: this.getDetailsValue(this.viewGnomAD, 'Exome AF'),
-                    hom: this.getDetailsValue(this.viewGnomAD, 'hom'),
-                    hem: this.getDetailsValue(this.viewGnomAD, 'hem'),
-                    genotype: this.getDetailsValue(this.viewQsamples, 'Genotype'),
-                    genotype_q: this.getDetailsValue(this.viewQsamples, 'Genotype Quality'),
-                    filters: this.getDetailsValue(this.viewQsamples, 'FILTERs')
-                };
-            }
-            return null;
+        props: {
+            item: {
+                type: Object,
+                required: true,
+            },
         },
-        getDetailsValue() {
-            return (view, name) => {
-                let result = '';
-                const itemData = this.$store.getters.getDetailsById(this.item.id);
-                try {
+        data() {
+            return {
+                viewGen: 'view_gen',
+                viewQsamples: 'view_qsamples',
+                viewGnomAD: 'view_gnomAD',
+                viewGenetics: 'view_genetics',
+                viewDB: 'view_db',
+                viewColocatedV: 'colocated_v',
+                viewMain: '_main',
+                viewPred: 'view_pred',
+                transcripts: 'transcripts',
+                vcf: 'VCF',
+                title: 'Title'
+            };
+        },
+        created() {
+            this.loadItemsDetails(this.item.id);
+        },
+        computed: {
+            getGenome() {
+                const details = this.$store.getters.getDetailsById(this.item.id);
+                if (details && details.length > 0) {
+                    return {
+                        gene: this.getDetailsValue(this.viewGen, 'Gene(s)'),
+                        hg19: this.getDetailsValue(this.viewGen, 'hg19'),
+                        igv: this.getDetailsValue(this.viewGen, 'IGV'),
+                        canonicalAnnotation: this.getDetailsValue(this.viewGen, 'Canonical Annotation'),
+                        canonicalPpos: this.getDetailsValue(this.viewGen, 'pPos (Canonical)'),
+                        hgmd: this.getDetailsValue(this.viewDB, 'HGMD'),
+                        gtex: this.getDetailsValue(this.viewDB, 'View on GTEx'),
+                        polyphen: this.getDetailsValue(this.viewPred, 'Polyphen'),
+                        sift: this.getDetailsValue(this.viewPred, 'SIFT from dbNSFP'),
+                        mutation: this.getDetailsValue(this.viewPred, 'Mutation Taster'),
+                        fathmm: this.getDetailsValue(this.viewPred, 'FATHMM'),
+                        af: this.getDetailsValue(this.viewGnomAD, 'Overall AF'),
+                        af_popmax: this.getDetailsValue(this.viewGnomAD, 'Overall AF PopMax'),
+                        af_g: this.getDetailsValue(this.viewGnomAD, 'Genome AF'),
+                        af_g_popmax: this.getDetailsValue(this.viewGnomAD, 'Genome AF PopMax'),
+                        af_e: this.getDetailsValue(this.viewGnomAD, 'Exome AF'),
+                        hom: this.getDetailsValue(this.viewGnomAD, 'hom'),
+                        hem: this.getDetailsValue(this.viewGnomAD, 'hem'),
+                        titles: this.getDetailsArray(this.viewQsamples, 'Title'),
+                        genotype: this.getDetailsArray(this.viewQsamples, 'Genotype'),
+                        genotype_q: this.getDetailsArray(this.viewQsamples, 'Genotype Quality'),
+                        filters: this.getDetailsValue(this.viewQsamples, 'FILTERs')
+                    };
+                }
+                return null;
+            },
+            getDetailsArray() {
+                return (view, name) => {
+                    let result = null;
+                    const itemData = this.$store.getters.getDetailsById(this.item.id);
                     const { details } = itemData[0];
                     const viewData = details[view].data;
                     viewData.forEach((data) => {
                         const dataName = data[0];
                         if (dataName && dataName.data === name) {
-                            [, result] = data;
+                            result = data;
                         }
                     });
-                } catch (err) {
-                    result = '';
+                    return result;
                 }
-                return result;
-            };
-        }
-    },
-    methods: {
-        loadItemsDetails(id) {
-            this.$store.dispatch('getListViewDetails', id);
-            this.$store.dispatch('getVariantTags', id);
-        }
-    },
-};
+            },
+            getDetailsValue() {
+                return (view, name) => {
+                    const data = this.getDetailsArray(view, name);
+                    if (data) {
+                        return data[1];
+                    }
+                    return '';
+                };
+            },
+
+        },
+        methods: {
+            loadItemsDetails(id) {
+                this.$store.dispatch('getListViewDetails', id);
+                this.$store.dispatch('getVariantTags', id);
+            }
+        },
+    };
 </script>
 
 <style lang="scss" scoped>

@@ -5,12 +5,12 @@
                 <div>
                     <div :class="getAffectedIcon(sample.affected, sample.sex)" style="display: inline-block"></div>
                     <div style="display: inline-block">{{ sample.name }}</div>
-                    <div>{{ genome.genotype }}</div>
-                    <div>{{ genome.genotype_q }}</div>
+                    <div>{{ getValueByName(sample.name, genome.titles, genome.genotype) }}</div>
+                    <div>{{ getValueByName(sample.name, genome.titles, genome.genotype_q) }}</div>
                 </div>
             </div>
         </div>
-        <div>{{ genome.filters }}</div>
+        <div>{{ getFilters }}</div>
 
         <div class="to-details-button"><b-link @click="toggleToDetails">More details</b-link></div>
     </div>
@@ -32,6 +32,12 @@
                 required: true
             }
         },
+        data() {
+            return {
+                pass: 'PASS',
+                failed: 'FAILED: '
+            }
+        },
         computed: {
             getSamples() {
                 const meta = this.$store.getters.getMeta;
@@ -40,6 +46,24 @@
                 }
                 return '';
             },
+            getValueByName() {
+                return (currentName, names, values) => {
+                    for (let i = 2; i < names.length; i++) {
+                        if (values && names[i].toLowerCase().includes(currentName.toLowerCase())) {
+                            return values[i];
+                        }
+                    }
+                    return '';
+                }
+            },
+            getFilters() {
+                const filtersString = this.genome.filters.toString();
+                if (filtersString.toLowerCase() !== this.pass.toLowerCase()) {
+                    return this.failed + filtersString
+                } else {
+                    return this.pass;
+                }
+            }
         },
         methods: {
             getAffectedIcon(affected, sex) {

@@ -291,7 +291,7 @@ export default {
             }
         }
         &_block {
-            padding: 16px 0;
+            padding: 14px 0;
             background-image: linear-gradient(to right, rgb(39, 63, 89) 25%,rgba(39, 63, 89, 0) 0%);
             background-position: top;
             background-size: 8px 2px;
