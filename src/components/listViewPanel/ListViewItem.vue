@@ -81,7 +81,7 @@ export default {
                     hom: this.getDetailsValue(this.viewGnomAD, 'hom'),
                     hem: this.getDetailsValue(this.viewGnomAD, 'hem'),
                     titles: this.getDetailsArray(this.viewQsamples, 'Title'),
-                    genotype: this.getDetailsArray(this.viewQsamples, 'Genotype'),
+                    genotype: this.getDetailsArray(this.viewQsamples, 'genotype'),
                     genotype_q: this.getDetailsArray(this.viewQsamples, 'Genotype Quality'),
                     filters: this.getDetailsValue(this.viewQsamples, 'FILTERs'),
                 };

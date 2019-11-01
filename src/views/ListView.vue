@@ -17,6 +17,32 @@ export default {
             return this.$store.getters.list;
         },
     },
+    methods: {
+        updateAppData() {
+            this.$store.dispatch('getList');
+            this.$store.dispatch('getZoneList');
+            this.$store.dispatch('getFilters');
+            this.$store.dispatch('getRulesData');
+            this.$store.dispatch('getWorkspaces').then(() => {
+                console.log(`back v.${this.$store.state.version.slice(7)} | front v.${version} | back-required v.${backendVersion}`);
+            });
+        },
+    },
+    created() {
+        const { ws } = this.$route.query;
+        if (ws) {
+            this.$store.commit('setWorkspace', ws);
+        }
+        this.updateAppData();
+    },
+    beforeRouteUpdate(to, from, next) {
+        if (to.path === '/' && to.query.ws !== from.query.ws) {
+            const nextWs = to.query.ws || null;
+            this.$store.commit('setWorkspace', nextWs);
+            this.updateAppData();
+        }
+        next();
+    },
 };
 </script>
 
