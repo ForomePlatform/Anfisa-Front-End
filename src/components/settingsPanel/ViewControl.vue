@@ -8,14 +8,14 @@
                 <img
                         class="view-control_icon"
                         alt="Variant view"
-                        src="@/assets/expandLayout.svg"
+                        src="@/assets/tableViewIcon.svg"
                 />
             </b-link>
             <b-link @click="getLisViewLink">
                 <img
                         class="view-control_icon  ml-2"
                         alt="List view"
-                        src="@/assets/collapseLayout.svg"
+                        src="@/assets/listViewIcon.svg"
                 />
             </b-link>
         </div>

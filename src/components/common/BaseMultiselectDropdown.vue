@@ -3,81 +3,69 @@
         <template slot="button-content">
             <div class="dropdown-toggle-slot">{{labelText}}</div>
         </template>
-        <b-dropdown-item-button
-            @click="onCheck(item)"
-        >
+        <b-dropdown-item-button>
             <div сlass="multiselect_item" @click="clearAll">
                 <img class="multiselect_item_img" src="@/assets/clearAll.svg"/>
                 <span class="clear_all">CLEAR ALL</span>
             </div>
         </b-dropdown-item-button>
         <b-dropdown-divider/>
-        <b-dropdown-item-button
-            v-for="item in dataFiltered"
-            :key="item"
-            class="multiselect_item"
-            @click="onCheck(item)"
+        <b-form-checkbox
+                v-for="item in data"
+                :key="item"
+                :value="item"
+                v-model="selected"
+                class="multiselect_checkbox"
         >
-            <b-form-checkbox
-                :class="{multiselect_item_checkbox:isChecked(item)}"
-                @change="onCheck(item)"
-                :checked="isChecked(item)"
-            >
-                {{item}}
-            </b-form-checkbox>
-        </b-dropdown-item-button>
+            {{ item }}
+        </b-form-checkbox>
     </b-dropdown>
 </template>
 
 <script>
-export default{
-    name: 'BaseMultiselectDropdown',
-    props: {
-        defaultText: {
-            default: 'SELECT',
-            type: String,
+    export default{
+        name: 'BaseMultiselectDropdown',
+        props: {
+            defaultText: {
+                default: 'SELECT',
+                type: String,
+            },
+            selectedValues: {
+                type: Array,
+            },
+            data: {
+                type: Array,
+            },
+            onChange: {
+                type: Function,
+            },
         },
-        selectedValues: {
-            type: Array,
-        },
-        data: {
-            type: Array,
-        },
-        onChange: {
-            type: Function,
-        },
-    },
-    methods: {
-        onCheck(item) {
-            let newSelectedValues = this.selectedValues.slice();
-            if (this.selectedValues.indexOf(item) === -1) {
-                newSelectedValues.push(item);
-            } else {
-                newSelectedValues = newSelectedValues.filter(el => el !== item);
+        data() {
+            return {
+                selected: this.selectedValues
             }
-            this.onChange(newSelectedValues);
         },
-        isChecked(item) {
-            return this.selectedValues.indexOf(item) !== -1;
-        },
-        clearAll() {
-            this.onChange([]);
-        },
-    },
-    computed: {
-        labelText() {
-            if (this.selectedValues.length === 0) {
-                return this.defaultText;
-            } else if (this.selectedValues.length === 1) {
-                return this.selectedValues[0];
+        watch: {
+            selected(newSelectedValues) {
+                this.$emit('onChange', newSelectedValues);
             }
-            return `(${this.selectedValues.length}) Options Selected`;
         },
-        dataFiltered() {
-            return this.data.filter(item => item);
+        methods: {
+            clearAll() {
+                this.selected = [];
+            },
         },
-    },
-};
+        computed: {
+            labelText() {
+                if (this.selected.length === 0) {
+                    return this.defaultText;
+                } else if (this.selected.length === 1) {
+                    return this.selected[0];
+                }
+                return `(${this.selected.length}) Options Selected`;
+            }
+        },
+    };
 </script>
 
 <style scoped lang="scss">
@@ -104,7 +92,7 @@ export default{
         font-size: 11px;
         line-height: 1.9;
         border-width: 0;
-        letter-spacing: 0px;
+        letter-spacing: 0;
         color: #95acbc;
         padding-right: 15px;
         &-slot {
@@ -126,7 +114,7 @@ export default{
             width: 0;
             height: 0;
             margin-left: 0.455em;
-            vertical-align: 0m;
+            vertical-align: 0;
             font-size: 14px;
 
         }
@@ -134,25 +122,18 @@ export default{
     .multiselect_checkbox {
         position: relative;
         top: 0.2em;
-        margin-right: 0.5em;
+        margin-left: 0.5em;
     }
     .multiselect_item {
-        margin: 0px;
-        padding: 0px;
+        margin: 0;
+        padding: 0;
         &:hover {
             background-color:#2bb3ed;
-        }
-        &_label {
-            margin: 0px;
-            padding: 0px;
         }
         &_img {
             height: 1.3em;
             width: 1.3em;
             opacity: 0.6;
-        }
-        &_checkbox {
-            color: #1a3e6c;
         }
     }
     .clear_all {

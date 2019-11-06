@@ -243,7 +243,6 @@ export function getZoneList(context, ws) {
     commonHttp.post('/zone_list', params)
         .then((response) => {
             response.data.forEach(zone => getZoneData(context, zone));
-            context.commit('resetZones');
         });
 }
 

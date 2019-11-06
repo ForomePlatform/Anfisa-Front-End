@@ -2,20 +2,20 @@
     <b-container>
         <b-row>
             <b-col cols="4" class="d-flex flex-column">
+                <img
+                        v-if="getNote"
+                        class="notes-icon"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        :title="getNote"
+                        alt="Notes"
+                        src="@/assets/bookIcon.svg"
+                />
                 <div v-if="genome.hgmd.toLowerCase() !== notPresent.toLowerCase()">
                     {{ genome.hgmd }}
                 </div>
                 <div class="title">
                     {{ genome.gene }}
-                    <img
-                            v-if="getNote"
-                            class="notes-icon"
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            :title="getNote"
-                            alt="Notes"
-                            src="@/assets/bookIcon.svg"
-                    />
                 </div>
                 <div v-html="genome.gtex"></div>
                 <BaseTagButton
@@ -99,7 +99,7 @@ export default {
         cursor: pointer;
         height: 20px;
         width: 20px;
-        margin-left: 10px;
+        margin-right: 10px;
         transition-timing-function: ease-in-out;
         transition-duration: .2s;
         &:hover {

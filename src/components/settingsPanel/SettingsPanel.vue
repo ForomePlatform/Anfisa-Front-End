@@ -36,7 +36,7 @@
             <LayoutControl />
         </div>
         <div class="settings-panel_block">
-            <view-control />
+            <ViewControl />
         </div>
         <div class="settings-panel_block">
             <BaseHeader title="FILTERS" :onClick="openFilterModal" type="filter"
@@ -61,7 +61,7 @@
                   :defaultText="getZoneText(zones[zone])"
                   :selectedValues="zones[zone].selectedValues"
                   :data="zones[zone].values"
-                  :onChange="value =>changeZoneValue(zone, value)"
+                  @onChange="value => changeZoneValue(zone, value)"
                 />
                 <!-- <div class="settings-panel_icon-button">
                     <img alt="presets icon" src="@/assets/tagsIcon.svg" />

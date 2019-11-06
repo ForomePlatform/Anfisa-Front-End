@@ -155,6 +155,9 @@ export default new Vuex.Store({
         getNotes(state) {
             return state.notes;
         },
+        getZones(state) {
+            return state.zones;
+        },
         getNotesById: state => id => state.notes.filter(note => note.id === id),
 
         getTags(state) {

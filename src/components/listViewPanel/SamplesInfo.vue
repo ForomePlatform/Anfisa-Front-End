@@ -9,7 +9,7 @@
 
                     </div>
                     <div style="display: inline-block">{{ sample.name }}</div>
-                    <div>{{ getValueByName(sample.name, genome.titles, genome.genotype) }}</div>
+                    <div class="genotype">{{ getValueByName(sample.name, genome.titles, genome.genotype) }}</div>
                     <div>{{ getValueByName(sample.name, genome.titles, genome.genotype_q) }}</div>
                 </div>
             </div>
@@ -130,5 +130,8 @@ export default {
         text-align: right;
         margin-top: 15px;
         font-size: 14px;
+    }
+    .genotype {
+        font-size: 10px;
     }
 </style>

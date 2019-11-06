@@ -36,7 +36,7 @@ export default {
         this.updateAppData();
     },
     beforeRouteUpdate(to, from, next) {
-        if (to.path === '/' && to.query.ws !== from.query.ws) {
+        if (to.path === '/listView' && to.query.ws !== from.query.ws) {
             const nextWs = to.query.ws || null;
             this.$store.commit('setWorkspace', nextWs);
             this.updateAppData();

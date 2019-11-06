@@ -60,4 +60,7 @@ export default {
         -webkit-overflow-scrolling: touch;
         font-size: 12px;
     }
+    .list-group-item {
+        padding: 5px;
+    }
 </style>
