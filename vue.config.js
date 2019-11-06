@@ -3,7 +3,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/app/*': {
-                target: 'https://anfisa.forome.dev/anfisa-dev/',
+                target: 'https://anfisa.forome.dev/beta/',
                 onProxyReq(request) {
                     request.setHeader('Authorization', process.env.BASIC_AUTH);
                 },

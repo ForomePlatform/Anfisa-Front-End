@@ -159,6 +159,7 @@ export default {
         submitEnumHandler(data) {
             this.clearSearchQuery();
             this.$refs.editorEnum.clearQuery();
+            console.log('Default: ' + ENUM_DEFAULT_OPERATOR);
             const condition = [STAT_TYPE_ENUM, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
             this.$store.commit('setCurrentConditions', condition);
             this.$store.dispatch('getListByConditions');
