@@ -31,10 +31,11 @@ export default {
     },
     created() {
         const { ws } = this.$route.query;
-        if (ws) {
+        const currentWs = this.$store.getters.getWorkspace;
+        if (currentWs.toLowerCase() !== ws.toLowerCase()) {
             this.$store.commit('setWorkspace', ws);
+            this.updateAppData();
         }
-        this.updateAppData();
     },
     beforeRouteUpdate(to, from, next) {
         if (to.path === '/listView' && to.query.ws !== from.query.ws) {
