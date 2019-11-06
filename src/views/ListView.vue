@@ -6,6 +6,7 @@
 
 <script>
 import listViewPanel from '@/components/listViewPanel/ListViewPanel.vue';
+import { version, backendVersion } from '../../package.json';
 
 export default {
     name: 'ListView',

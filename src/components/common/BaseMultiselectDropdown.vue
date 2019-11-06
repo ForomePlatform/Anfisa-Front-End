@@ -23,49 +23,49 @@
 </template>
 
 <script>
-    export default{
-        name: 'BaseMultiselectDropdown',
-        props: {
-            defaultText: {
-                default: 'SELECT',
-                type: String,
-            },
-            selectedValues: {
-                type: Array,
-            },
-            data: {
-                type: Array,
-            },
-            onChange: {
-                type: Function,
-            },
+export default{
+    name: 'BaseMultiselectDropdown',
+    props: {
+        defaultText: {
+            default: 'SELECT',
+            type: String,
         },
-        data() {
-            return {
-                selected: this.selectedValues
+        selectedValues: {
+            type: Array,
+        },
+        data: {
+            type: Array,
+        },
+        onChange: {
+            type: Function,
+        },
+    },
+    data() {
+        return {
+            selected: this.selectedValues,
+        };
+    },
+    watch: {
+        selected(newSelectedValues) {
+            this.$emit('onChange', newSelectedValues);
+        },
+    },
+    methods: {
+        clearAll() {
+            this.selected = [];
+        },
+    },
+    computed: {
+        labelText() {
+            if (this.selected.length === 0) {
+                return this.defaultText;
+            } else if (this.selected.length === 1) {
+                return this.selected[0];
             }
+            return `(${this.selected.length}) Options Selected`;
         },
-        watch: {
-            selected(newSelectedValues) {
-                this.$emit('onChange', newSelectedValues);
-            }
-        },
-        methods: {
-            clearAll() {
-                this.selected = [];
-            },
-        },
-        computed: {
-            labelText() {
-                if (this.selected.length === 0) {
-                    return this.defaultText;
-                } else if (this.selected.length === 1) {
-                    return this.selected[0];
-                }
-                return `(${this.selected.length}) Options Selected`;
-            }
-        },
-    };
+    },
+};
 </script>
 
 <style scoped lang="scss">

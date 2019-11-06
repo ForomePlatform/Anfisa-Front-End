@@ -8,6 +8,7 @@
 <script>
 import VariantsPanel from '@/components/variantsListPanel/VariantsPanel.vue';
 import VariantDetailsPanel from '@/components/variantDetailsPanel/VariantDetailsPanel.vue';
+import { version, backendVersion } from '../../package.json';
 
 export default {
     name: 'VariantView',

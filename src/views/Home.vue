@@ -27,7 +27,6 @@ import Desktop from '@/views/Desktop.vue';
 import BaseModal from '@/components/common/BaseModal.vue';
 import { DISCLAIMER } from '@/common/constants';
 import { expired } from '@/common/utils';
-import { version, backendVersion } from '../../package.json';
 
 export default {
     name: 'home',
@@ -48,7 +47,7 @@ export default {
         },
         submithandler() {
             localStorage.setItem('visited', new Date());
-        }
+        },
     },
     computed: {
         disclaymer() {
@@ -67,7 +66,7 @@ export default {
                 localStorage.setItem('visited', new Date());
             }
         }
-    }
+    },
 };
 </script>
 

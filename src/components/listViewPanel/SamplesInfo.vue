@@ -9,7 +9,9 @@
 
                     </div>
                     <div style="display: inline-block">{{ sample.name }}</div>
-                    <div class="genotype">{{ getValueByName(sample.name, genome.titles, genome.genotype) }}</div>
+                    <div class="genotype">
+                        {{ getValueByName(sample.name, genome.titles, genome.genotype) }}
+                    </div>
                     <div>{{ getValueByName(sample.name, genome.titles, genome.genotype_q) }}</div>
                 </div>
             </div>
