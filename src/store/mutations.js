@@ -103,21 +103,18 @@ export function setAllCurrentConditions(state, conditions) {
 }
 
 export function setCurrentConditions(state, condition) {
-    condition[2] = 'OR';
-    console.log(JSON.stringify(condition, '', 4));
     const index = state.currentConditions
         .findIndex(item => item[1] === condition[1] && item[0] === condition[0]);
     if (index === -1) {
         state.currentConditions.push(condition);
     } else {
         const conditionFixed = JSON.parse(JSON.stringify(condition));
-        if (condition[0] === STAT_TYPE_ENUM && state.currentConditions[index][2] !== null) {
+        if (condition[0] === STAT_TYPE_ENUM) {
             [,, conditionFixed[2]] = state.currentConditions[index];
         }
         if (condition[0] === STAT_TYPE_ZYGOSITY) {
             [,,, conditionFixed[3]] = state.currentConditions[index];
         }
-        console.log('ConditionFixed: ' + JSON.stringify(conditionFixed, '', 4));
         Vue.set(state.currentConditions, index, conditionFixed);
     }
 }
