@@ -4,21 +4,26 @@
             <div class="dropdown-toggle-slot">{{labelText}}</div>
         </template>
         <b-dropdown-item-button>
-            <div сlass="multiselect_item" @click="clearAll">
-                <img class="multiselect_item_img" src="@/assets/clearAll.svg"/>
+            <div class="multiselect_item clear_all_item" @click="clearAll">
+                <img class="multiselect_item_img" src="@/assets/clearAll.svg" alt="clear all"/>
                 <span class="clear_all">CLEAR ALL</span>
             </div>
         </b-dropdown-item-button>
         <b-dropdown-divider/>
-        <b-form-checkbox
+        <div
                 v-for="item in data"
                 :key="item"
-                :value="item"
-                v-model="selected"
-                class="multiselect_checkbox"
+                class="multiselect_item"
         >
-            {{ item }}
-        </b-form-checkbox>
+            <b-form-checkbox
+                    :key="item"
+                    :value="item"
+                    v-model="selected"
+                    class="multiselect_checkbox"
+            >
+                {{ item }}
+            </b-form-checkbox>
+        </div>
     </b-dropdown>
 </template>
 
@@ -69,6 +74,9 @@ export default{
 </script>
 
 <style scoped lang="scss">
+    label {
+        display: inline-block;
+    }
     .dropdown {
         flex: 0 1 auto;
         width: 100%;
@@ -80,6 +88,7 @@ export default{
         }
     }
     /deep/ .dropdown-menu.show {
+        min-width: 170px;
         max-height: 300px;
         overflow-y: auto;
     }
@@ -122,11 +131,15 @@ export default{
     .multiselect_checkbox {
         position: relative;
         top: 0.2em;
-        margin-left: 0.5em;
+        margin-right: 0.5em;
     }
     .multiselect_item {
         margin: 0;
-        padding: 0;
+        padding: 2px 10px;
+        min-height: 20px;
+        font-size: 14px;
+        color: #1a3e6c;
+        white-space: nowrap;
         &:hover {
             background-color:#2bb3ed;
         }
@@ -141,5 +154,8 @@ export default{
         padding: 5px;
         color: #1a3e6c;
         cursor: pointer;
+        &_item {
+            text-align: center;
+        }
     }
 </style>
