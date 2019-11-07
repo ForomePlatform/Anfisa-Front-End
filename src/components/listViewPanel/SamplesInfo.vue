@@ -23,89 +23,87 @@
 </template>
 
 <script>
-    import {ANNOTATION_SERVICE} from '../../common/constants';
-    import router from '../../router';
+import { ANNOTATION_SERVICE } from '../../common/constants';
+import router from '../../router';
 
-    export default {
-        name: 'SamplesInfo',
-        props: {
-            genome: {
-                type: Object,
-                required: true,
-            },
-            id: {
-                type: Number,
-                required: true,
-            },
+export default {
+    name: 'SamplesInfo',
+    props: {
+        genome: {
+            type: Object,
+            required: true,
         },
-        data() {
-            return {
-                pass: 'PASS',
-                failed: 'FAILED: ',
-                names: this.genome.titles.slice(2)
+        id: {
+            type: Number,
+            required: true,
+        },
+    },
+    data() {
+        return {
+            pass: 'PASS',
+            failed: 'FAILED: ',
+            names: this.genome.titles.slice(2),
+        };
+    },
+    computed: {
+        getSampleName() {
+            return name => this.getSample(name).name;
+        },
+        getValueByName() {
+            return (name, values) => {
+                const valueIndex = this.genome.titles.indexOf(name);
+                if (valueIndex !== -1) {
+                    return values[valueIndex];
+                }
+                return '';
             };
         },
-        computed: {
-            getSampleName() {
-                return (name) => {
-                    return this.getSample(name).name;
-                }
-            },
-            getValueByName() {
-                return (name, values) => {
-                    const valueIndex = this.genome.titles.indexOf(name);
-                    if (valueIndex !== -1) {
-                        return values[valueIndex];
-                    }
-                    return '';
-                };
-            },
-            getFilters() {
-                const filtersString = this.genome.filters.toString();
-                if (filtersString.toLowerCase() !== this.pass.toLowerCase()) {
-                    return this.failed + filtersString;
-                }
-                return this.pass;
-            },
-            getAffectedIcon() {
-                return (name) => {
-                    const affected = this.getSample(name).affected;
-                    const sex = this.getSample(name).sex;
-                    if (affected) {
-                        return sex === 1 ? 'fill-rect' : 'outline-rect';
-                    }
-                    return sex === 1 ? 'fill-circle' : 'outline-circle';
-                }
-            },
+        getFilters() {
+            const filtersString = this.genome.filters.toString();
+            if (filtersString.toLowerCase() !== this.pass.toLowerCase()) {
+                return this.failed + filtersString;
+            }
+            return this.pass;
         },
-        methods: {
-            getSample(name) {
-                let result = {};
-                const meta = this.$store.getters.getMeta;
-                if (meta && meta.samples) {
-                    Object.keys(meta.samples).forEach(sample => {
-                        if (name.includes(sample)) {
-                            result = meta.samples[sample];
-                        }
-                    });
+        getAffectedIcon() {
+            return (name) => {
+                const { affected } = this.getSample(name);
+                const { sex } = this.getSample(name);
+                if (affected) {
+                    return sex === 1 ? 'fill-rect' : 'outline-rect';
                 }
-                return result;
-            },
-            toggleToDetails() {
-                const ws = this.$store.getters.getWorkspace;
-                const variant = this.id;
-                if (ws === ANNOTATION_SERVICE) {
-                    const { annotations } = this.$store.state.annotations;
-                    const data = annotations.annotationsSearchResult[this.id].result[0];
-                    this.$store.commit('setSelectedVariant', this.id);
-                    this.$store.dispatch('setVariantsDetails', data);
-                } else {
-                    this.$store.dispatch('getVariantDetails', this.id);
-                }
-                router.push({ path: '/', query: { ws, variant } });
-            },
+                return sex === 1 ? 'fill-circle' : 'outline-circle';
+            };
         },
-    };
+    },
+    methods: {
+        getSample(name) {
+            let result = {};
+            const meta = this.$store.getters.getMeta;
+            if (meta && meta.samples) {
+                Object.keys(meta.samples).forEach((sample) => {
+                    if (name.includes(sample)) {
+                        result = meta.samples[sample];
+                    }
+                });
+            }
+            return result;
+        },
+        toggleToDetails() {
+            const ws = this.$store.getters.getWorkspace;
+            const variant = this.id;
+            if (ws === ANNOTATION_SERVICE) {
+                const { annotations } = this.$store.state.annotations;
+                const data = annotations.annotationsSearchResult[this.id].result[0];
+                this.$store.commit('setSelectedVariant', this.id);
+                this.$store.dispatch('setVariantsDetails', data);
+            } else {
+                this.$store.dispatch('getVariantDetails', this.id);
+            }
+            router.push({ path: '/', query: { ws, variant } });
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>

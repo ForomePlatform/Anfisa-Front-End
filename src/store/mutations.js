@@ -251,7 +251,7 @@ export function setMeta(state, meta) {
 }
 
 export function addNote(state, note) {
-    const notes = state.notes;
+    const { notes } = state;
     const foundNote = notes.findIndex(addedNote => addedNote.id === note.id);
     if (foundNote !== -1) {
         notes[foundNote] = note;
@@ -261,7 +261,7 @@ export function addNote(state, note) {
 }
 
 export function addTags(state, tags) {
-    const selectedGenTags = state.selectedGenTags;
+    const { selectedGenTags } = state;
     const foundTags = selectedGenTags.findIndex(addedTags => addedTags.id === tags.id);
     if (foundTags !== -1) {
         selectedGenTags[foundTags] = tags;

@@ -25,8 +25,8 @@ export default {
     name: 'NotesFixedPanel',
     data() {
         return {
-            note: this.$store.state.note
-        }
+            note: this.$store.state.note,
+        };
     },
     computed: {
         showSaved() {

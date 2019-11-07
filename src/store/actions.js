@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as utils from '../common/utils';
-import {ANNOTATION_SERVICE} from '../common/constants';
+import { ANNOTATION_SERVICE } from '../common/constants';
 
 const httpParams = {
     headers: {
@@ -200,13 +200,13 @@ export function getListViewTags(context, variant) {
             const NOTE_TAG = '_note';
             tags.tags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
-            notes.note = data['rec-tags'][NOTE_TAG] || ''
+            notes.note = data['rec-tags'][NOTE_TAG] || '';
             const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
             context.commit('clearTagFilterValue');
             context.commit('setAllTags', allTags);
             context.commit('addNote', notes);
             context.commit('addTags', tags);
-        })
+        });
 }
 
 
@@ -269,9 +269,9 @@ export function getZoneList(context, ws) {
 
 export function addNewTag(context, newTagTitle) {
     const NOTE_TAG = '_note';
-    const id =context.state.selectedVariant;
+    const id = context.state.selectedVariant;
     const tags = {
-        id: id,
+        id,
         tags: [],
     };
     const tagsObject = {
@@ -310,7 +310,7 @@ export function toggleVariantTag(context, tag) {
     const NOTE_TAG = '_note';
     const id = context.state.selectedVariant;
     const tags = {
-        id: id,
+        id,
         tags: [],
     };
     const tagsObject = {};
@@ -336,7 +336,7 @@ export function toggleVariantTag(context, tag) {
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
             tags.tags = selectedTags;
             const notes = {
-                id: id,
+                id,
                 note: data['rec-tags'][NOTE_TAG] || '',
             };
             const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
@@ -653,7 +653,7 @@ export function formatVcf(context, data) {
 export function setNote(context, note) {
     const notes = {
         id: context.state.selectedVariant,
-        note: note,
+        note,
     };
     context.commit('setNote', note);
     context.commit('addNote', notes);

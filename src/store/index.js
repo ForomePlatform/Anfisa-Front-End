@@ -165,7 +165,7 @@ export default new Vuex.Store({
         },
         getTagsById: state => id => state.selectedGenTags.filter(tags => tags.id === id),
         getSelectedId(state) {
-            return state.selectedVariant
-        }
+            return state.selectedVariant;
+        },
     },
 });
