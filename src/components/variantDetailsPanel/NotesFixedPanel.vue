@@ -1,9 +1,9 @@
 <template>
     <div class="notes-fixed-panel">
         <b-form-textarea
-            @input="changeNotes"
+            @input="changeNote"
             @keydown.native.stop
-            :value="notes"
+            v-model="note"
             :rows="10"
             no-resize
             placeholder="Notes..."
@@ -22,10 +22,13 @@
 
 <script>
 export default {
+    name: 'NotesFixedPanel',
+    data() {
+        return {
+            note: this.$store.state.note
+        }
+    },
     computed: {
-        notes() {
-            return this.$store.state.note;
-        },
         showSaved() {
             return this.$store.state.saveNoteStatus;
         },
@@ -34,8 +37,8 @@ export default {
         },
     },
     methods: {
-        changeNotes(value) {
-            this.$store.commit('changeNote', value);
+        changeNote() {
+            this.$store.dispatch('setNote', this.note);
         },
         saveNotes() {
             this.$store.dispatch('saveNote');

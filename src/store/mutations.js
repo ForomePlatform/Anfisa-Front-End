@@ -62,7 +62,7 @@ export function setExportFileUrl(state, exportFileUrl) {
     state.exportFileUrl = exportFileUrl;
 }
 
-export function changeNote(state, note) {
+export function setNote(state, note) {
     state.note = note;
 }
 
@@ -250,8 +250,14 @@ export function setMeta(state, meta) {
     state.meta = meta;
 }
 
-export function addNotes(state, notes) {
-    state.notes.push(notes);
+export function addNote(state, note) {
+    const notes = state.notes;
+    const foundNote = notes.findIndex(addedNote => addedNote.id === note.id);
+    if (foundNote !== -1) {
+        notes[foundNote] = note;
+    } else {
+        notes.push(note);
+    }
 }
 
 export function addTags(state, tags) {

@@ -176,14 +176,14 @@ export function getVariantTags(context, variant) {
             context.commit('clearTagFilterValue');
             context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
-            context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
-            context.commit('addNotes', notes);
+            context.commit('setNote', data['rec-tags'][NOTE_TAG] || '');
+            context.commit('addNote', notes);
             context.commit('addTags', tags);
         })
         .catch((error) => {
             context.commit('setAllTags', []);
             context.commit('setSelectedTags', []);
-            context.commit('changeNote', '');
+            context.commit('setNote', '');
             console.log(error);
         });
 }
@@ -279,6 +279,7 @@ export function addNewTag(context, newTagTitle) {
 
 export function toggleVariantTag(context, tag) {
     const NOTE_TAG = '_note';
+    const id = context.state.selectedVariant;
     const tagsObject = {};
     if (context.state.note) {
         tagsObject[NOTE_TAG] = context.state.note;
@@ -293,22 +294,27 @@ export function toggleVariantTag(context, tag) {
     }
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
-    params.append('rec', context.state.selectedVariant);
+    params.append('rec', id);
     params.append('tags', JSON.stringify(tagsObject));
     commonHttp.post('/tags', params)
         .then((response) => {
             const { data } = response;
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
+            const notes = {
+                id: id,
+                note: data['rec-tags'][NOTE_TAG] || '',
+            };
             const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
             context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
-            context.commit('changeNote', data['rec-tags'][NOTE_TAG] || '');
+            context.commit('setNote', data['rec-tags'][NOTE_TAG] || '');
+            context.commit('addNote', notes);
         })
         .catch((error) => {
             context.commit('setAllTags', []);
             context.commit('setSelectedTags', []);
-            context.commit('changeNote', '');
+            context.commit('setNote', '');
             console.log(error);
         });
 }
@@ -606,4 +612,13 @@ export function formatVcf(context, data) {
     anfisaJsonParams = new FormData();
     anfisaJsonParams.append('data', data);
     getAnfisaJson(context, formatUrl, formatHeader);
+}
+
+export function setNote(context, note) {
+    const notes = {
+        id: context.state.selectedVariant,
+        note: note,
+    };
+    context.commit('setNote', note);
+    context.commit('addNote', notes);
 }

@@ -30,7 +30,7 @@ export default {
     created() {
         const { ws } = this.$route.query;
         const currentWs = this.$store.getters.getWorkspace;
-        if (currentWs.toLowerCase() !== ws.toLowerCase()) {
+        if (ws && currentWs.toLowerCase() !== ws.toLowerCase()) {
             this.$store.commit('setWorkspace', ws);
             this.updateAppData();
         }
