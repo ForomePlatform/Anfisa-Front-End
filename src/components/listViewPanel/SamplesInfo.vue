@@ -1,18 +1,18 @@
 <template>
     <div class="samples-wrapper">
         <div class="samples-list">
-            <div class="samples" v-for="sample in Object.values(getSamples)" :key="sample.id">
+            <div class="samples" v-for="(name, index) in names" :key="index">
                 <div>
                     <div
-                            :class="getAffectedIcon(sample.affected, sample.sex)"
+                            :class="getAffectedIcon(name)"
                             style="display: inline-block">
 
                     </div>
-                    <div style="display: inline-block">{{ sample.name }}</div>
+                    <div style="display: inline-block">{{ getSampleName(name) }}</div>
                     <div class="genotype">
-                        {{ getValueByName(sample.name, genome.titles, genome.genotype) }}
+                        {{ getValueByName(name, genome.genotype) }}
                     </div>
-                    <div>{{ getValueByName(sample.name, genome.titles, genome.genotype_q) }}</div>
+                    <div>{{ getValueByName(name, genome.genotype_q) }}</div>
                 </div>
             </div>
         </div>
@@ -23,74 +23,89 @@
 </template>
 
 <script>
-import { ANNOTATION_SERVICE } from '../../common/constants';
-import router from '../../router';
+    import {ANNOTATION_SERVICE} from '../../common/constants';
+    import router from '../../router';
 
-export default {
-    name: 'SamplesInfo',
-    props: {
-        genome: {
-            type: Object,
-            required: true,
+    export default {
+        name: 'SamplesInfo',
+        props: {
+            genome: {
+                type: Object,
+                required: true,
+            },
+            id: {
+                type: Number,
+                required: true,
+            },
         },
-        id: {
-            type: Number,
-            required: true,
-        },
-    },
-    data() {
-        return {
-            pass: 'PASS',
-            failed: 'FAILED: ',
-        };
-    },
-    computed: {
-        getSamples() {
-            const meta = this.$store.getters.getMeta;
-            if (meta && meta.samples) {
-                return meta.samples;
-            }
-            return '';
-        },
-        getValueByName() {
-            return (currentName, names, values) => {
-                for (let i = 2; i < names.length; i += 1) {
-                    if (values && names[i].toLowerCase().includes(currentName.toLowerCase())) {
-                        return values[i];
-                    }
-                }
-                return '';
+        data() {
+            return {
+                pass: 'PASS',
+                failed: 'FAILED: ',
+                names: this.genome.titles.slice(2)
             };
         },
-        getFilters() {
-            const filtersString = this.genome.filters.toString();
-            if (filtersString.toLowerCase() !== this.pass.toLowerCase()) {
-                return this.failed + filtersString;
-            }
-            return this.pass;
+        computed: {
+            getSampleName() {
+                return (name) => {
+                    return this.getSample(name).name;
+                }
+            },
+            getValueByName() {
+                return (name, values) => {
+                    const valueIndex = this.genome.titles.indexOf(name);
+                    if (valueIndex !== -1) {
+                        return values[valueIndex];
+                    }
+                    return '';
+                };
+            },
+            getFilters() {
+                const filtersString = this.genome.filters.toString();
+                if (filtersString.toLowerCase() !== this.pass.toLowerCase()) {
+                    return this.failed + filtersString;
+                }
+                return this.pass;
+            },
+            getAffectedIcon() {
+                return (name) => {
+                    const affected = this.getSample(name).affected;
+                    const sex = this.getSample(name).sex;
+                    if (affected) {
+                        return sex === 1 ? 'fill-rect' : 'outline-rect';
+                    }
+                    return sex === 1 ? 'fill-circle' : 'outline-circle';
+                }
+            },
         },
-    },
-    methods: {
-        getAffectedIcon(affected, sex) {
-            if (affected) {
-                return sex === 1 ? 'fill-rect' : 'outline-rect';
-            }
-            return sex === 1 ? 'fill-circle' : 'outline-circle';
+        methods: {
+            getSample(name) {
+                let result = {};
+                const meta = this.$store.getters.getMeta;
+                if (meta && meta.samples) {
+                    Object.keys(meta.samples).forEach(sample => {
+                        if (name.includes(sample)) {
+                            result = meta.samples[sample];
+                        }
+                    });
+                }
+                return result;
+            },
+            toggleToDetails() {
+                const ws = this.$store.getters.getWorkspace;
+                const variant = this.id;
+                if (ws === ANNOTATION_SERVICE) {
+                    const { annotations } = this.$store.state.annotations;
+                    const data = annotations.annotationsSearchResult[this.id].result[0];
+                    this.$store.commit('setSelectedVariant', this.id);
+                    this.$store.dispatch('setVariantsDetails', data);
+                } else {
+                    this.$store.dispatch('getVariantDetails', this.id);
+                }
+                router.push({ path: '/', query: { ws, variant } });
+            },
         },
-        toggleToDetails() {
-            const ws = this.$store.getters.getWorkspace;
-            if (ws === ANNOTATION_SERVICE) {
-                const { annotations } = this.$store.state.annotations;
-                const data = annotations.annotationsSearchResult[this.id].result[0];
-                this.$store.commit('setSelectedVariant', this.id);
-                this.$store.dispatch('setVariantsDetails', data);
-            } else {
-                this.$store.dispatch('getVariantDetails', this.id);
-            }
-            router.push({ path: '/', query: { ws } });
-        },
-    },
-};
+    };
 </script>
 
 <style lang="scss" scoped>
@@ -102,11 +117,11 @@ export default {
         margin: 5px;
     }
     .outline-rect {
-         height: 10px;
-         width: 10px;
-         border: 2px solid #000;
-         margin-right: 5px;
-     }
+        height: 10px;
+        width: 10px;
+        border: 2px solid #000;
+        margin-right: 5px;
+    }
     .fill-rect {
         height: 10px;
         width: 10px;

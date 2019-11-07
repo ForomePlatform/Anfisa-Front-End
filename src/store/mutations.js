@@ -261,5 +261,11 @@ export function addNote(state, note) {
 }
 
 export function addTags(state, tags) {
-    state.selectedGenTags.push(tags);
+    const selectedGenTags = state.selectedGenTags;
+    const foundTags = selectedGenTags.findIndex(addedTags => addedTags.id === tags.id);
+    if (foundTags !== -1) {
+        selectedGenTags[foundTags] = tags;
+    } else {
+        selectedGenTags.push(tags);
+    }
 }

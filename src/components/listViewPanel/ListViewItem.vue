@@ -116,8 +116,11 @@ export default {
     },
     methods: {
         loadItemsDetails(id) {
-            this.$store.dispatch('getListViewDetails', id);
-            this.$store.dispatch('getVariantTags', id);
+            const listViewDetails = this.$store.getters.getListViewDetails;
+            if (listViewDetails.length === 0) {
+                this.$store.dispatch('getListViewDetails', id);
+                this.$store.dispatch('getListViewTags', id);
+            }
         },
     },
 };

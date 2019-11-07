@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as utils from '../common/utils';
-import { ANNOTATION_SERVICE } from '../common/constants';
+import {ANNOTATION_SERVICE} from '../common/constants';
 
 const httpParams = {
     headers: {
@@ -156,6 +156,7 @@ export function getMeta(context) {
 
 export function getVariantTags(context, variant) {
     const params = new URLSearchParams();
+
     params.append('ws', context.state.workspace);
     params.append('rec', variant);
     commonHttp.post('/tags', params)
@@ -164,21 +165,12 @@ export function getVariantTags(context, variant) {
             const NOTE_TAG = '_note';
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
-            const notes = {
-                id: variant,
-                note: data['rec-tags'][NOTE_TAG] || '',
-            };
-            const tags = {
-                id: variant,
-                tags: selectedTags,
-            };
+            const note = data['rec-tags'][NOTE_TAG] || '';
             const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
             context.commit('clearTagFilterValue');
             context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
-            context.commit('setNote', data['rec-tags'][NOTE_TAG] || '');
-            context.commit('addNote', notes);
-            context.commit('addTags', tags);
+            context.commit('setNote', note);
         })
         .catch((error) => {
             context.commit('setAllTags', []);
@@ -186,6 +178,35 @@ export function getVariantTags(context, variant) {
             context.commit('setNote', '');
             console.log(error);
         });
+}
+
+export function getListViewTags(context, variant) {
+    const params = new URLSearchParams();
+
+    const tags = {
+        id: variant,
+        tags: [],
+    };
+    const notes = {
+        id: variant,
+        note: '',
+    };
+
+    params.append('ws', context.state.workspace);
+    params.append('rec', variant);
+    commonHttp.post('/tags', params)
+        .then((response) => {
+            const { data } = response;
+            const NOTE_TAG = '_note';
+            tags.tags = Object.keys(data['rec-tags'])
+                .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
+            notes.note = data['rec-tags'][NOTE_TAG] || ''
+            const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
+            context.commit('clearTagFilterValue');
+            context.commit('setAllTags', allTags);
+            context.commit('addNote', notes);
+            context.commit('addTags', tags);
+        })
 }
 
 
@@ -248,6 +269,11 @@ export function getZoneList(context, ws) {
 
 export function addNewTag(context, newTagTitle) {
     const NOTE_TAG = '_note';
+    const id =context.state.selectedVariant;
+    const tags = {
+        id: id,
+        tags: [],
+    };
     const tagsObject = {
         [newTagTitle.trim()]: true,
         _note: context.state.note,
@@ -257,22 +283,25 @@ export function addNewTag(context, newTagTitle) {
     });
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
-    params.append('rec', context.state.selectedVariant);
+    params.append('rec', id);
     params.append('tags', JSON.stringify(tagsObject));
     commonHttp.post('/tags', params)
         .then((response) => {
             const { data } = response;
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
+            tags.tags = selectedTags;
             const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
             context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
+            context.commit('addTags', tags);
             context.commit('clearTagFilterValue');
             getZoneList(context);
         })
         .catch((error) => {
             context.commit('setAllTags', []);
             context.commit('setSelectedTags', []);
+            context.commit('addTags', tags);
             console.log(error);
         });
 }
@@ -280,6 +309,10 @@ export function addNewTag(context, newTagTitle) {
 export function toggleVariantTag(context, tag) {
     const NOTE_TAG = '_note';
     const id = context.state.selectedVariant;
+    const tags = {
+        id: id,
+        tags: [],
+    };
     const tagsObject = {};
     if (context.state.note) {
         tagsObject[NOTE_TAG] = context.state.note;
@@ -301,6 +334,7 @@ export function toggleVariantTag(context, tag) {
             const { data } = response;
             const selectedTags = Object.keys(data['rec-tags'])
                 .filter(item => data['rec-tags'][item] && item !== NOTE_TAG);
+            tags.tags = selectedTags;
             const notes = {
                 id: id,
                 note: data['rec-tags'][NOTE_TAG] || '',
@@ -308,12 +342,14 @@ export function toggleVariantTag(context, tag) {
             const allTags = [...data['check-tags'], ...data['op-tags']].filter(item => item !== NOTE_TAG);
             context.commit('setAllTags', allTags);
             context.commit('setSelectedTags', selectedTags);
+            context.commit('addTags', tags);
             context.commit('setNote', data['rec-tags'][NOTE_TAG] || '');
             context.commit('addNote', notes);
         })
         .catch((error) => {
             context.commit('setAllTags', []);
             context.commit('setSelectedTags', []);
+            context.commit('addTags', tags);
             context.commit('setNote', '');
             console.log(error);
         });

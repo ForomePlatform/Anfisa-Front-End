@@ -29,7 +29,10 @@ export default {
         };
     },
     created() {
-        this.$store.dispatch('getMeta');
+        const meta = this.$store.getters.getMeta;
+        if (!meta) {
+            this.$store.dispatch('getMeta');
+        }
     },
     computed: {
         getPageItems() {
