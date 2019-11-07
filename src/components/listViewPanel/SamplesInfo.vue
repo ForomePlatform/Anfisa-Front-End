@@ -52,7 +52,7 @@ export default {
         getValueByName() {
             return (name, values) => {
                 const valueIndex = this.genome.titles.indexOf(name);
-                if (valueIndex !== -1) {
+                if (values && valueIndex !== -1) {
                     return values[valueIndex];
                 }
                 return '';
