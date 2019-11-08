@@ -54,12 +54,9 @@ export default {
             title: 'Title',
         };
     },
-    created() {
-        this.loadItemsDetails(this.item.id);
-    },
     computed: {
         getGenome() {
-            const details = this.$store.getters.getDetailsById(this.item.id);
+            const details = this.$store.getters.getListViewDetailsById(this.item.id);
             if (details && details.length > 0) {
                 return {
                     gene: this.getDetailsValue(this.viewGen, 'Gene(s)'),
@@ -91,7 +88,7 @@ export default {
         getDetailsArray() {
             return (view, name) => {
                 let result = null;
-                const itemData = this.$store.getters.getDetailsById(this.item.id);
+                const itemData = this.$store.getters.getListViewDetailsById(this.item.id);
                 const { details } = itemData[0];
                 const viewData = details[view].data;
                 viewData.forEach((data) => {
@@ -111,16 +108,6 @@ export default {
                 }
                 return '';
             };
-        },
-
-    },
-    methods: {
-        loadItemsDetails(id) {
-            const listViewDetails = this.$store.getters.getListViewDetails;
-            if (listViewDetails.length === 0) {
-                this.$store.dispatch('getListViewDetails', id);
-                this.$store.dispatch('getListViewTags', id);
-            }
         },
     },
 };

@@ -121,7 +121,7 @@ export function getVariantDetails(context, variant) {
             console.log(error);
         });
 }
-export function setDetails(context, data, id) {
+export function addDetails(context, data, id) {
     const details = utils.prepareVariantDetails(data);
     const result = {
         id,
@@ -135,7 +135,7 @@ export function getListViewDetails(context, id) {
     params.append('rec', id);
     commonHttp.post('/reccnt', params)
         .then((response) => {
-            setDetails(context, response.data, id);
+            addDetails(context, response.data, id);
         })
         .catch((error) => {
             console.log(error);

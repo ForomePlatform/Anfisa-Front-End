@@ -142,7 +142,8 @@ export default new Vuex.Store({
         getListViewDetails(state) {
             return state.listViewDetails;
         },
-        getDetailsById: state => id => state.listViewDetails.filter(detail => detail.id === id),
+        getListViewDetailsById: state => id =>
+            state.listViewDetails.filter(detail => detail.id === id),
         getMeta(state) {
             return state.meta;
         },

@@ -26,6 +26,7 @@ export default {
         return {
             itemPerPage: 10,
             page: 1,
+            endIndex: 10,
         };
     },
     created() {
@@ -33,11 +34,18 @@ export default {
         if (!meta) {
             this.$store.dispatch('getMeta');
         }
+        if (this.itemsList.length > 0) {
+            this.loadItemsDetails();
+        }
     },
     computed: {
         getPageItems() {
-            const endIndex = this.itemPerPage * this.page;
-            return this.itemsList.slice(0, endIndex);
+            return this.itemsList.slice(0, this.endIndex);
+        },
+    },
+    watch: {
+        itemsList() {
+            this.loadItemsDetails();
         },
     },
     methods: {
@@ -48,7 +56,20 @@ export default {
 
             if (diffHeight - 1 <= el.scrollTop) {
                 this.page = this.page + 1;
+                this.endIndex = this.itemPerPage * this.page;
+                this.loadItemsDetails();
             }
+        },
+        loadItemsDetails() {
+            const startIndex = this.itemPerPage * (this.page - 1);
+            const items = this.itemsList.slice(startIndex, this.endIndex);
+            items.forEach((item) => {
+                const foundItems = this.$store.getters.getListViewDetailsById(item.id);
+                if (foundItems && foundItems.length === 0) {
+                    this.$store.dispatch('getListViewDetails', item.id);
+                    this.$store.dispatch('getListViewTags', item.id);
+                }
+            });
         },
     },
 };
