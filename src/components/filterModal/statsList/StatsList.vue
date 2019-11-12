@@ -193,8 +193,8 @@ export default {
         inheritanceHandler(stat) {
             if (stat.title === 'Inheritance') {
                 return !stat.data.filter(item => !this.hasProblemGroup(item) &&
-                    (stat.type !== STAT_TYPE_ZYGOSITY || this.filteredData(item).variants)
-                    ).length || !stat.data.length;
+                    (stat.type !== STAT_TYPE_ZYGOSITY || this.filteredData(item).variants))
+                    .length || !stat.data.length;
             }
             return !stat.data.length;
         },
@@ -202,8 +202,8 @@ export default {
             return (stat.type === STAT_TYPE_ZYGOSITY) && (stat.data.variants === null);
         },
         secondaryDisabled(stat) {
-            return this.hasProblemGroup(stat) || !this.filledStat(stat) && !this.showStat(stat) &&
-                this.inheritanceHandler(stat);
+            return this.hasProblemGroup(stat) || (!this.filledStat(stat) && !this.showStat(stat) &&
+                this.inheritanceHandler(stat));
         },
         expandPreselectedStats() {
             const isStringTrue = value => value === 'true';
