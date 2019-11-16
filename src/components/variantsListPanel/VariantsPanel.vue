@@ -59,6 +59,7 @@ import VariantsPanelList from './VariantsPanelList.vue';
 import VariantsPanelGroups from './VariantsPanelGroups.vue';
 import BaseScrollVertical from '../common/BaseScrollVertical.vue';
 import { ANNOTATION_SERVICE } from '../../common/constants';
+import router from '../../router';
 
 export default {
     name: 'VariantsPanel',
@@ -87,11 +88,12 @@ export default {
             if (this.$store.state.workspace === ANNOTATION_SERVICE) {
                 const data = this.$store.state.annotations.annotationsSearchResult[id].result[0];
                 this.$store.commit('setSelectedVariant', id);
-                this.$store.dispatch('setVariantsDetails', data);
+                this.$store.dispatch('setVariantsDetails', data)
             } else {
                 this.$store.dispatch('getVariantDetails', id);
                 this.$store.dispatch('getVariantTags', id);
             }
+            router.push({ parh: '/', query: { ...this.$route.query, variant: id + 1 } });
         },
         toggleView() {
             this.$store.commit('setListMounting', true);

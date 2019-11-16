@@ -63,7 +63,7 @@ export default {
         variantByUrl() {
             const id = Number(this.$route.query.variant);
             if (id && id >= 1 && id <= this.data.length && !this.selectedItem) {
-                this.selectItem(id-1);
+                this.selectItem(id - 1);
             }
         },
     },
