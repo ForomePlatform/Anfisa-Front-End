@@ -32,7 +32,7 @@
                     <span>
                         {{prop}}
                     </span>
-                    <span v-if="!isOperativeRender && count">
+                    <span v-if="!isOperativeRender || count">
                         ({{count}})
                     </span>
                 </div>
