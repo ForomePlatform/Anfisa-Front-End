@@ -1,19 +1,19 @@
-FROM nginx:1.17
+FROM node:10.17-buster AS builder
 
 ENV WORKDIR /tmp/anfisa-ui
+ENV BASE_URL /
+ENV VUE_APP_API_URL /app
+
 RUN mkdir -p $WORKDIR
-
-RUN apt-get update -q && \
-    apt-get install --no-install-recommends --no-install-suggests -y npm
-
 WORKDIR $WORKDIR
-COPY package*.json $WORKDIR/
 
+COPY package*.json $WORKDIR/
 RUN npm install && npm install --save-dev --unsafe-perm node-sass
 
 COPY . $WORKDIR
 RUN npm run build --mode=production
 
-WORKDIR $WORKDIR/dist
-RUN cp -R . /usr/share/nginx/html
+FROM nginx:1.17
+
+COPY --from=builder /tmp/anfisa-ui/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
