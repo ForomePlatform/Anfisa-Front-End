@@ -88,7 +88,7 @@ export default {
             if (this.$store.state.workspace === ANNOTATION_SERVICE) {
                 const data = this.$store.state.annotations.annotationsSearchResult[id].result[0];
                 this.$store.commit('setSelectedVariant', id);
-                this.$store.dispatch('setVariantsDetails', data)
+                this.$store.dispatch('setVariantsDetails', data);
             } else {
                 this.$store.dispatch('getVariantDetails', id);
                 this.$store.dispatch('getVariantTags', id);

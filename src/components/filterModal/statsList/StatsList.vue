@@ -203,8 +203,8 @@ export default {
             return (stat.type === STAT_TYPE_ZYGOSITY) && (stat.data.variants === null);
         },
         secondaryDisabled(stat) {
-            return this.hasProblemGroup(stat) || (!this.filledStat(stat) &&
-                !this.showStat(stat) && this.inheritanceHandler(stat));
+            return this.hasProblemGroup(stat) || (!this.filledStat(stat) && !this.showStat(stat) &&
+                this.inheritanceHandler(stat));
         },
         expandPreselectedStats() {
             const isStringTrue = value => value === 'true';
