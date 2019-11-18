@@ -194,7 +194,8 @@ export default {
         inheritanceHandler(stat) {
             if (stat.title === 'Inheritance') {
                 return !stat.data.filter(item => !this.hasProblemGroup(item) &&
-                    this.filteredData(item).variants).length || !stat.data.length;
+                    (stat.type !== STAT_TYPE_ZYGOSITY || this.filteredData(item).variants))
+                    .length || !stat.data.length;
             }
             return !stat.data.length;
         },
