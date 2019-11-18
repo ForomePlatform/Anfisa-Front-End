@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
+import VariantView from './views/VariantView.vue';
+import ListView from './views/ListView.vue';
 import AnnotationDev from './views/AnnotationDev.vue';
 
 
@@ -12,8 +13,13 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: Home,
+            name: 'variantView',
+            component: VariantView,
+        },
+        {
+            path: '/listView',
+            name: 'listView',
+            component: ListView,
         },
         {
             path: '/annotation-dev/',
