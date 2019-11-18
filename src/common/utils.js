@@ -65,7 +65,7 @@ export function getStatListWithOperativeStat(data) {
         statsToAdd.forEach((statToAdd) => {
             const dubbedHetStat = statList.findIndex(statItem => statItem[1].name === statToAdd);
             if (dubbedHetStat === -1) {
-                const target = [STAT_TYPE_ENUM, { vgroup: 'Inheritance', name: statToAdd, render: 'operative' }, [['True', null]]];
+                const target = [STAT_TYPE_ENUM, { vgroup: 'Inheritance', name: statToAdd, render: 'operative' }, [['Proband', null]]];
                 statList = [...statList, target];
             }
         });

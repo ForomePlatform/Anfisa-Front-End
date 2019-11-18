@@ -145,7 +145,7 @@ export default {
                 if (!(!!result.variants.length || !!result.family.length)) {
                     result = [];
                 }
-            } else {
+            } else if (stat.render !== 'operative') {
                 result = this.filterData(result, isSubstat);
             }
             return result;
@@ -182,7 +182,8 @@ export default {
         },
         showStat(stat) {
             return !this.hasProblemGroup(stat) &&
-                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery));
+                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery) ||
+                (stat.render === 'operative'));
         },
         primaryDisabled(stat) {
             return !this.filledStat(stat) && (
@@ -202,8 +203,8 @@ export default {
             return (stat.type === STAT_TYPE_ZYGOSITY) && (stat.data.variants === null);
         },
         secondaryDisabled(stat) {
-            return this.hasProblemGroup(stat) || (!this.filledStat(stat) && !this.showStat(stat) &&
-                this.inheritanceHandler(stat));
+            return this.hasProblemGroup(stat) || (!this.filledStat(stat) &&
+                !this.showStat(stat) && this.inheritanceHandler(stat));
         },
         expandPreselectedStats() {
             const isStringTrue = value => value === 'true';
