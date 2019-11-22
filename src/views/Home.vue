@@ -1,8 +1,7 @@
 <template>
   <div class="home">
     <SettingsPanel />
-    <VariantsPanel />
-    <VariantDetailsPanel />
+    <Desktop />
     <BaseModal
       v-if="displayDisclaymer"
       ref="disclaymerModal"
@@ -24,15 +23,16 @@
 import SettingsPanel from '@/components/settingsPanel/SettingsPanel.vue';
 import VariantsPanel from '@/components/variantsListPanel/VariantsPanel.vue';
 import VariantDetailsPanel from '@/components/variantDetailsPanel/VariantDetailsPanel.vue';
+import Desktop from '@/views/Desktop.vue';
 import BaseModal from '@/components/common/BaseModal.vue';
 import { DISCLAIMER } from '@/common/constants';
 import { expired } from '@/common/utils';
-import { version, backendVersion } from '../../package.json';
 
 export default {
     name: 'home',
     components: {
         SettingsPanel,
+        Desktop,
         VariantsPanel,
         VariantDetailsPanel,
         BaseModal,
@@ -48,15 +48,6 @@ export default {
         submithandler() {
             localStorage.setItem('visited', new Date());
         },
-        updateAppData() {
-            this.$store.dispatch('getList');
-            this.$store.dispatch('getZoneList');
-            this.$store.dispatch('getFilters');
-            this.$store.dispatch('getRulesData');
-            this.$store.dispatch('getWorkspaces').then(() => {
-                console.log(`back v.${this.$store.state.version.slice(7)} | front v.${version} | back-required v.${backendVersion}`);
-            });
-        },
     },
     computed: {
         disclaymer() {
@@ -65,13 +56,6 @@ export default {
         displayDisclaymer() {
             return process.env.VUE_APP_DISCLAIMER_POPUP;
         },
-    },
-    created() {
-        const { ws } = this.$route.query;
-        if (ws) {
-            this.$store.commit('setWorkspace', ws);
-        }
-        this.updateAppData();
     },
     mounted() {
         if (this.displayDisclaymer) {
@@ -82,14 +66,6 @@ export default {
                 localStorage.setItem('visited', new Date());
             }
         }
-    },
-    beforeRouteUpdate(to, from, next) {
-        if (to.path === '/' && to.query.ws !== from.query.ws) {
-            const nextWs = to.query.ws || null;
-            this.$store.commit('setWorkspace', nextWs);
-            this.updateAppData();
-        }
-        next();
     },
 };
 </script>
