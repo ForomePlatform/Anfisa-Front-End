@@ -11,7 +11,12 @@
         <div v-else class="variants-panel_header">
             <BaseGeneVariantToggle :isActive="!listView" :toggle="toggleView" />
             <div class="variants-panel_count">
-                {{countCurrent}} / <b>{{countAmount}}</b>
+                <p class="variants-panel_count_line">
+                    <b>Variants: {{countCurrent}} / {{countAmount}}</b>
+                </p>
+                <p class="variants-panel_count_line">
+                    Transcripts: {{transcripts[0]}} / {{transcripts[1]}}
+                </p>
             </div>
             <div v-if="!listView"
               @click="toggleAllGroups"
@@ -76,6 +81,7 @@ export default {
             listView: 'listView',
             selectedItem: 'selectedVariant',
             mounting: 'listMounting',
+            transcripts: 'transcripts',
         }),
         ...mapGetters([
             'list',
@@ -176,6 +182,9 @@ export default {
         &_count {
             font-size: 13px;
             letter-spacing: 0px;
+            &_line {
+                margin: 0px;
+            }
         }
         &_collapse-icon {
             position: absolute;
