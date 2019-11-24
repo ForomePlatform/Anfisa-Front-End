@@ -1,65 +1,83 @@
 <template>
     <div>
-    <b-modal
-      ref="filterModal"
-      hide-header
-      hide-footer
-      centered
-      class="filter-modal"
-      lazy
-    >
-        <FilterModalHeader
-          :onClose="closeModal"
-          :onAdvancedClick="advancedViewToggle"
-          :advancedView="advancedView"
-          :loadView="loadView"
-        />
-        <FilterModalSecondHeader
-          v-if="!advancedView"
-          :loadView="loadView"
-          :onLoadClick="loadViewToggle"
-          :enableClearAll="enableClearAll"
-          :clearAll="clearAllHandler"
-          :enableSave="enableSave"
-          :onShowClick="closeModal"
-          :onCancel="loadViewToggle"
-        />
-        <div v-if="advancedView" class="filter-modal_advanced-view">
-            <FilterModalAdvancedView />
-        </div>
-        <div v-else-if="loadView" class="filter-modal_load-view">
-            <LoadView
-              :onLoad="onFilterLoad"
-              :onRemove="removeFilter"
+        <b-modal
+                ref="filterModal"
+                hide-header
+                hide-footer
+                centered
+                class="filter-modal"
+                lazy
+        >
+            <FilterModalHeader
+                    @close="closeModal"
+                    :title="title"
+            >
+            <span slot="subheader" v-if="!loadView" class="modal-header_title_descr">
+                {{ getSubtitle }}
+            </span>
+                <div slot="extra-buttons">
+                    <b-button variant="none" :pressed.sync="advancedView">
+                        &lt;/&gt;
+                    </b-button>
+                </div>
+            </FilterModalHeader>
+            <FilterModalSecondHeader
+                    v-if="!advancedView"
+                    :loadView="loadView"
+                    :onLoadClick="loadViewToggle"
+                    :enableClearAll="enableClearAll"
+                    :enableSave="enableSave"
+                    :onCancel="loadViewToggle"
+                    @clearAll="clearAllHandler"
+                    @close="closeModal"
             />
-        </div>
-        <div v-else class="filter-modal_content"
-             ref="filterModalContent"
-             :style="{'height' : `${modalContentHeight}px`}">
-            <StatsList />
-            <ConditionsView />
-        </div>
-    </b-modal>
-    <BaseWarningModal
-      :id="LOAD_MODAL_ID"
-      okTitle="LOAD ANYWAY"
-      :onSubmit="openLoadView"
-      :preset="selectedPreset || 'New Filter'"
-    />
-    <BaseWarningModal
-      :id="CLEAR_MODAL_ID"
-      okTitle="Continue to CLEAR ALL"
-      :onSubmit="clearAllSubmit"
-      :preset="selectedPreset"
-    />
-    <BaseModal
-      ref="importStatWarning"
-      :title="IMPORT_STAT_MODAL.title"
-      :onSubmit="importStat"
-      :okTitle="IMPORT_STAT_MODAL.ok"
-    >
-        <p class="mt-3 ml-3">{{ IMPORT_STAT_MODAL.text }}</p>
-    </BaseModal>
+            <div v-if="advancedView" class="filter-modal_advanced-view">
+                <FilterModalAdvancedView />
+            </div>
+            <div v-else-if="loadView" class="filter-modal_load-view">
+                <LoadView
+                        :onLoad="onFilterLoad"
+                        :onRemove="removeFilter"
+                />
+            </div>
+            <div v-else class="filter-modal_content"
+                 ref="filterModalContent"
+                 :style="{'height' : `${modalContentHeight}px`}">
+                <StatsList
+                        :modalId="CUSTOM_INHERITENCE_ID"
+                />
+                <ConditionsView />
+            </div>
+        </b-modal>
+        <BaseEditorInheritenceModal
+                :id="CUSTOM_INHERITENCE_ID"
+                title="CUSTOM INHERITENCE DIALOG"
+                okTitle="APPLY"
+                cancelTitle="CLEAR"
+                :isFooterHide="true"
+                :onSubmit="openLoadView"
+                size="xl"
+        />
+        <BaseWarningModal
+                :id="LOAD_MODAL_ID"
+                okTitle="LOAD ANYWAY"
+                :onSubmit="openLoadView"
+                :preset="selectedPreset || 'New Filter'"
+        />
+        <BaseWarningModal
+                :id="CLEAR_MODAL_ID"
+                okTitle="Continue to CLEAR ALL"
+                :onSubmit="clearAllSubmit"
+                :preset="selectedPreset"
+        />
+        <BaseModal
+                ref="importStatWarning"
+                :title="IMPORT_STAT_MODAL.title"
+                :onSubmit="importStat"
+                :okTitle="IMPORT_STAT_MODAL.ok"
+        >
+            <p class="mt-3 ml-3">{{ IMPORT_STAT_MODAL.text }}</p>
+        </BaseModal>
     </div>
 </template>
 
@@ -74,36 +92,12 @@ import ConditionsView from './conditionsView/ConditionsView.vue';
 import LoadView from './loadView/LoadView.vue';
 import FilterModalAdvancedView from './FilterModalAdvancedView.vue';
 import BaseWarningModal from './BaseWarningModal.vue';
+import BaseEditorInheritenceModal from './statsList/BaseEditorInheritenceModal.vue';
 
 export default {
-    data() {
-        return {
-            loadView: false,
-            advancedView: false,
-            CLEAR_MODAL_ID: 'filterModalClearWarning',
-            LOAD_MODAL_ID: 'filterModalLoadWarning',
-            modalContentHeight: 620,
-            IMPORT_STAT_MODAL,
-            importedStat: null,
-        };
-    },
-    computed: {
-        enableClearAll() {
-            return !this.loadView && !this.advancedView
-                && !(!this.selectedPreset && this.selectedPresetSaved);
-        },
-        enableSave() {
-            return !this.loadView && !this.advancedView && !this.selectedPresetSaved
-              && this.$store.state.currentConditions.length;
-        },
-        selectedPreset() {
-            return this.$store.state.selectedPreset;
-        },
-        selectedPresetSaved() {
-            return this.$store.state.selectedPresetSaved;
-        },
-    },
+    name: 'FilterModal',
     components: {
+        BaseEditorInheritenceModal,
         FilterModalHeader,
         FilterModalSecondHeader,
         StatsList,
@@ -112,6 +106,39 @@ export default {
         FilterModalAdvancedView,
         BaseWarningModal,
         BaseModal,
+    },
+    data() {
+        return {
+            title: 'FILTER VARIANTS',
+            loadView: false,
+            advancedView: false,
+            CLEAR_MODAL_ID: 'filterModalClearWarning',
+            LOAD_MODAL_ID: 'filterModalLoadWarning',
+            CUSTOM_INHERITENCE_ID: 'customInheritenceId',
+            modalContentHeight: 620,
+            importedStat: null,
+            IMPORT_STAT_MODAL,
+        };
+    },
+    computed: {
+        enableClearAll() {
+            return !this.loadView && !this.advancedView
+                    && !(!this.selectedPreset && this.selectedPresetSaved);
+        },
+        enableSave() {
+            return !this.loadView && !this.advancedView && !this.selectedPresetSaved
+                    && this.$store.state.currentConditions.length;
+        },
+        selectedPreset() {
+            return this.$store.getters.getSelectedPreset;
+        },
+        selectedPresetSaved() {
+            return this.$store.getters.getSelectedPresetSaved;
+        },
+        getSubtitle() {
+            const { selectedPreset, selectedPresetSaved } = this.$store.state;
+            return ` (${selectedPreset || 'New Filter'}${selectedPresetSaved ? '' : ' - Unsaved'})`;
+        },
     },
     methods: {
         openModal() {
@@ -131,9 +158,6 @@ export default {
             } else {
                 this.$root.$emit('bv::show::modal', this.LOAD_MODAL_ID);
             }
-        },
-        advancedViewToggle() {
-            this.advancedView = !this.advancedView;
         },
         onFilterLoad(preset, conditions) {
             this.$store.commit('setPreset', preset);

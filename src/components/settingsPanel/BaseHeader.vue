@@ -59,9 +59,8 @@ export default {
         &_title {
             font-size: 14px;
             line-height: 14px;
-            letter-spacing: 0px;
+            letter-spacing: 0;
             color: #2bb3ed;
-            font-family: "Arial";
             font-weight: 800;
         }
         &_icon:hover {

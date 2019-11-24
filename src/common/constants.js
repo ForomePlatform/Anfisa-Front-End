@@ -36,6 +36,7 @@ export const STAT_TYPE_STATUS = 'status';
 export const STAT_TYPE_ZYGOSITY = 'zygosity';
 export const STAT_GROUP = 'group';
 export const STAT_NUMERIC = 'numeric';
+export const STAT_TYPE_IMPORT = 'import';
 
 export const NUMERIC_RENDER_TYPES = {
     COORDINATE: 'neighborhood',
