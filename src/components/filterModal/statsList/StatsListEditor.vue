@@ -29,7 +29,7 @@
                 :buttonText="buttonText"
         />
         <BaseEditorEnum
-                v-else-if="type === statTypes.enum || type === statTypes.status"
+                v-else-if="likeEnumTypes.includes(type)"
                 :list="data"
                 :preselectedData="preselectedData"
                 :onSubmit="submitEnumHandler"
@@ -61,6 +61,8 @@ import {
     ENUM_DEFAULT_OPERATOR,
     STAT_NUMERIC,
     STAT_TYPE_ZYGOSITY,
+    STAT_TYPE_TRANSCRIPT_MULTISET,
+    STAT_TYPE_TRANSCRIPT_STATUS,
     NUMERIC_RENDER_TYPES,
 } from '@/common/constants';
 import BaseEditorCoordinate from './BaseEditorCoordinate.vue';
@@ -128,10 +130,15 @@ export default {
                 enum: STAT_TYPE_ENUM,
                 status: STAT_TYPE_STATUS,
                 zygosity: STAT_TYPE_ZYGOSITY,
+                transcript_multiset: STAT_TYPE_TRANSCRIPT_MULTISET,
+                transcript_status: STAT_TYPE_TRANSCRIPT_STATUS,
                 linear: NUMERIC_RENDER_TYPES.LINEAR,
                 coordinate: NUMERIC_RENDER_TYPES.COORDINATE,
                 logarithmic: NUMERIC_RENDER_TYPES.LOGARITHMIC,
             };
+        },
+        likeEnumTypes() {
+            return [this.statTypes.status, this.statTypes.enum, this.statTypes.transcript_multiset, this.statTypes.transcript_status];
         },
         buttonText() {
             return this.oCurrentCondition ? 'UPDATE' : 'ADD';
