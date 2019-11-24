@@ -13,12 +13,12 @@
             />
         </div>
         <BaseNonzeroCheckbox :checked="nonzeroChecked" :onChange="toggleNonzeroCheckbox"/>
-        <div v-for="stat in stats" v-bind:key="stat.name">
+        <div v-for="stat in temporaryStats" v-bind:key="stat.name">
             <BaseCollapseHeader
               :className="className"
               :name="stat.title || stat.name"
               primary
-              :disabled="primaryDisabled(stat)"
+              :disabled="!temporary && primaryDisabled(stat)"
               :filled="filledStat(stat)"
               :hasFiltered="hasPrimaryFiltered(stat)"
             >
@@ -28,7 +28,7 @@
                       v-bind:key="subStat.name"
                       :className="className"
                       :name="subStat.title || subStat.name"
-                      :disabled="secondaryDisabled(subStat)"
+                      :disabled="!temporary && secondaryDisabled(subStat)"
                       :filled="filledStat(subStat)"
                       :hasFiltered="hasFiltered(subStat)"
                       :title="subStat.tooltip"
@@ -39,6 +39,7 @@
                           :data="filteredData(subStat)"
                           :name="subStat.name"
                           :render="subStat.render"
+                          :changeTemporary="() => {}"
                         />
                     </BaseCollapseHeader>
                 </div>
@@ -66,12 +67,17 @@ export default {
         return {
             className: 'js-toggle-filters',
             nonzeroChecked: true,
+            temporary: false,
         };
     },
     computed: {
         stats() {
             return this.searchQuery ? this.$store.getters.getFilteredStats(this.searchQuery)
                 : this.$store.state.stats;
+        },
+        temporaryStats() {
+            return this.searchQuery ? this.$store.getters.getFilteredStats(this.searchQuery)
+                : this.$store.state.temporaryStats;
         },
         oCurrentConditions() {
             return this.$store.getters.oCurrentConditions;
@@ -253,6 +259,9 @@ export default {
                     }
                 });
             }
+        },
+        onChangeTemporary(temporary) {
+            this.temporary = temporary;
         },
     },
     mounted() {
