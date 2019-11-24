@@ -19,7 +19,6 @@ export const LOGICAL_OPERATORS = {
     OR: 'Any',
     AND: 'All',
     NOT: 'None',
-    ONLY: 'Only',
 };
 
 export const LOGICAL_OPERATORS_STATUS = {
