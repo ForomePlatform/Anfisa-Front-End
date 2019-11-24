@@ -12,13 +12,13 @@
               placeholder="Search"
             />
         </div>
-        <BaseNonzeroCheckbox :checked="nonzeroChecked" @change="toggleNonzeroCheckbox"/>
-        <div v-for="stat in getStats" :key="stat.name">
+        <BaseNonzeroCheckbox :checked="nonzeroChecked" :onChange="toggleNonzeroCheckbox"/>
+        <div v-for="stat in temporaryStats" v-bind:key="stat.name">
             <BaseCollapseHeader
               :className="className"
               :name="stat.title || stat.name"
               primary
-              :disabled="primaryDisabled(stat)"
+              :disabled="!temporary && primaryDisabled(stat)"
               :filled="filledStat(stat)"
               :hasFiltered="hasPrimaryFiltered(stat)"
             >
