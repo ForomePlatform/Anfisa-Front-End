@@ -33,6 +33,7 @@
                 :list="data"
                 :preselectedData="preselectedData"
                 :onSubmit="submitEnumHandler"
+                :onChange="renewEnumHandler"
                 :removeImport="removeImportHandler"
                 :buttonText="buttonText"
                 :render="render"
@@ -70,7 +71,7 @@ import BaseEditorEnum from './BaseEditorEnum.vue';
 import BaseEditorZygosity from './BaseEditorZygosity.vue';
 
 export default {
-    props: ['type', 'data', 'name', 'render'],
+    props: ['type', 'data', 'name', 'render', 'changeTemporary'],
     components: {
         BaseEditorCoordinate,
         BaseEditorLogarithmic,
@@ -162,6 +163,14 @@ export default {
             const condition = [STAT_TYPE_ENUM, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
             this.$store.commit('setCurrentConditions', condition);
             this.$store.dispatch('getListByConditions');
+            //this.$emit('changeTemporary', false);
+        },
+        renewEnumHandler(data) {
+            const condition = [STAT_TYPE_ENUM, this.name, ENUM_DEFAULT_OPERATOR, [...data]];
+            this.$store.commit('setTemporaryConditions', condition);
+            this.$store.dispatch('getTemporaryStatList', { conditions: this.$store.state.temporaryConditions });
+            //this.$emit('change-temporary', true);
+            this.changeTemporary(true);
         },
         submitZygosityHandler(family, variants) {
             this.clearSearchQuery();

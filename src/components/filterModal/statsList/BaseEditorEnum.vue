@@ -46,6 +46,8 @@
 
 <script>
 import EventBus from '@/eventBus';
+import { mapState } from 'vuex';
+import ConditionsViewVue from '../conditionsView/ConditionsView.vue';
 
 export default {
     data() {
@@ -54,7 +56,7 @@ export default {
             selected: this.preselectedData.slice() || [],
         };
     },
-    props: ['list', 'onSubmit', 'preselectedData', 'buttonText', 'render', 'name', 'removeImport'],
+    props: ['list', 'onSubmit', 'onChange', 'preselectedData', 'buttonText', 'render', 'name', 'removeImport'],
     computed: {
         filteredList() {
             if (this.query) {
@@ -86,6 +88,7 @@ export default {
             } else {
                 this.selected.push(prop);
             }
+            this.onChange(this.selected);
         },
         clearQuery() {
             this.query = '';
