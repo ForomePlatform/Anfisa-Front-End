@@ -2,15 +2,6 @@
     <b-container>
         <b-row>
             <b-col cols="4" class="d-flex flex-column">
-                <img
-                        v-if="getNote"
-                        class="notes-icon"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        :title="getNote"
-                        alt="Notes"
-                        src="@/assets/bookIcon.svg"
-                />
                 <div v-if="genome.hgmd.toLowerCase() !== notPresent.toLowerCase()">
                     {{ genome.hgmd }}
                 </div>
@@ -63,13 +54,6 @@ export default {
         };
     },
     computed: {
-        getNote() {
-            const genNotes = this.$store.getters.getNotesById(this.id);
-            if (genNotes && genNotes[0]) {
-                return genNotes[0].note;
-            }
-            return '';
-        },
         getTags() {
             const genTags = this.$store.getters.getTagsById(this.id);
             if (genTags && genTags[0]) {

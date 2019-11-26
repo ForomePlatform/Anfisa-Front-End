@@ -11,9 +11,16 @@
                 <GnomADInfo :genome="getGenome"></GnomADInfo>
             </b-col>
             <b-col cols="3" class="d-flex flex-column">
-                <SamplesInfo :genome="getGenome" :id="item.id"></SamplesInfo>
+                <SamplesInfo :genome="getGenome"></SamplesInfo>
             </b-col>
         </b-row>
+        <div class="item-footer">
+            <div class="note">
+                <span v-if="getNote">Note:</span>
+                {{ getNote }}
+            </div>
+            <div class="to-details-button"><b-link @click="toggleToDetails">More details</b-link></div>
+        </div>
     </b-container>
 </template>
 
@@ -23,6 +30,8 @@ import BaseInfo from './BaseInfo.vue';
 import PredicationInfo from './PredicationInfo.vue';
 import GnomADInfo from './GnomADInfo.vue';
 import SamplesInfo from './SamplesInfo.vue';
+import { ANNOTATION_SERVICE } from '../../common/constants';
+import router from '../../router';
 
 export default {
     name: 'ViewListItem',
@@ -55,6 +64,13 @@ export default {
         };
     },
     computed: {
+        getNote() {
+            const genNotes = this.$store.getters.getNotesById(this.item.id);
+            if (genNotes && genNotes[0]) {
+                return genNotes[0].note;
+            }
+            return '';
+        },
         getGenome() {
             const details = this.$store.getters.getListViewDetailsById(this.item.id);
             if (details && details.length > 0) {
@@ -110,8 +126,41 @@ export default {
             };
         },
     },
+    methods: {
+        toggleToDetails() {
+            const ws = this.$store.getters.getWorkspace;
+            const variant = this.id;
+            if (ws === ANNOTATION_SERVICE) {
+                const { annotations } = this.$store.state.annotations;
+                const data = annotations.annotationsSearchResult[this.id].result[0];
+                this.$store.commit('setSelectedVariant', this.id);
+                this.$store.dispatch('setVariantsDetails', data);
+            } else {
+                this.$store.dispatch('getVariantDetails', this.id);
+            }
+            router.push({ path: '/', query: { ws, variant } });
+        },
+    }
 };
 </script>
 
 <style lang="scss" scoped>
+    .item-footer {
+        width: 100%;
+        margin-top: 15px;
+        font-size: 14px;
+        .note {
+            width: 80%;
+            display: inline-block;
+            span {
+                font-weight: 600;
+            }
+        }
+        .to-details-button {
+            width: 20%;
+            display: inline-block;
+            position: relative;
+            text-align: right;
+        }
+    }
 </style>
