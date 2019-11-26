@@ -19,7 +19,9 @@
                 <span v-if="getNote">Note:</span>
                 {{ getNote }}
             </div>
-            <div class="to-details-button"><b-link @click="toggleToDetails">More details</b-link></div>
+            <div class="to-details-button">
+                <b-link @click="toggleToDetails">More details</b-link>
+            </div>
         </div>
     </b-container>
 </template>
@@ -140,7 +142,7 @@ export default {
             }
             router.push({ path: '/', query: { ws, variant } });
         },
-    }
+    },
 };
 </script>
 
