@@ -34,20 +34,21 @@
                       :title="subStat.tooltip"
                     >
                         <StatsListEditor
-                          v-if="filledStat(subStat) || showStat(subStat)"
+                          v-if="temporary || filledStat(subStat) || showStat(subStat)"
                           :type="subStat.type"
                           :data="filteredData(subStat)"
                           :name="subStat.name"
                           :render="subStat.render"
-                          :changeTemporary="() => {}"
+                          :changeTemporary="onChangeTemporary"
                         />
                     </BaseCollapseHeader>
                 </div>
                 <StatsListEditor
-                  v-else-if="filledStat(stat) || showStat(stat)"
+                  v-else-if="temporary || filledStat(stat) || showStat(stat)"
                   :type="stat.type"
                   :data="filteredData(stat)"
                   :name="stat.name"
+                  :changeTemporary="onChangeTemporary"
                 />
             </BaseCollapseHeader>
         </div>
