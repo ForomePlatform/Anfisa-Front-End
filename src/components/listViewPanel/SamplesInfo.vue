@@ -17,24 +17,15 @@
             </div>
         </div>
         <div>{{ getFilters }}</div>
-
-        <div class="to-details-button"><b-link @click="toggleToDetails">More details</b-link></div>
     </div>
 </template>
 
 <script>
-import { ANNOTATION_SERVICE } from '../../common/constants';
-import router from '../../router';
-
 export default {
     name: 'SamplesInfo',
     props: {
         genome: {
             type: Object,
-            required: true,
-        },
-        id: {
-            type: Number,
             required: true,
         },
     },
@@ -89,19 +80,6 @@ export default {
             }
             return result;
         },
-        toggleToDetails() {
-            const ws = this.$store.getters.getWorkspace;
-            const variant = this.id;
-            if (ws === ANNOTATION_SERVICE) {
-                const { annotations } = this.$store.state.annotations;
-                const data = annotations.annotationsSearchResult[this.id].result[0];
-                this.$store.commit('setSelectedVariant', this.id);
-                this.$store.dispatch('setVariantsDetails', data);
-            } else {
-                this.$store.dispatch('getVariantDetails', this.id);
-            }
-            router.push({ path: '/', query: { ws, variant } });
-        },
     },
 };
 </script>
@@ -139,12 +117,6 @@ export default {
         border-radius: 50%;
         background-color: #000;
         margin-right: 5px;
-    }
-    .to-details-button {
-        position: relative;
-        text-align: right;
-        margin-top: 15px;
-        font-size: 14px;
     }
     .genotype {
         font-size: 10px;
