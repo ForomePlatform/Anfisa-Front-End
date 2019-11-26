@@ -25,32 +25,33 @@
                 <div v-if="stat.type === 'group'">
                     <BaseCollapseHeader
                       v-for="subStat in stat.data"
-                      :key="subStat.name"
+                      v-bind:key="subStat.name"
                       :className="className"
                       :name="subStat.title || subStat.name"
-                      :disabled="secondaryDisabled(subStat)"
+                      :disabled="!temporary && secondaryDisabled(subStat)"
                       :filled="filledStat(subStat)"
                       :hasFiltered="hasFiltered(subStat)"
                       :title="subStat.tooltip"
                     >
                         <StatsListEditor
-                          v-if="filledStat(subStat) || showStat(subStat)"
+                          v-if="temporary || filledStat(subStat) || showStat(subStat)"
                           :type="subStat.type"
                           :data="filteredData(subStat)"
                           :name="subStat.name"
                           :render="subStat.render"
+                          :changeTemporary="onChangeTemporary"
                         />
                     </BaseCollapseHeader>
                 </div>
                 <StatsListEditor
-                  v-else-if="filledStat(stat) || showStat(stat)"
+                  v-else-if="temporary || filledStat(stat) || showStat(stat)"
                   :type="stat.type"
                   :data="filteredData(stat)"
                   :name="stat.name"
+                  :changeTemporary="onChangeTemporary"
                 />
             </BaseCollapseHeader>
         </div>
-        <b-button @click="show" variant="primary">Show Modal</b-button>
     </div>
 </template>
 
@@ -61,31 +62,26 @@ import BaseCollapseHeader from './BaseCollapseHeader.vue';
 import BaseExpandButton from './BaseExpandButton.vue';
 import StatsListEditor from './StatsListEditor.vue';
 import BaseNonzeroCheckbox from './BaseNonzeroCheckbox.vue';
-import BaseEditorInheritence from './BaseEditorInheritenceModal.vue';
 
 export default {
-    name: 'StatsList',
-    components: {
-        BaseEditorInheritence,
-        BaseCollapseHeader,
-        BaseExpandButton,
-        StatsListEditor,
-        BaseNonzeroCheckbox,
-    },
-    props: ['modalId'],
     data() {
         return {
             className: 'js-toggle-filters',
             nonzeroChecked: true,
+            temporary: false,
         };
     },
     computed: {
-        getStats() {
+        stats() {
             return this.searchQuery ? this.$store.getters.getFilteredStats(this.searchQuery)
-                : this.$store.getters.getStats;
+                : this.$store.state.stats;
         },
-        getCurrentConditions() {
-            return this.$store.getters.getCurrentConditions;
+        temporaryStats() {
+            return this.searchQuery ? this.$store.getters.getFilteredStats(this.searchQuery)
+                : this.$store.state.temporaryStats;
+        },
+        oCurrentConditions() {
+            return this.$store.getters.oCurrentConditions;
         },
         searchQuery: {
             get() {
@@ -96,10 +92,13 @@ export default {
             },
         },
     },
+    components: {
+        BaseCollapseHeader,
+        BaseExpandButton,
+        StatsListEditor,
+        BaseNonzeroCheckbox,
+    },
     methods: {
-        show() {
-            this.$root.$emit('bv::show::modal', this.modalId);
-        },
         toggleFilters(expand) {
             const elements = document.getElementsByClassName(this.className);
             Array.from(elements).forEach((element) => {
@@ -153,7 +152,7 @@ export default {
                 if (!(!!result.variants.length || !!result.family.length)) {
                     result = [];
                 }
-            } else {
+            } else if (stat.render !== 'operative') {
                 result = this.filterData(result, isSubstat);
             }
             return result;
@@ -185,12 +184,13 @@ export default {
             }
         },
         filledStat(stat) {
-            return Boolean(this.getCurrentConditions[stat.name] || (stat.type === STAT_GROUP
-                && stat.data.filter(subStat => this.getCurrentConditions[subStat.name]).length));
+            return Boolean(this.oCurrentConditions[stat.name] || (stat.type === STAT_GROUP
+                && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
         },
         showStat(stat) {
             return !this.hasProblemGroup(stat) &&
-                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery));
+                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery) ||
+                (stat.render === 'operative'));
         },
         primaryDisabled(stat) {
             return !this.filledStat(stat) && (
@@ -201,7 +201,8 @@ export default {
         inheritanceHandler(stat) {
             if (stat.title === 'Inheritance') {
                 return !stat.data.filter(item => !this.hasProblemGroup(item) &&
-                    this.filteredData(item).variants).length || !stat.data.length;
+                    (stat.type !== STAT_TYPE_ZYGOSITY || this.filteredData(item).variants))
+                    .length || !stat.data.length;
             }
             return !stat.data.length;
         },
@@ -219,12 +220,12 @@ export default {
             this.$store.commit('setFilterSearchQuery', '');
             const elements = document.getElementsByClassName(this.className);
             const expandSet = new Set();
-            this.getStats.forEach((stat) => {
-                if (this.getCurrentConditions[stat.name]) {
+            this.stats.forEach((stat) => {
+                if (this.oCurrentConditions[stat.name]) {
                     expandSet.add(getStatName(stat));
                 } else if (stat.type === STAT_GROUP) {
                     stat.data.forEach((subStat) => {
-                        if (this.getCurrentConditions[subStat.name]) {
+                        if (this.oCurrentConditions[subStat.name]) {
                             expandSet.add(getStatName(stat));
                             expandSet.add(getStatName(subStat));
                         }
@@ -259,6 +260,9 @@ export default {
                     }
                 });
             }
+        },
+        onChangeTemporary(temporary) {
+            this.temporary = temporary;
         },
     },
     mounted() {
