@@ -104,11 +104,6 @@ export function changePresetSaved(state, saved) {
 
 export function setStats(state, stats) {
     state.stats = stats;
-    state.temporaryStats = stats;
-}
-
-export function setTemporaryStats(state, temporaryStats) {
-    state.temporaryStats = temporaryStats;
 }
 
 export function setAllCurrentConditions(state, conditions) {
@@ -129,23 +124,6 @@ export function setCurrentConditions(state, condition) {
             [,,, conditionFixed[3]] = state.currentConditions[index];
         }
         Vue.set(state.currentConditions, index, conditionFixed);
-    }
-}
-
-export function setTemporaryConditions(state, condition) {
-    const index = state.temporaryConditions
-        .findIndex(item => item[1] === condition[1] && item[0] === condition[0]);
-    if (index === -1) {
-        state.temporaryConditions.push(condition);
-    } else {
-        const conditionFixed = JSON.parse(JSON.stringify(condition));
-        if (condition[0] === STAT_TYPE_ENUM) {
-            [,, conditionFixed[2]] = state.temporaryConditions[index];
-        }
-        if (condition[0] === STAT_TYPE_ZYGOSITY) {
-            [,,, conditionFixed[3]] = state.temporaryConditions[index];
-        }
-        Vue.set(state.temporaryConditions, index, conditionFixed);
     }
 }
 

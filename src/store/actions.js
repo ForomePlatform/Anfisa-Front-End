@@ -563,29 +563,6 @@ export function getStatList(context, { conditions = null, filter = null }) {
     });
 }
 
-export function getTemporaryStatList(context, { conditions = null, filter = null }) {
-    const params = utils.prepareParams({
-        ws: context.state.workspace,
-        conditions,
-        filter,
-    });
-    if (conditions && conditions.length) {
-        const ctx = utils.getProblemGroup(conditions);
-        if (ctx) {
-            params.append('ctx', JSON.stringify(ctx));
-        }
-    }
-    if (context.state.compiled) {
-        params.append('compiled', JSON.stringify(context.state.compiled));
-    }
-    return commonHttp.post('/stat', params).then((response) => {
-        const statList = utils.getStatListWithOperativeStat(response.data);
-        context.commit('setTemporaryStats', utils.prepareStatList(statList));
-    }).catch((error) => {
-        console.log(error);
-    });
-}
-
 export function getZygosityByFamily(context, { name, family }) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
