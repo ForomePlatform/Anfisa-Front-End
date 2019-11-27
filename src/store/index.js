@@ -37,7 +37,7 @@ export default new Vuex.Store({
         rulesParams: '',
         filterDetails: [],
         version: '',
-        listMounting: false,
+        listLoading: false,
         tagFilterValue: '',
         filterSearchQuery: '',
         annotations: {

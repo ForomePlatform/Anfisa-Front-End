@@ -191,6 +191,7 @@ export default {
             window.open(this.exportFileUrl);
         },
         selectWorkspace() {
+            this.$store.dispatch('clearAllDetailsToListView');
             router.push({ path: '/', query: { ws: this.selectedWorkspace } });
         },
         showVersionModal() {
