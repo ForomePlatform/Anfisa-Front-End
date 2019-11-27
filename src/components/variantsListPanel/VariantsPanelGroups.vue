@@ -38,7 +38,7 @@ export default {
         VariantsPanelList,
     },
     mounted() {
-        this.$store.commit('setListMounting', false);
+        this.$store.commit('setListLoading', false);
     },
 };
 </script>
