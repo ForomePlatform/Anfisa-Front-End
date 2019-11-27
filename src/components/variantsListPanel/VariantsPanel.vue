@@ -106,7 +106,7 @@ export default {
             }
         },
         toggleView() {
-            this.$store.commit('setListLoading', true);
+            this.$store.dispatch('setListLoading', true);
             setTimeout(() => this.$store.commit('toggleListView'), 0);
             if (this.listView) {
                 this.collapseAllStatus = true;
