@@ -61,8 +61,8 @@ import VariantsPanelList from './VariantsPanelList.vue';
 import VariantsPanelGroups from './VariantsPanelGroups.vue';
 import BaseScrollVertical from '../common/BaseScrollVertical.vue';
 import { ANNOTATION_SERVICE } from '../../common/constants';
-import BaseSpinner from "../common/BaseSpinner.vue";
-import BaseLoadingLabel from "../common/BaseLoadingLabel.vue";
+import BaseSpinner from '../common/BaseSpinner.vue';
+import BaseLoadingLabel from '../common/BaseLoadingLabel.vue';
 
 export default {
     name: 'VariantsPanel',
