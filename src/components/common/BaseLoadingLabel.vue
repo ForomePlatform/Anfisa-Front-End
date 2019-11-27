@@ -3,9 +3,9 @@
 </template>
 
 <script>
-    export default {
-        name: "BaseLoadingLabel"
-    }
+export default {
+    name: 'BaseLoadingLabel',
+};
 </script>
 
 <style lang="scss" scoped>

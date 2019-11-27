@@ -8,14 +8,14 @@
 </template>
 
 <script>
-    export default {
-        name: "BaseSpinner",
-        props: {
-            label: {
-                type: String
-            }
-        }
-    }
+export default {
+    name: 'BaseSpinner',
+    props: {
+        label: {
+            type: String,
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>
