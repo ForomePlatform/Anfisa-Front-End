@@ -129,6 +129,9 @@ export function addDetails(context, data, id) {
     };
     context.commit('addDetailsToListView', result);
 }
+export function clearAllDetailsToListView(context) {
+    context.commit('setDetailsToListView', []);
+}
 export function getListViewDetails(context, id) {
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);

@@ -38,7 +38,7 @@ export default {
     },
     mounted() {
         if (this.root) {
-            this.$store.commit('setListMounting', false);
+            this.$store.commit('setListLoading', false);
         }
     },
     updated() {

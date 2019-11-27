@@ -2,13 +2,13 @@
     <div class="list-view-wrapper">
         <transition name="main-loading" mode="out-in">
             <div v-if="isMainLoading" class="loading-view" key="loading">
-                <div class="spinner-wrapper">
-                    <div class="spinner"></div>
-                    <div class="spiner-label">
-                        {{ getPageItems.length }} / {{ endIndex }}
-                    </div>
+                <div class="loading-spinner">
+                    <BaseSpinner
+                            :label="getSpinnerLabel"
+                            :show-loading="true"
+                    />
                 </div>
-                <p class="loading">Loading<span>.</span><span>.</span><span>.</span></p>
+                <BaseLoadingLabel/>
             </div>
             <div v-else class="list-view" key="listView">
                 <b-list-group @scroll="onScroll">
@@ -17,8 +17,8 @@
                             <viewList :item="item"/>
                         </b-list-group-item>
                         <div v-if="isSubLoading" class="sub-loading-view">
-                            <div class="spinner-wrapper">
-                                <div class="spinner"></div>
+                            <div class="sub-loading-spinner">
+                                <BaseSpinner/>
                             </div>
                         </div>
                     </div>
@@ -30,10 +30,14 @@
 
 <script>
 import viewList from '@/components/listViewPanel/ListViewItem.vue';
+import BaseSpinner from "../common/BaseSpinner.vue";
+import BaseLoadingLabel from "../common/BaseLoadingLabel.vue";
 
 export default {
     name: 'ListViewPanel',
     components: {
+        BaseLoadingLabel,
+        BaseSpinner,
         viewList,
     },
     props: {
@@ -66,8 +70,12 @@ export default {
             return this.isLoading() && this.endIndex === this.itemPerPage;
         },
         isSubLoading() {
-            console.log(this.isLoading());
             return this.isLoading();
+        },
+        getSpinnerLabel() {
+            const min = this.$store.getters.getListViewDetails.length;
+            const max = this.endIndex;
+            return min + ' / ' + max;
         },
     },
     watch: {
@@ -120,6 +128,10 @@ export default {
         transition: width 1s ease 0s;
         color: #2bb3ed;
         font-weight: 600;
+        .loading-spinner {
+            width: 120px;
+            height: 120px;
+        }
         span {
             font-size: 14px;
             margin: 15px;
@@ -148,68 +160,9 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        .spinner-wrapper {
-            position: relative;
+        .sub-loading-spinner {
             width: 60px;
             height: 60px;
-        }
-    }
-    .spinner-wrapper {
-        position: relative;
-        width: 120px;
-        height: 120px;
-        .spiner-label {
-            position: absolute;
-            top: 50px;
-            width: 100%;
-            text-align: center;
-        }
-    }
-    .spinner {
-        width: 100%;
-        height: 100%;
-        color: rgba(90, 90, 90, 0.2);
-        position: relative;
-        display: inline-block;
-        border: 7px solid;
-        border-radius: 50%;
-        border-right-color: #2bb3ed;
-        animation: rotate 1s linear infinite;
-    }
-    @keyframes rotate {
-        0% {
-            transform: rotate(0);
-        }
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-    .loading {
-        margin-top: 10px;
-        @keyframes blink {
-            0% {
-                opacity: .2;
-            }
-            20% {
-                opacity: 1;
-            }
-            100% {
-                opacity: .2;
-            }
-        }
-        span {
-            animation-name: blink;
-            animation-duration: 1.4s;
-            animation-iteration-count: infinite;
-            animation-fill-mode: both;
-            margin: 0;
-            font-size: 16px;
-        }
-        span:nth-child(2) {
-            animation-delay: .2s;
-        }
-        span:nth-child(3) {
-            animation-delay: .4s;
         }
     }
     .main-loading-enter-active, .main-loading-leave-active {

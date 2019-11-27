@@ -28,7 +28,7 @@ export function setVariantDetails(state, variantDetails) {
     state.variantDetails = variantDetails;
 }
 
-export function setListViewDetails(state, details) {
+export function setDetailsToListView(state, details) {
     state.listViewDetails = details;
 }
 
@@ -179,7 +179,7 @@ export function setVersion(state, version) {
     state.version = version;
 }
 
-export function setListMounting(state, value) {
+export function setListLoading(state, value) {
     state.listMounting = value;
 }
 
