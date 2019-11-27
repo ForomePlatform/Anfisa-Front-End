@@ -19,7 +19,6 @@
                 'variants-groups_common-control': true,
                 'variants-groups_common-control__active': !collapseAllStatus
               }">
-                <div/><div/><div/>
             </div>
             <div
               class="variants-panel_collapse-icon"
@@ -29,11 +28,14 @@
             </div>
         </div>
         <BaseScrollVertical v-if="!panelCollapsed" className="variants-panel_list">
-            <div v-if="mounting" class="variants-panel_list_status">
-                Loading...
+            <div v-if="loading" class="variants-panel_list_status">
+                <div class="variants-panel_list_status_spinner">
+                    <BaseSpinner/>
+                </div>
+                <BaseLoadingLabel/>
             </div>
             <VariantsPanelList
-              :class="[mounting ? 'variants-panel_list__hidden' : '']"
+              :class="[loading ? 'variants-panel_list__hidden' : '']"
               v-if="listView"
               :data="list"
               :selectedItem="selectedItem"
@@ -41,7 +43,7 @@
               root
             />
             <VariantsPanelGroups
-              :class="[mounting ? 'variants-panel_list__hidden' : '']"
+              :class="[loading ? 'variants-panel_list__hidden' : '']"
               v-else :data="groups"
               :selectedItem="selectedItem"
               :selectItem="selectItem"
@@ -59,9 +61,19 @@ import VariantsPanelList from './VariantsPanelList.vue';
 import VariantsPanelGroups from './VariantsPanelGroups.vue';
 import BaseScrollVertical from '../common/BaseScrollVertical.vue';
 import { ANNOTATION_SERVICE } from '../../common/constants';
+import BaseSpinner from "../common/BaseSpinner.vue";
+import BaseLoadingLabel from "../common/BaseLoadingLabel.vue";
 
 export default {
     name: 'VariantsPanel',
+    components: {
+        BaseLoadingLabel,
+        BaseSpinner,
+        BaseGeneVariantToggle,
+        VariantsPanelList,
+        VariantsPanelGroups,
+        BaseScrollVertical,
+    },
     data() {
         return {
             collapseAllStatus: true,
@@ -75,7 +87,7 @@ export default {
             countAmount: 'total',
             listView: 'listView',
             selectedItem: 'selectedVariant',
-            mounting: 'listMounting',
+            loading: 'listLoading',
         }),
         ...mapGetters([
             'list',
@@ -94,7 +106,7 @@ export default {
             }
         },
         toggleView() {
-            this.$store.commit('setListMounting', true);
+            this.$store.commit('setListLoading', true);
             setTimeout(() => this.$store.commit('toggleListView'), 0);
             if (this.listView) {
                 this.collapseAllStatus = true;
@@ -134,12 +146,6 @@ export default {
         };
         window.addEventListener('keydown', keydownHandler);
     },
-    components: {
-        BaseGeneVariantToggle,
-        VariantsPanelList,
-        VariantsPanelGroups,
-        BaseScrollVertical,
-    },
 };
 </script>
 
@@ -159,15 +165,26 @@ export default {
             height: 44px;
         }
         &_list {
-            background-color: #0b2341;
-            box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
-            padding: 8px 0;
             height: 100%;
+            width: 100%;
+            background-color: #0b2341;
+            box-shadow: 0 12px 24px rgba(24,64,104,0.09);
+            padding: 8px 0;
             overflow-y: scroll;
             &_status {
-                padding: 8px 18px;
-                color: #95acbc;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
                 font-size: 14px;
+                color: #2bb3ed;
+                font-weight: 600;
+                &_spinner {
+                    width: 60px;
+                    height: 60px;
+                }
             }
             &__hidden{
                 display: none;
