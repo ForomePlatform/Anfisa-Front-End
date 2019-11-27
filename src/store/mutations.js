@@ -179,8 +179,8 @@ export function setVersion(state, version) {
     state.version = version;
 }
 
-export function setListLoading(state, value) {
-    state.listMounting = value;
+export function setLoading(state, value) {
+    state.listLoading = value;
 }
 
 export function setTagFilterValue(state, value) {
