@@ -250,6 +250,10 @@ export function setMeta(state, meta) {
     state.meta = meta;
 }
 
+export function updateShowAllNotes(state, isShowAllNotes) {
+    state.isShowAllNotes = isShowAllNotes;
+}
+
 export function addNote(state, note) {
     const { notes } = state;
     const foundNote = notes.findIndex(addedNote => addedNote.id === note.id);
