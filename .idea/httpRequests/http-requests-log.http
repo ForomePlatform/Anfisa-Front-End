@@ -3,6 +3,15 @@ Accept: */*
 Cache-Control: no-cache
 Authorization: Basic YmdtOmJnbTEh
 
+<> 2019-11-27T030423.200.html
+
+###
+
+POST https://anfisa.forome.dev/lihander-dev/redeploy
+Accept: */*
+Cache-Control: no-cache
+Authorization: Basic YmdtOmJnbTEh
+
 <> 2019-11-27T023835.200.html
 
 ###

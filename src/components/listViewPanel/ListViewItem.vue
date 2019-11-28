@@ -1,29 +1,35 @@
 <template>
-    <b-container v-if="getGenome" fluid>
-        <b-row>
-            <b-col cols="5">
-                <BaseInfo :genome="getGenome" :id="item.id"></BaseInfo>
-            </b-col>
-            <b-col cols="2" class="d-flex flex-column">
-                <PredicationInfo :genome="getGenome"></PredicationInfo>
-            </b-col>
-            <b-col cols="2" class="d-flex flex-column">
-                <GnomADInfo :genome="getGenome"></GnomADInfo>
-            </b-col>
-            <b-col cols="3" class="d-flex flex-column">
-                <SamplesInfo :genome="getGenome"></SamplesInfo>
-            </b-col>
-        </b-row>
-        <div class="item-footer">
-            <div class="note">
-                <span v-if="getNote">Note:</span>
-                {{ getNote }}
-            </div>
-            <div class="to-details-button">
-                <b-link @click="toggleToDetails">More details</b-link>
-            </div>
+    <div v-if="getGenome" class="list-item-wrapper">
+        <div class="item-wrapper">
+            <b-row>
+                <b-col cols="5">
+                    <BaseInfo
+                            :genome="getGenome"
+                            :id="item.id"
+                            :note="getNote"
+                            @isShowNote="updateShowNote"
+                    >
+                    </BaseInfo>
+                </b-col>
+                <b-col cols="2" class="d-flex flex-column">
+                    <PredicationInfo :genome="getGenome"></PredicationInfo>
+                </b-col>
+                <b-col cols="2" class="d-flex flex-column">
+                    <GnomADInfo :genome="getGenome"></GnomADInfo>
+                </b-col>
+                <b-col cols="3" class="d-flex flex-column">
+                    <SamplesInfo :genome="getGenome"></SamplesInfo>
+                </b-col>
+            </b-row>
         </div>
-    </b-container>
+        <transition name="checkbox-fade">
+            <div v-if="getNote && (isShowAllNotes || isShowNote)" class="item-footer">
+                <div class="note">
+                    {{ getNote }}
+                </div>
+            </div>
+        </transition>
+    </div>
 </template>
 
 <script>
@@ -32,8 +38,6 @@ import BaseInfo from './BaseInfo.vue';
 import PredicationInfo from './PredicationInfo.vue';
 import GnomADInfo from './GnomADInfo.vue';
 import SamplesInfo from './SamplesInfo.vue';
-import { ANNOTATION_SERVICE } from '../../common/constants';
-import router from '../../router';
 
 export default {
     name: 'ViewListItem',
@@ -63,6 +67,7 @@ export default {
             transcripts: 'transcripts',
             vcf: 'VCF',
             title: 'Title',
+            isShowNote: false,
         };
     },
     computed: {
@@ -127,42 +132,46 @@ export default {
                 return '';
             };
         },
+        isShowAllNotes() {
+            return this.$store.getters.isShowAllNotes;
+        },
     },
     methods: {
-        toggleToDetails() {
-            const ws = this.$store.getters.getWorkspace;
-            const variant = this.id;
-            if (ws === ANNOTATION_SERVICE) {
-                const { annotations } = this.$store.state.annotations;
-                const data = annotations.annotationsSearchResult[this.id].result[0];
-                this.$store.commit('setSelectedVariant', this.id);
-                this.$store.dispatch('setVariantsDetails', data);
-            } else {
-                this.$store.dispatch('getVariantDetails', this.id);
+        updateShowNote() {
+            this.isShowNote = !this.isShowNote;
+        },
+    },
+    watch: {
+        isShowAllNotes(isShow) {
+            if (!isShow) {
+                this.isShowNote = false;
             }
-            router.push({ path: '/', query: { ws, variant } });
         },
     },
 };
 </script>
 
 <style lang="scss" scoped>
+    .item-wrapper {
+        padding: 5px;
+    }
     .item-footer {
         width: 100%;
-        margin-top: 15px;
         font-size: 14px;
+        padding: 10px 0;
+        background-image: linear-gradient(to right, #b9bec5 20%,rgba(39, 63, 89, 0) 0%);
+        background-position: top;
+        background-size: 8px 2px;
+        background-repeat: repeat-x;
         .note {
-            width: 80%;
-            display: inline-block;
-            span {
-                font-weight: 600;
-            }
+            margin: 0px 20px;
         }
-        .to-details-button {
-            width: 20%;
-            display: inline-block;
-            position: relative;
-            text-align: right;
-        }
+    }
+    .checkbox-fade-enter-active, .checkbox-fade-leave-active  {
+        transition: all .3s ease;
+    }
+    .checkbox-fade-enter, .checkbox-fade-leave-to {
+        transform: translateY(20px);
+        opacity: 0;
     }
 </style>

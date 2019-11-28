@@ -150,7 +150,7 @@ export default {
         font-size: 12px;
     }
     .list-group-item {
-        padding: 5px;
+        padding: 0;
     }
     .progress-bar {
         width: 50%;
