@@ -5,8 +5,19 @@
                 <div v-if="genome.hgmd.toLowerCase() !== notPresent.toLowerCase()">
                     {{ genome.hgmd }}
                 </div>
-                <div class="title">
-                    {{ genome.gene }}
+                <div class="title-wrapper">
+                    <div class="title">
+                        {{ genome.gene }}
+                    </div>
+                    <div class="note-icon-wrapper">
+                        <img
+                                v-if="note"
+                                class="note-icon"
+                                alt="Notes"
+                                src="@/assets/bookIcon.svg"
+                                @click="showNote = !showNote"
+                        />
+                    </div>
                 </div>
                 <div v-html="genome.gtex"></div>
                 <BaseTagButton
@@ -47,10 +58,14 @@ export default {
             type: Number,
             required: true,
         },
+        note: {
+            type: String,
+        },
     },
     data() {
         return {
             notPresent: 'Not Present',
+            showNote: false,
         };
     },
     computed: {
@@ -69,17 +84,29 @@ export default {
             return igv.substring(startLink, endLink + closeLinkTag.length);
         },
     },
+    watch: {
+        showNote() {
+            this.$emit('isShowNote');
+        },
+    },
 };
 </script>
 
 <style lang="scss" scoped>
-    .title {
+    .title-wrapper {
         font-size: 18px;
         letter-spacing: 0;
         font-weight: 800;
         margin-bottom: 5px;
+        .title {
+            display: inline-block;
+        }
+        .note-icon-wrapper {
+            display: inline-block;
+            margin-left: 10px;
+        }
     }
-    .notes-icon {
+    .note-icon {
         cursor: pointer;
         height: 20px;
         width: 20px;
