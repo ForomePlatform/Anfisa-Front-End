@@ -24,6 +24,7 @@ export default new Vuex.Store({
         workspacesList: [],
         note: '',
         notes: [],
+        isShowAllNotes: false,
         saveNoteStatus: null,
         exportFileUrl: null,
         exportFileLoading: false,
@@ -155,6 +156,9 @@ export default new Vuex.Store({
         },
         getNotes(state) {
             return state.notes;
+        },
+        isShowAllNotes(state) {
+            return state.isShowAllNotes;
         },
         getZones(state) {
             return state.zones;
