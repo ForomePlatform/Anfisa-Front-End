@@ -18,7 +18,7 @@
                     <GnomADInfo :genome="getGenome"></GnomADInfo>
                 </b-col>
                 <b-col cols="3" class="d-flex flex-column">
-                    <SamplesInfo :genome="getGenome"></SamplesInfo>
+                    <SamplesInfo :genome="getGenome" :id="item.id"></SamplesInfo>
                 </b-col>
             </b-row>
         </div>
