@@ -63,6 +63,7 @@ import BaseScrollVertical from '../common/BaseScrollVertical.vue';
 import { ANNOTATION_SERVICE } from '../../common/constants';
 import BaseSpinner from '../common/BaseSpinner.vue';
 import BaseLoadingLabel from '../common/BaseLoadingLabel.vue';
+import router from '../../router';
 
 export default {
     name: 'VariantsPanel',
@@ -104,6 +105,7 @@ export default {
                 this.$store.dispatch('getVariantDetails', id);
                 this.$store.dispatch('getVariantTags', id);
             }
+            router.push({ parh: '/', query: { ...this.$route.query, variant: id + 1 } });
         },
         toggleView() {
             this.$store.dispatch('setListLoading', true);
