@@ -12,7 +12,7 @@
                             src="@/assets/tableViewIcon.svg"
                     />
                 </b-link>
-                <b-link @click="getLisViewLink">
+                <b-link @click="getListViewLink">
                     <img
                             class="view-control_icon  ml-2"
                             alt="List view"
@@ -21,13 +21,14 @@
                 </b-link>
             </div>
         </div>
-        <BaseCheckbox label="Show All Notes" v-model="isShow"/>
+        <BaseCheckbox v-if="isListView" label="Show All Notes" v-model="isShow"/>
     </div>
 </template>
 
 <script>
 import router from '../../router';
 import BaseCheckbox from '../common/BaseCheckbox.vue';
+import { LIST_VIEW } from '../../common/constants';
 
 export default {
     name: 'ViewControl',
@@ -35,6 +36,7 @@ export default {
     data() {
         return {
             isShow: false,
+            isListView: this.$router.currentRoute.name === LIST_VIEW
         };
     },
     computed: {
@@ -47,7 +49,7 @@ export default {
             const ws = this.$store.getters.getWorkspace;
             router.push({ path: '/', query: { ws } });
         },
-        getLisViewLink() {
+        getListViewLink() {
             const ws = this.$store.getters.getWorkspace;
             router.push({ path: '/listView', query: { ws } });
         },
@@ -56,6 +58,9 @@ export default {
         isShow() {
             this.$store.commit('updateShowAllNotes', this.isShow);
         },
+        $route (to){
+            this.isListView = to.name === LIST_VIEW
+        }
     },
 };
 </script>
