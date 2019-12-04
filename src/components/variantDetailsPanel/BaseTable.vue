@@ -20,7 +20,7 @@
                     <table v-else class="base-table_table">
                         <tr v-if="colhead">
                             <td/>
-                            <td v-for="head in colhead" class="colhead">
+                            <td v-for="head in colhead" class="colhead" :key="head[0]">
                                 {{ head[0] }}
                             </td>
                         </tr>
@@ -173,7 +173,7 @@ export default {
             }
         }
     }
-    
+
     .colhead {
         color: #1a3e6c !important;
         font-weight: bold;
