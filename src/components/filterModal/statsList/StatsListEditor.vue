@@ -138,7 +138,8 @@ export default {
             };
         },
         likeEnumTypes() {
-            return [this.statTypes.status, this.statTypes.enum, this.statTypes.transcript_multiset, this.statTypes.transcript_status];
+            return [this.statTypes.status, this.statTypes.enum,
+                this.statTypes.transcript_multiset, this.statTypes.transcript_status];
         },
         buttonText() {
             return this.oCurrentCondition ? 'UPDATE' : 'ADD';
