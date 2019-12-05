@@ -3,31 +3,27 @@
         <template slot="button-content">
             <div class="dropdown-toggle-slot">{{labelText}}</div>
         </template>
-        <b-dropdown-item-button
-            @click="onCheck(item)"
-            disabled
-        >
-            <div сlass="multiselect_item" @click="clearAll">
-                <img class="multiselect_item_img" src="@/assets/clearAll.svg"/>
+        <b-dropdown-item-button>
+            <div class="multiselect_item clear_all_item" @click="clearAll">
+                <img class="multiselect_item_img" src="@/assets/clearAll.svg" alt="clear all"/>
                 <span class="clear_all">CLEAR ALL</span>
             </div>
         </b-dropdown-item-button>
         <b-dropdown-divider/>
-        <b-dropdown-item-button
-            v-for="item in dataFiltered"
-            :key="item"
-            class="multiselect_item"
-            @click="onCheck(item)"
-            disabled
+        <div
+                v-for="item in data"
+                :key="item"
+                class="multiselect_item"
         >
             <b-form-checkbox
-                :class="{multiselect_item_checkbox:isChecked(item)}"
-                @change="onCheck(item)"
-                :checked="isChecked(item)"
+                    :key="item"
+                    :value="item"
+                    v-model="selected"
+                    class="multiselect_checkbox"
             >
-                {{item}}
+                {{ item }}
             </b-form-checkbox>
-        </b-dropdown-item-button>
+        </div>
     </b-dropdown>
 </template>
 
@@ -49,40 +45,38 @@ export default{
             type: Function,
         },
     },
+    data() {
+        return {
+            selected: this.selectedValues,
+        };
+    },
+    watch: {
+        selected(newSelectedValues) {
+            this.$emit('onChange', newSelectedValues);
+        },
+    },
     methods: {
-        onCheck(item) {
-            let newSelectedValues = this.selectedValues.slice();
-            if (this.selectedValues.indexOf(item) === -1) {
-                newSelectedValues.push(item);
-            } else {
-                newSelectedValues = newSelectedValues.filter(el => el !== item);
-            }
-            this.onChange(newSelectedValues);
-        },
-        isChecked(item) {
-            return this.selectedValues.indexOf(item) !== -1;
-        },
         clearAll() {
-            this.onChange([]);
+            this.selected = [];
         },
     },
     computed: {
         labelText() {
-            if (this.selectedValues.length === 0) {
+            if (this.selected.length === 0) {
                 return this.defaultText;
-            } else if (this.selectedValues.length === 1) {
-                return this.selectedValues[0];
+            } else if (this.selected.length === 1) {
+                return this.selected[0];
             }
-            return `(${this.selectedValues.length}) Options Selected`;
-        },
-        dataFiltered() {
-            return this.data.filter(item => item);
+            return `(${this.selected.length}) Options Selected`;
         },
     },
 };
 </script>
 
 <style scoped lang="scss">
+    label {
+        display: inline-block;
+    }
     .dropdown {
         flex: 0 1 auto;
         width: 100%;
@@ -94,6 +88,7 @@ export default{
         }
     }
     /deep/ .dropdown-menu.show {
+        min-width: 170px;
         max-height: 300px;
         overflow-y: auto;
     }
@@ -106,7 +101,7 @@ export default{
         font-size: 11px;
         line-height: 1.9;
         border-width: 0;
-        letter-spacing: 0px;
+        letter-spacing: 0;
         color: #95acbc;
         padding-right: 15px;
         &-slot {
@@ -128,7 +123,7 @@ export default{
             width: 0;
             height: 0;
             margin-left: 0.455em;
-            vertical-align: 0m;
+            vertical-align: 0;
             font-size: 14px;
 
         }
@@ -139,22 +134,19 @@ export default{
         margin-right: 0.5em;
     }
     .multiselect_item {
-        margin: 0px;
-        padding: 0px;
+        margin: 0;
+        padding: 2px 10px;
+        min-height: 20px;
+        font-size: 14px;
+        color: #1a3e6c;
+        white-space: nowrap;
         &:hover {
             background-color:#2bb3ed;
-        }
-        &_label {
-            margin: 0px;
-            padding: 0px;
         }
         &_img {
             height: 1.3em;
             width: 1.3em;
             opacity: 0.6;
-        }
-        &_checkbox {
-            color: #1a3e6c;
         }
     }
     .clear_all {
@@ -162,5 +154,8 @@ export default{
         padding: 5px;
         color: #1a3e6c;
         cursor: pointer;
+        &_item {
+            text-align: center;
+        }
     }
 </style>

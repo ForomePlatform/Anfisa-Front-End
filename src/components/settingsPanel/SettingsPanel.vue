@@ -36,6 +36,9 @@
             <LayoutControl />
         </div>
         <div class="settings-panel_block">
+            <ViewControl />
+        </div>
+        <div class="settings-panel_block">
             <BaseHeader title="FILTERS" :onClick="openFilterModal" type="filter"
                 :active="!selectedPresetSaved"
             />
@@ -58,7 +61,7 @@
                   :defaultText="getZoneText(zones[zone])"
                   :selectedValues="zones[zone].selectedValues"
                   :data="zones[zone].values"
-                  :onChange="value =>changeZoneValue(zone, value)"
+                  @onChange="value => changeZoneValue(zone, value)"
                 />
                 <!-- <div class="settings-panel_icon-button">
                     <img alt="presets icon" src="@/assets/tagsIcon.svg" />
@@ -116,16 +119,28 @@ import BaseUserControl from './BaseUserControl.vue';
 import BaseHeader from './BaseHeader.vue';
 import FilterModal from '../filterModal/FilterModal.vue';
 import LayoutControl from './LayoutControl.vue';
+import ViewControl from './ViewControl.vue';
 import BaseModal from '../common/BaseModal.vue';
 import router from '../../router';
 import { version, backendVersion } from '../../../package.json';
-
 
 const collapseIcon = require('@/assets/collapseIcon.svg');
 const expandIcon = require('@/assets/expandIcon.svg');
 
 export default {
     name: 'SettingsPanel',
+    components: {
+        BaseMultiselectDropdown,
+        BaseDropdownButton,
+        BaseButton,
+        BaseUserControl,
+        BaseHeader,
+        FilterModal,
+        LayoutControl,
+        ViewControl,
+        BaseModal,
+        AnnotationSearchDialog,
+    },
     data() {
         return {
             panelCollapsed: false,
@@ -176,7 +191,7 @@ export default {
             window.open(this.exportFileUrl);
         },
         selectWorkspace() {
-            router.push({ parh: '/', query: { ws: this.selectedWorkspace } });
+            router.push({ path: '/', query: { ws: this.selectedWorkspace } });
         },
         showVersionModal() {
             this.$refs.versionModal.openModal();
@@ -215,17 +230,6 @@ export default {
                 this.$refs.workspaceModal.closeModal();
             }
         },
-    },
-    components: {
-        BaseDropdownButton,
-        BaseMultiselectDropdown,
-        BaseButton,
-        BaseUserControl,
-        BaseHeader,
-        FilterModal,
-        LayoutControl,
-        BaseModal,
-        AnnotationSearchDialog,
     },
 };
 </script>
@@ -287,7 +291,7 @@ export default {
             }
         }
         &_block {
-            padding: 16px 0;
+            padding: 14px 0;
             background-image: linear-gradient(to right, rgb(39, 63, 89) 25%,rgba(39, 63, 89, 0) 0%);
             background-position: top;
             background-size: 8px 2px;
