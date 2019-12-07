@@ -68,7 +68,6 @@ export function getListByFilter(context) {
 }
 
 export function getListByConditions(context, zoneChanged) {
-    context.dispatch('setLoading', true);
     const params = utils.prepareParams({
         ws: context.state.workspace,
         conditions: context.state.currentConditions,
@@ -81,7 +80,7 @@ export function getListByConditions(context, zoneChanged) {
         context.dispatch('getStatList', { conditions: context.state.currentConditions }),
         commonHttp.post('/list', params).then((response) => {
             const { data } = response;
-            context.dispatch('setLoading', false);
+            context.commit('setDetailsToListView', []);
             context.commit('setRecords', data.records);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);

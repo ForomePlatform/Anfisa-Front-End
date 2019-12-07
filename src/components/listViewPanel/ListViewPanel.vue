@@ -1,7 +1,7 @@
 <template>
     <div class="list-view-wrapper">
         <transition name="main-loading" mode="out-in">
-            <div v-if="isMainLoading" class="loading-view" key="loading">
+            <div v-if="isMainLoading" class="loading-view">
                 <div class="loading-spinner">
                     <BaseSpinner
                             :label="getSpinnerLabel"
@@ -10,7 +10,7 @@
                 </div>
                 <BaseLoadingLabel/>
             </div>
-            <div v-else class="list-view" key="listView">
+            <div v-else class="list-view">
                 <b-list-group @scroll="onScroll">
                     <div class="list-wrapper">
                         <b-list-group-item v-for="item in getPageItems" :key="item.id">
@@ -67,26 +67,34 @@ export default {
             return this.$store.getters.getListViewDetails;
         },
         isMainLoading() {
-            return this.isLoading() && this.endIndex === this.itemPerPage;
+            return this.isLoading() && this.page === 1;
         },
         isSubLoading() {
             return this.isLoading();
         },
         getSpinnerLabel() {
-            const min = this.$store.getters.getListViewDetails.length;
+            const min = this.getPageItems.length;
             const max = this.endIndex;
             return `${min} / ${max}`;
         },
     },
     watch: {
         itemsList() {
+            this.page = 1;
+            this.endIndex = this.getEndIndex();
             this.loadItemsDetails();
         },
     },
     methods: {
+        getEndIndex() {
+            return this.endIndex <= this.itemsList.length ?
+                10 :
+                this.itemsList.length
+        },
         isLoading() {
             const listViewDetails = this.$store.getters.getListViewDetails;
-            return listViewDetails.length < this.endIndex;
+            return listViewDetails.length < this.itemsList.length &&
+                listViewDetails.length < this.endIndex;
         },
         onScroll(event) {
             const el = event.target;
@@ -103,11 +111,8 @@ export default {
             const startIndex = this.itemPerPage * (this.page - 1);
             const items = this.itemsList.slice(startIndex, this.endIndex);
             items.forEach((item) => {
-                const foundItems = this.$store.getters.getListViewDetailsById(item.id);
-                if (foundItems && foundItems.length === 0) {
-                    this.$store.dispatch('getListViewDetails', item.id);
-                    this.$store.dispatch('getListViewTags', item.id);
-                }
+                this.$store.dispatch('getListViewDetails', item.id);
+                this.$store.dispatch('getListViewTags', item.id);
             });
         },
     },
