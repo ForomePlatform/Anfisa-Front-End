@@ -45,6 +45,8 @@ export default {
     },
     watch: {
         itemsList() {
+            this.page = 1;
+            this.endIndex = this.getEndIndex();
             this.loadItemsDetails();
         },
     },
@@ -64,11 +66,8 @@ export default {
             const startIndex = this.itemPerPage * (this.page - 1);
             const items = this.itemsList.slice(startIndex, this.endIndex);
             items.forEach((item) => {
-                const foundItems = this.$store.getters.getListViewDetailsById(item.id);
-                if (foundItems && foundItems.length === 0) {
-                    this.$store.dispatch('getListViewDetails', item.id);
-                    this.$store.dispatch('getListViewTags', item.id);
-                }
+                this.$store.dispatch('getListViewDetails', item.id);
+                this.$store.dispatch('getListViewTags', item.id);
             });
         },
     },
