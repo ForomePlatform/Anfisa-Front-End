@@ -22,7 +22,10 @@
 
     <b-dropdown-form v-else-if="!filterName">
         <b-form-group label="Filters Name" label-for="filter-name">
-            <b-form-input @keydown.enter.stop.prevent="onSaveHandler" size="sm" id="filter-name" v-model="name"/>
+            <b-form-input @keydown.enter.stop.prevent="onSaveHandler"
+                          size="sm"
+                          id="filter-name"
+                          v-model="name"/>
         </b-form-group>
         <b-form-group class="popup-form_btns">
             <b-button
