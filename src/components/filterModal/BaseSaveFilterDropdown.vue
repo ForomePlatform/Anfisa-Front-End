@@ -50,6 +50,14 @@
             SAVE AS NEW FILTER
         </b-dropdown-item-button>
     </b-dropdown-form>
+    
+    <BaseWarningModal
+      ref="saveModalWarning"
+      :id="SAVE_MODAL_ID"
+      okTitle="Ok"
+      :preset="selectedPreset || 'New Filter'">
+        <p class="mt-3 ml-3">Filter name can’t be empty</p>
+    </BaseWarningModal>
 
 </b-dropdown>
 </template>
@@ -60,6 +68,7 @@ export default {
     data() {
         return {
             name: this.filterName || '',
+            SAVE_MODAL_ID: 'filterModalSaveWarning',
         };
     },
     methods: {
@@ -68,6 +77,10 @@ export default {
             this.onSave(this.filterName);
         },
         onSaveHandler() {
+            if (!this.name) {
+                this.$refs.saveModalWarning.show();
+                return;
+            }
             this.$refs.dropdown.hide();
             this.onSave(this.name);
         },
