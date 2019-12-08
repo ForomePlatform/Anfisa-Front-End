@@ -28,6 +28,14 @@ export function setVariantDetails(state, variantDetails) {
     state.variantDetails = variantDetails;
 }
 
+export function setListViewDetails(state, details) {
+    state.listViewDetails = details;
+}
+
+export function addDetailsToListView(state, details) {
+    state.listViewDetails.push(details);
+}
+
 export function setSelectedVariant(state, selectedVariant) {
     state.selectedVariant = selectedVariant;
 }
@@ -54,7 +62,7 @@ export function setExportFileUrl(state, exportFileUrl) {
     state.exportFileUrl = exportFileUrl;
 }
 
-export function changeNote(state, note) {
+export function setNote(state, note) {
     state.note = note;
 }
 
@@ -236,4 +244,28 @@ export function setCompiled(state, value = null) {
 
 export function setTranscripts(state, transcripts) {
     state.transcripts = transcripts;
+}
+
+export function setMeta(state, meta) {
+    state.meta = meta;
+}
+
+export function addNote(state, note) {
+    const { notes } = state;
+    const foundNote = notes.findIndex(addedNote => addedNote.id === note.id);
+    if (foundNote !== -1) {
+        notes[foundNote] = note;
+    } else {
+        notes.push(note);
+    }
+}
+
+export function addTags(state, tags) {
+    const { selectedGenTags } = state;
+    const foundTags = selectedGenTags.findIndex(addedTags => addedTags.id === tags.id);
+    if (foundTags !== -1) {
+        selectedGenTags[foundTags] = tags;
+    } else {
+        selectedGenTags.push(tags);
+    }
 }

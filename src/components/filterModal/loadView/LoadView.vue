@@ -40,8 +40,8 @@ import LoadViewCard from './LoadViewCard.vue';
 export default {
     data() {
         return {
-            sortField: 'date'
-        }
+            sortField: 'date',
+        };
     },
     props: ['onLoad', 'onRemove', 'onCancel'],
     components: {
@@ -50,8 +50,8 @@ export default {
     computed: {
         filterDetails() {
             const field = this.sortField;
-            let initialFilterDetails = this.$store.state.filterDetails.slice();
-            return initialFilterDetails.sort(function(filter1, filter2) {
+            const initialFilterDetails = this.$store.state.filterDetails.slice();
+            return initialFilterDetails.sort((filter1, filter2) => {
                 if (filter1.isCommon !== filter2.isCommon) {
                     return filter1.isCommon ? 1 : -1;
                 }
@@ -77,7 +77,7 @@ export default {
             this.sortField = 'name';
         },
         sortButtonStyle(field) {
-            return (this.sortField === field ? '#2bb3ed' : '');  
+            return (this.sortField === field ? '#2bb3ed' : '');
         },
     },
 };

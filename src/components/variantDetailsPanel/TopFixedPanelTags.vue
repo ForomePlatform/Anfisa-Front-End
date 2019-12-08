@@ -12,7 +12,7 @@
               class="tags-panel_input"
               :value="tagFilterValue"
               @input="setTagFilterValue"
-              placeholder="Search"
+              placeholder="Search in Tags"
               @keyup.enter="openNewTagPopup"
             />
         </div>
@@ -91,7 +91,7 @@ export default {
             font-size: 12px;
             line-height: 16px;
             margin-left: 4px;
-            width: 80px;
+            width: 100px;
             font-size: 12px;
             letter-spacing: 0px;
             &:focus {
