@@ -95,9 +95,6 @@ export default {
                 {
                     x: 0, y: 30, w: 6, h: 5, i: 9, name: 'VCF', secondary: true,
                 },
-                {
-                    x: 0, y: 35, w: 6, h: 5, i: 10, name: 'Cohorts', secondary: true,
-                },
             ],
         };
     },
