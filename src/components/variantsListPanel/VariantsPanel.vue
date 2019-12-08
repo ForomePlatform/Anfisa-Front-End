@@ -180,7 +180,7 @@ export default {
             }
         }
         &_count {
-            font-size: 13px;
+            font-size: 11px;
             letter-spacing: 0px;
             &_line {
                 margin: 0px;
