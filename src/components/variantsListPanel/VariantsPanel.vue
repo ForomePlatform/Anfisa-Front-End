@@ -127,9 +127,7 @@ export default {
             this.panelCollapsed = !this.panelCollapsed;
             setTimeout(() => window.dispatchEvent(new Event('resize')));
         },
-    },
-    mounted() {
-        const keydownHandler = (e) => {
+        keydownHandler(e) {
             const { selectedVariant, filtered } = this.$store.state;
             if ((e.keyCode === 38 || e.keyCode === 40) && selectedVariant !== null) {
                 e.preventDefault();
@@ -145,9 +143,14 @@ export default {
                 }
                 this.selectItem(list[newIndex].id);
             }
-        };
-        window.addEventListener('keydown', keydownHandler);
+        }
     },
+    mounted() {
+        window.addEventListener('keydown', this.keydownHandler);
+    },
+    destroyed() {
+        window.removeEventListener('keydown', this.keydownHandler)
+    }
 };
 </script>
 
