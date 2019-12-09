@@ -91,6 +91,6 @@ export const IMPORT_STAT_MODAL = {
 };
 
 export const SAVE_FILTER_MODAL = {
-    title: 'Save filter',
+    title: 'SAVE FILTER',
     text: 'Filter name can’t be empty',
 };
