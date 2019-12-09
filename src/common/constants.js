@@ -89,3 +89,8 @@ export const IMPORT_STAT_MODAL = {
         (If you wish to add more conditions after Compound_Het, please remove it first. Then added it again after all other conditions were added )`,
     ok: 'SUBMIT',
 };
+
+export const SAVE_FILTER_MODAL = {
+    title: 'Save filter',
+    text: 'Filter name can’t be empty',
+};

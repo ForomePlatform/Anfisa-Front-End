@@ -32,6 +32,7 @@
               class="popup-form_btns_save"
               variant="primary"
               size="sm"
+              :disabled="!name"
               @click="onSaveHandler"
             >
                 SAVE FILTER
@@ -50,21 +51,18 @@
             SAVE AS NEW FILTER
         </b-dropdown-item-button>
     </b-dropdown-form>
-    
-    <BaseWarningModal
-      ref="saveModalWarning"
-      :id="SAVE_MODAL_ID"
-      okTitle="Ok"
-      :preset="selectedPreset || 'New Filter'">
-        <p class="mt-3 ml-3">Filter name can’t be empty</p>
-    </BaseWarningModal>
-
 </b-dropdown>
 </template>
 
 <script>
+import BaseWarningModal from "./BaseWarningModal.vue";
+import EventBus from '@/eventBus';
+
 export default {
     props: ['enabled', 'filterName', 'processing', 'onSave', 'onSaveAs'],
+    components: {
+        BaseWarningModal
+    },
     data() {
         return {
             name: this.filterName || '',
@@ -78,7 +76,7 @@ export default {
         },
         onSaveHandler() {
             if (!this.name) {
-                this.$refs.saveModalWarning.show();
+                EventBus.$emit('SAVE_FILTER');
                 return;
             }
             this.$refs.dropdown.hide();
