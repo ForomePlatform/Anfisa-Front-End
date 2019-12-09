@@ -55,8 +55,8 @@
 </template>
 
 <script>
-import BaseWarningModal from "./BaseWarningModal.vue";
 import EventBus from '@/eventBus';
+import BaseWarningModal from "./BaseWarningModal.vue";
 
 export default {
     props: ['enabled', 'filterName', 'processing', 'onSave', 'onSaveAs'],
