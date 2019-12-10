@@ -69,7 +69,7 @@ export function getStatListWithOperativeStat(data) {
                     vgroup: 'Inheritance',
                     name: statToAdd,
                     render: 'operative',
-                    title: data["avail-import-titles"] ? data["avail-import-titles"][index] : ""
+                    title: data['avail-import-titles'] ? data['avail-import-titles'][index] : '',
                 }, [['Proband', null]]];
                 statList = [...statList, target];
             }
