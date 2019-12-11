@@ -147,6 +147,7 @@ export default {
         openLoadView() {
             this.loadView = true;
             this.$store.dispatch('getList');
+            this.$store.dispatch('getStatList', {});
         },
         clearAllHandler() {
             if (this.enableClearAll) {
