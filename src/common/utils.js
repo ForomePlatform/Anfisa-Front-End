@@ -144,6 +144,7 @@ export function prepareVariantDetails(data) {
             result[item.name] = {
                 title: item.title,
                 data: tableData,
+                ...item.colhead ? { colhead: item.colhead } : {},
             };
         } else if (item.type === 'pre') {
             result[item.title] = {
