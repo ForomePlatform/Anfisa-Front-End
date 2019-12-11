@@ -7,6 +7,8 @@ import {
     STAT_GROUP,
     EXPIRED_TIME,
     STAT_TYPE_ZYGOSITY,
+    STAT_TYPE_TRANSCRIPT_MULTISET,
+    STAT_TYPE_TRANSCRIPT_STATUS,
     NUMERIC_RENDER_TYPES,
 } from './constants';
 
@@ -50,6 +52,8 @@ export const prepareStatDataByType = (statItem) => {
         return prepareNumericStatData(statItem);
     case STAT_TYPE_ENUM:
     case STAT_TYPE_STATUS:
+    case STAT_TYPE_TRANSCRIPT_MULTISET:
+    case STAT_TYPE_TRANSCRIPT_STATUS:
         return prepareEnumStatData(statItem);
     case STAT_TYPE_ZYGOSITY:
         return prepareZygosityStatData(statItem);
@@ -170,6 +174,10 @@ export function checkNonzeroStat(stat) {
         return Boolean(stat.data[0] || stat.data[1]);
     } else if (stat.type === STAT_TYPE_ZYGOSITY) {
         const nonzeroItems = stat.data.variants.filter(item => item[1]);
+        return Boolean(nonzeroItems.length);
+    } else if (stat.type === STAT_TYPE_TRANSCRIPT_MULTISET
+               || stat.type === STAT_TYPE_TRANSCRIPT_STATUS) {
+        const nonzeroItems = stat.data.filter(item => item[2]);
         return Boolean(nonzeroItems.length);
     }
     return false;
