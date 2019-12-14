@@ -66,10 +66,15 @@ export function getStatListWithOperativeStat(data) {
     const statsToAdd = (data && data['avail-import']) || [];
     let statList = data['stat-list'];
     if (statList && Array.isArray(statList)) {
-        statsToAdd.forEach((statToAdd) => {
+        statsToAdd.forEach((statToAdd, index) => {
             const dubbedHetStat = statList.findIndex(statItem => statItem[1].name === statToAdd);
             if (dubbedHetStat === -1) {
-                const target = [STAT_TYPE_ENUM, { vgroup: 'Inheritance', name: statToAdd, render: 'operative' }, [['Proband', null]]];
+                const target = [STAT_TYPE_ENUM, {
+                    vgroup: 'Inheritance',
+                    name: statToAdd,
+                    render: 'operative',
+                    title: data['avail-import-titles'] ? data['avail-import-titles'][index] : '',
+                }, [['Proband', null]]];
                 statList = [...statList, target];
             }
         });
