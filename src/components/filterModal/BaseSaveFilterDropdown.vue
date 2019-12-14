@@ -32,7 +32,7 @@
               class="popup-form_btns_save"
               variant="primary"
               size="sm"
-              :disabled="!name"
+              :disabled="!name.trim()"
               @click="onSaveHandler"
             >
                 SAVE FILTER
@@ -56,13 +56,9 @@
 
 <script>
 import EventBus from '@/eventBus';
-import BaseWarningModal from "./BaseWarningModal.vue";
 
 export default {
     props: ['enabled', 'filterName', 'processing', 'onSave', 'onSaveAs'],
-    components: {
-        BaseWarningModal
-    },
     data() {
         return {
             name: this.filterName || '',
@@ -75,12 +71,12 @@ export default {
             this.onSave(this.filterName);
         },
         onSaveHandler() {
-            if (!this.name) {
+            if (!this.name.trim()) {
                 EventBus.$emit('SAVE_FILTER');
                 return;
             }
             this.$refs.dropdown.hide();
-            this.onSave(this.name);
+            this.onSave(this.name.trim());
         },
         onSaveAsHandler() {
             this.onSaveAs();
