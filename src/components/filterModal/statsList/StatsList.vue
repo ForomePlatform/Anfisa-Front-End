@@ -197,7 +197,7 @@ export default {
                     (stat.type !== STAT_TYPE_ZYGOSITY || this.filteredData(item).variants))
                     .length || !stat.data.length;
             }
-            return !stat.data.length;
+            return !stat.data.length || stat.type === STAT_TYPE_ZYGOCITY;
         },
         hasProblemGroup(stat) {
             return (stat.type === STAT_TYPE_ZYGOSITY) && (stat.data.variants === null);
