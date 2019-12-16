@@ -138,7 +138,7 @@ export default {
             if (stat.type === 'zygosity') {
                 result = {
                     ...result,
-                    variants: this.filterData(result.variants, isSubstat),
+                    variants: this.filterData(result.variants ? result.variants : [], isSubstat),
                     family: result.family.filter(f =>
                         f.toLowerCase().includes(query)),
                 };
@@ -181,8 +181,8 @@ export default {
                 && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
         },
         showStat(stat) {
-            return !this.hasProblemGroup(stat) &&
-                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery) ||
+            return (stat.type === STAT_TYPE_ZYGOSITY ||
+                !this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery) ||
                 (stat.render === 'operative'));
         },
         primaryDisabled(stat) {
@@ -193,18 +193,15 @@ export default {
         },
         inheritanceHandler(stat) {
             if (stat.title === 'Inheritance') {
-                return !stat.data.filter(item => !this.hasProblemGroup(item) &&
+                return !stat.data.filter(item =>
                     (stat.type !== STAT_TYPE_ZYGOSITY || this.filteredData(item).variants))
                     .length || !stat.data.length;
             }
-            return !stat.data.length || stat.type === STAT_TYPE_ZYGOCITY;
-        },
-        hasProblemGroup(stat) {
-            return (stat.type === STAT_TYPE_ZYGOSITY) && (stat.data.variants === null);
+            return !(stat.data.length || stat.type === STAT_TYPE_ZYGOSITY);
         },
         secondaryDisabled(stat) {
-            return this.hasProblemGroup(stat) || (!this.filledStat(stat) && !this.showStat(stat) &&
-                this.inheritanceHandler(stat));
+            return !this.filledStat(stat) && !this.showStat(stat) &&
+                this.inheritanceHandler(stat);
         },
         expandPreselectedStats() {
             const isStringTrue = value => value === 'true';
