@@ -108,7 +108,6 @@ export default {
             router.push({ parh: '/', query: { ...this.$route.query, variant: id + 1 } });
         },
         toggleView() {
-            this.$store.dispatch('setListLoading', true);
             setTimeout(() => this.$store.commit('toggleListView'), 0);
             if (this.listView) {
                 this.collapseAllStatus = true;
