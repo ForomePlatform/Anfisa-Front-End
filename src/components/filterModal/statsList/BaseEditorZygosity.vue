@@ -52,7 +52,7 @@ export default {
     },
     computed: {
         allowAdding() {
-            return this.selectedFamily.length && this.selectedVariants.length;
+            return !this.selectedFamily.length && this.selectedVariants.length;
         },
     },
     props: ['family', 'variants', 'preselectedFamily', 'preselectedVariants', 'onSubmit', 'onFamilyChange', 'buttonText'],
