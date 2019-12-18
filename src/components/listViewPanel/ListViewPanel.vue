@@ -30,8 +30,8 @@
 
 <script>
 import viewList from '@/components/listViewPanel/ListViewItem.vue';
-import BaseSpinner from "../common/BaseSpinner.vue";
-import BaseLoadingLabel from "../common/BaseLoadingLabel.vue";
+import BaseSpinner from '../common/BaseSpinner.vue';
+import BaseLoadingLabel from '../common/BaseLoadingLabel.vue';
 
 export default {
     name: 'ListViewPanel',
@@ -75,7 +75,7 @@ export default {
         getSpinnerLabel() {
             const min = this.$store.getters.getListViewDetails.length;
             const max = this.endIndex;
-            return min + ' / ' + max;
+            return `${min} / ${max}`;
         },
     },
     watch: {
