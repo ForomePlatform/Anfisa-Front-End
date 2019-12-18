@@ -104,6 +104,7 @@ export default {
                 this.$store.dispatch('getVariantDetails', id);
                 this.$store.dispatch('getVariantTags', id);
             }
+            router.push({ parh: '/', query: { ...this.$route.query, variant: id + 1 } });
         },
         toggleView() {
             this.$store.dispatch('setListLoading', true);

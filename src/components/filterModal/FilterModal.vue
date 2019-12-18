@@ -188,7 +188,7 @@ export default {
         importStat() {
             this.$store.commit('setCurrentConditions', ['import', this.importedStat]);
             this.$store.dispatch('getListByConditions').then(() => {
-                this.$store.commit('setCurrentConditions', ['enum', this.importedStat, null, ['True']]);
+                this.$store.commit('setCurrentConditions', ['enum', this.importedStat, null, ['Proband']]);
                 this.$store.dispatch('getListByConditions');
             });
         },
