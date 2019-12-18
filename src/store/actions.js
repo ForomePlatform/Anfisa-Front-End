@@ -14,12 +14,15 @@ const commonHttp = axios.create({
 });
 
 export function getList(context) {
+    context.commit('setRecords', []);
+    context.dispatch('setListLoading', true);
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
     commonHttp.post('/list', params)
         .then((response) => {
             const { data } = response;
             context.commit('setRecords', data.records);
+            context.commit('setLoading', false);
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
@@ -35,7 +38,12 @@ export function getList(context) {
         });
 }
 
+export function setListLoading(context, isLoading) {
+    context.commit('setLoading', isLoading);
+}
+
 export function getListByFilter(context) {
+    context.dispatch('setLoading', true);
     const params = utils.prepareParams({
         ws: context.state.workspace,
         filter: context.state.selectedPreset,
@@ -48,6 +56,7 @@ export function getListByFilter(context) {
     return commonHttp.post('/list', params).then((response) => {
         const { data } = response;
         context.commit('setRecords', data.records);
+        context.commit('setLoading', false);
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
         context.commit('setTranscripts', data.transcripts);
@@ -59,6 +68,7 @@ export function getListByFilter(context) {
 }
 
 export function getListByConditions(context, zoneChanged) {
+    context.dispatch('setLoading', true);
     const params = utils.prepareParams({
         ws: context.state.workspace,
         conditions: context.state.currentConditions,
