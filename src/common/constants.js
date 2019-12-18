@@ -90,6 +90,6 @@ export const IMPORT_STAT_MODAL = {
     ok: 'SUBMIT',
 };
 
-//view types
+// view types
 export const VARIANT_VIEW = 'variantView';
 export const LIST_VIEW = 'listView';

@@ -36,7 +36,7 @@ export default {
     data() {
         return {
             isShow: false,
-            isListView: this.$router.currentRoute.name === LIST_VIEW
+            isListView: this.$router.currentRoute.name === LIST_VIEW,
         };
     },
     computed: {
@@ -58,9 +58,9 @@ export default {
         isShow() {
             this.$store.commit('updateShowAllNotes', this.isShow);
         },
-        $route (to){
-            this.isListView = to.name === LIST_VIEW
-        }
+        $route(to) {
+            this.isListView = to.name === LIST_VIEW;
+        },
     },
 };
 </script>
