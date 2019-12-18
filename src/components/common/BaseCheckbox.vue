@@ -32,9 +32,9 @@ export default {
 <style lang="scss" scoped>
 .checkbox {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
-    text-align: center;
+    text-align: left;
     color: #597a96;
     font-size: 14px;
     margin-top: 5px;
@@ -42,7 +42,7 @@ export default {
         position: relative;
         display: inline-block;
         padding-left: 22px;
-        margin: 0 5px;
+        margin: 0;
     }
     label::before,
     label::after {
@@ -70,7 +70,7 @@ export default {
         transform: rotate(-45deg);
     }
     input[type="checkbox"] {
-        opacity: 0;
+        display: none;
     }
     input[type="checkbox"] + label::after {
         content: none;
