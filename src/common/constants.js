@@ -89,3 +89,7 @@ export const IMPORT_STAT_MODAL = {
         (If you wish to add more conditions after Compound_Het, please remove it first. Then added it again after all other conditions were added )`,
     ok: 'SUBMIT',
 };
+
+// view types
+export const VARIANT_VIEW = 'variantView';
+export const LIST_VIEW = 'listView';
