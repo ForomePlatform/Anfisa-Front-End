@@ -89,7 +89,7 @@ export default {
         getEndIndex() {
             return this.endIndex <= this.itemsList.length ?
                 10 :
-                this.itemsList.length
+                this.itemsList.length;
         },
         isLoading() {
             const listViewDetails = this.$store.getters.getListViewDetails;
