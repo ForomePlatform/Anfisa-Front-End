@@ -11,7 +11,12 @@
         <div v-else class="variants-panel_header">
             <BaseGeneVariantToggle :isActive="!listView" :toggle="toggleView" />
             <div class="variants-panel_count">
-                {{countCurrent}} / <b>{{countAmount}}</b>
+                <p class="variants-panel_count_line">
+                    <b>Variants: {{countCurrent}} / {{countAmount}}</b>
+                </p>
+                <p class="variants-panel_count_line">
+                    Transcripts: {{transcripts[0]}} / {{transcripts[1]}}
+                </p>
             </div>
             <div v-if="!listView"
               @click="toggleAllGroups"
@@ -59,6 +64,7 @@ import VariantsPanelList from './VariantsPanelList.vue';
 import VariantsPanelGroups from './VariantsPanelGroups.vue';
 import BaseScrollVertical from '../common/BaseScrollVertical.vue';
 import { ANNOTATION_SERVICE } from '../../common/constants';
+import router from '../../router';
 
 export default {
     name: 'VariantsPanel',
@@ -76,6 +82,7 @@ export default {
             listView: 'listView',
             selectedItem: 'selectedVariant',
             mounting: 'listMounting',
+            transcripts: 'transcripts',
         }),
         ...mapGetters([
             'list',
@@ -92,6 +99,7 @@ export default {
                 this.$store.dispatch('getVariantDetails', id);
                 this.$store.dispatch('getVariantTags', id);
             }
+            router.push({ parh: '/', query: { ...this.$route.query, variant: id + 1 } });
         },
         toggleView() {
             this.$store.commit('setListMounting', true);
@@ -174,8 +182,11 @@ export default {
             }
         }
         &_count {
-            font-size: 13px;
+            font-size: 11px;
             letter-spacing: 0px;
+            &_line {
+                margin: 0px;
+            }
         }
         &_collapse-icon {
             position: absolute;

@@ -498,10 +498,10 @@ export function removeFilter(context, filterName) {
         context.commit('setStats', utils.prepareStatList(statList));
         context.commit('removeAllCurrentConditions');
         context.commit('setTranscripts', response.data.transcripts);
-        context.dispatch('getFilterDetails');
-        context.dispatch('getListByFilter');
         context.commit('setPreset', null);
         context.commit('changePresetSaved', true);
+        context.dispatch('getFilterDetails');
+        context.dispatch('getListByFilter');
     }).catch((error) => {
         console.log(error);
     });

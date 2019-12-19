@@ -1,5 +1,5 @@
 <template>
-    <div @click="toggle" class="custom-toggle mr-3">
+    <div @click="toggle" class="custom-toggle mr-2">
         <div v-bind:class="{'custom-toggle_item': true, 'custom-toggle_item__active': isActive}">
             GENE
         </div>
