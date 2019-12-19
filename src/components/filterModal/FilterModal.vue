@@ -64,26 +64,57 @@
                 :onSubmit="openLoadView"
                 :preset="selectedPreset || 'New Filter'"
         />
-        <BaseWarningModal
-                :id="CLEAR_MODAL_ID"
-                okTitle="Continue to CLEAR ALL"
-                :onSubmit="clearAllSubmit"
-                :preset="selectedPreset"
-        />
-        <BaseModal
-                ref="importStatWarning"
-                :title="IMPORT_STAT_MODAL.title"
-                :onSubmit="importStat"
-                :okTitle="IMPORT_STAT_MODAL.ok"
-        >
-            <p class="mt-3 ml-3">{{ IMPORT_STAT_MODAL.text }}</p>
-        </BaseModal>
+        <div v-if="advancedView" class="filter-modal_advanced-view">
+            <FilterModalAdvancedView />
+        </div>
+        <div v-else-if="loadView" class="filter-modal_load-view">
+            <LoadView
+              :onLoad="onFilterLoad"
+              :onRemove="removeFilter"
+            />
+        </div>
+        <div v-else class="filter-modal_content"
+             ref="filterModalContent"
+             :style="{'height' : `${modalContentHeight}px`}">
+            <StatsList />
+            <ConditionsView />
+        </div>
+    </b-modal>
+    <BaseWarningModal
+      :id="LOAD_MODAL_ID"
+      okTitle="LOAD ANYWAY"
+      :onSubmit="openLoadView"
+      :preset="selectedPreset || 'New Filter'"
+    />
+    <BaseWarningModal
+      :id="CLEAR_MODAL_ID"
+      okTitle="Continue to CLEAR ALL"
+      :onSubmit="clearAllSubmit"
+      :preset="selectedPreset"
+    />
+    <BaseModal
+      ref="importStatWarning"
+      :title="IMPORT_STAT_MODAL.title"
+      :onSubmit="importStat"
+      :okTitle="IMPORT_STAT_MODAL.ok"
+    >
+        <p class="mt-3 ml-3">{{ IMPORT_STAT_MODAL.text }}</p>
+    </BaseModal>
+    <BaseModal
+      ref="saveFilterWarning"
+      :title="SAVE_FILTER_MODAL.title"
+      :onSubmit="() => {}"
+      okTitle="OK"
+      :okOnly="true"
+    >
+        <p class="mt-3 ml-3">{{ SAVE_FILTER_MODAL.text }}</p>
+    </BaseModal>
     </div>
 </template>
 
 <script>
 import EventBus from '@/eventBus';
-import { IMPORT_STAT_MODAL } from '@/common/constants';
+import { IMPORT_STAT_MODAL, SAVE_FILTER_MODAL } from '@/common/constants';
 import BaseModal from '@/components/common/BaseModal.vue';
 import FilterModalHeader from './FilterModalHeader.vue';
 import FilterModalSecondHeader from './FilterModalSecondHeader.vue';
@@ -117,7 +148,7 @@ export default {
             CUSTOM_INHERITENCE_ID: 'customInheritenceId',
             modalContentHeight: 620,
             importedStat: null,
-            IMPORT_STAT_MODAL,
+            SAVE_FILTER_MODAL
         };
     },
     computed: {
@@ -171,6 +202,7 @@ export default {
         openLoadView() {
             this.loadView = true;
             this.$store.dispatch('getList');
+            this.$store.dispatch('getStatList', {});
         },
         clearAllHandler() {
             if (this.enableClearAll) {
@@ -188,7 +220,7 @@ export default {
         importStat() {
             this.$store.commit('setCurrentConditions', ['import', this.importedStat]);
             this.$store.dispatch('getListByConditions').then(() => {
-                this.$store.commit('setCurrentConditions', ['enum', this.importedStat, null, ['True']]);
+                this.$store.commit('setCurrentConditions', ['enum', this.importedStat, null, ['Proband']]);
                 this.$store.dispatch('getListByConditions');
             });
         },
@@ -197,6 +229,9 @@ export default {
         EventBus.$on('IMPORT_STAT', (statName) => {
             this.importedStat = statName;
             this.$refs.importStatWarning.openModal();
+        });
+        EventBus.$on('SAVE_FILTER', () => {
+            this.$refs.saveFilterWarning.openModal();
         });
     },
 };

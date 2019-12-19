@@ -22,13 +22,17 @@
 
     <b-dropdown-form v-else-if="!filterName">
         <b-form-group label="Filters Name" label-for="filter-name">
-            <b-form-input @click.native.stop="" size="sm" id="filter-name" v-model="name"/>
+            <b-form-input @keydown.enter.stop.prevent="onSaveHandler"
+                          size="sm"
+                          id="filter-name"
+                          v-model="name"/>
         </b-form-group>
         <b-form-group class="popup-form_btns">
             <b-button
               class="popup-form_btns_save"
               variant="primary"
               size="sm"
+              :disabled="!name.trim()"
               @click="onSaveHandler"
             >
                 SAVE FILTER
@@ -47,16 +51,18 @@
             SAVE AS NEW FILTER
         </b-dropdown-item-button>
     </b-dropdown-form>
-
 </b-dropdown>
 </template>
 
 <script>
+import EventBus from '@/eventBus';
+
 export default {
     props: ['enabled', 'filterName', 'processing', 'onSave', 'onSaveAs'],
     data() {
         return {
             name: this.filterName || '',
+            SAVE_MODAL_ID: 'filterModalSaveWarning',
         };
     },
     methods: {
@@ -65,8 +71,12 @@ export default {
             this.onSave(this.filterName);
         },
         onSaveHandler() {
+            if (!this.name.trim()) {
+                EventBus.$emit('SAVE_FILTER');
+                return;
+            }
             this.$refs.dropdown.hide();
-            this.onSave(this.name);
+            this.onSave(this.name.trim());
         },
         onSaveAsHandler() {
             this.onSaveAs();

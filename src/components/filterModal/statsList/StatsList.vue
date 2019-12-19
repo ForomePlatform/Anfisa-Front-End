@@ -153,7 +153,7 @@ export default {
                 if (!(!!result.variants.length || !!result.family.length)) {
                     result = [];
                 }
-            } else {
+            } else if (stat.render !== 'operative') {
                 result = this.filterData(result, isSubstat);
             }
             return result;
@@ -190,7 +190,8 @@ export default {
         },
         showStat(stat) {
             return !this.hasProblemGroup(stat) &&
-                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery));
+                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery) ||
+                (stat.render === 'operative'));
         },
         primaryDisabled(stat) {
             return !this.filledStat(stat) && (
@@ -201,7 +202,8 @@ export default {
         inheritanceHandler(stat) {
             if (stat.title === 'Inheritance') {
                 return !stat.data.filter(item => !this.hasProblemGroup(item) &&
-                    this.filteredData(item).variants).length || !stat.data.length;
+                    (stat.type !== STAT_TYPE_ZYGOSITY || this.filteredData(item).variants))
+                    .length || !stat.data.length;
             }
             return !stat.data.length;
         },
