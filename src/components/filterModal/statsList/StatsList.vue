@@ -12,8 +12,8 @@
               placeholder="Search"
             />
         </div>
-        <BaseNonzeroCheckbox :checked="nonzeroChecked" @change="toggleNonzeroCheckbox"/>
-        <div v-for="stat in getStats" :key="stat.name">
+        <BaseNonzeroCheckbox :checked="nonzeroChecked" :onChange="toggleNonzeroCheckbox"/>
+        <div v-for="stat in stats" :key="stat.name">
             <BaseCollapseHeader
               :className="className"
               :name="stat.title || stat.name"
@@ -50,7 +50,6 @@
                 />
             </BaseCollapseHeader>
         </div>
-        <b-button @click="show" variant="primary">Show Modal</b-button>
     </div>
 </template>
 
@@ -61,12 +60,10 @@ import BaseCollapseHeader from './BaseCollapseHeader.vue';
 import BaseExpandButton from './BaseExpandButton.vue';
 import StatsListEditor from './StatsListEditor.vue';
 import BaseNonzeroCheckbox from './BaseNonzeroCheckbox.vue';
-import BaseEditorInheritence from './BaseEditorInheritenceModal.vue';
 
 export default {
     name: 'StatsList',
     components: {
-        BaseEditorInheritence,
         BaseCollapseHeader,
         BaseExpandButton,
         StatsListEditor,
@@ -80,12 +77,12 @@ export default {
         };
     },
     computed: {
-        getStats() {
+        stats() {
             return this.searchQuery ? this.$store.getters.getFilteredStats(this.searchQuery)
-                : this.$store.getters.getStats;
+                : this.$store.state.stats;
         },
-        getCurrentConditions() {
-            return this.$store.getters.getCurrentConditions;
+        oCurrentConditions() {
+            return this.$store.getters.oCurrentConditions;
         },
         searchQuery: {
             get() {
@@ -153,7 +150,7 @@ export default {
                 if (!(!!result.variants.length || !!result.family.length)) {
                     result = [];
                 }
-            } else {
+            } else if (stat.render !== 'operative'){
                 result = this.filterData(result, isSubstat);
             }
             return result;
@@ -185,8 +182,8 @@ export default {
             }
         },
         filledStat(stat) {
-            return Boolean(this.getCurrentConditions[stat.name] || (stat.type === STAT_GROUP
-                && stat.data.filter(subStat => this.getCurrentConditions[subStat.name]).length));
+            return Boolean(this.oCurrentConditions[stat.name] || (stat.type === STAT_GROUP
+                && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
         },
         showStat(stat) {
             return !this.hasProblemGroup(stat) &&
@@ -219,12 +216,12 @@ export default {
             this.$store.commit('setFilterSearchQuery', '');
             const elements = document.getElementsByClassName(this.className);
             const expandSet = new Set();
-            this.getStats.forEach((stat) => {
-                if (this.getCurrentConditions[stat.name]) {
+            this.stats.forEach((stat) => {
+                if (this.oCurrentConditions[stat.name]) {
                     expandSet.add(getStatName(stat));
                 } else if (stat.type === STAT_GROUP) {
                     stat.data.forEach((subStat) => {
-                        if (this.getCurrentConditions[subStat.name]) {
+                        if (this.oCurrentConditions[subStat.name]) {
                             expandSet.add(getStatName(stat));
                             expandSet.add(getStatName(subStat));
                         }
