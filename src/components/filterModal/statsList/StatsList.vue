@@ -74,7 +74,7 @@ export default {
                 : this.$store.state.stats;
         },
         oCurrentConditions() {
-            return this.$store.getters.getCurrentConditions;
+            return this.$store.getters.oCurrentConditions;
         },
         searchQuery: {
             get() {
@@ -145,7 +145,7 @@ export default {
                 if (!(!!result.variants.length || !!result.family.length)) {
                     result = [];
                 }
-            } else if (stat.render !== 'operative') {
+            } else {
                 result = this.filterData(result, isSubstat);
             }
             return result;
@@ -182,8 +182,7 @@ export default {
         },
         showStat(stat) {
             return !this.hasProblemGroup(stat) &&
-                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery) ||
-                (stat.render === 'operative'));
+                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery));
         },
         primaryDisabled(stat) {
             return !this.filledStat(stat) && (
@@ -194,8 +193,7 @@ export default {
         inheritanceHandler(stat) {
             if (stat.title === 'Inheritance') {
                 return !stat.data.filter(item => !this.hasProblemGroup(item) &&
-                    (stat.type !== STAT_TYPE_ZYGOSITY || this.filteredData(item).variants))
-                    .length || !stat.data.length;
+                    this.filteredData(item).variants).length || !stat.data.length;
             }
             return !stat.data.length;
         },

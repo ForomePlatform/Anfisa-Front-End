@@ -2,8 +2,8 @@
     <div class="filter-modal-conditions">
         <div
           v-for="(condition, index) in currentConditions"
+          v-bind:key="index + '-' + condition[1]"
           class="filter-modal-conditions_item"
-          :key="index"
         >
             <BaseConditionWrapper :onRemove="() => removeHandler(condition[1])">
                 <BaseViewFloat
@@ -33,10 +33,9 @@
 
 <script>
 import {
-    STAT_NUMERIC,
     STAT_TYPE_ENUM,
-    STAT_TYPE_IMPORT,
     STAT_TYPE_STATUS,
+    STAT_NUMERIC,
     STAT_TYPE_ZYGOSITY,
 } from '@/common/constants';
 import BaseConditionWrapper from './BaseConditionWrapper.vue';
@@ -45,25 +44,22 @@ import BaseViewFloat from './BaseViewFloat.vue';
 import BaseViewZygosity from './BaseViewZygosity.vue';
 
 export default {
-    name: 'ConditionsView',
+    computed: {
+        currentConditions() {
+            return this.$store.state.currentConditions.filter(condition =>
+                this.displayEnum(condition)
+                || this.displayNumeric(condition)
+                || this.displayZygosity(condition));
+        },
+        importedConditions() {
+            return this.$store.state.currentConditions.filter(condition => condition[0] === 'import');
+        },
+    },
     components: {
         BaseConditionWrapper,
         BaseViewEnum,
         BaseViewFloat,
         BaseViewZygosity,
-    },
-    computed: {
-        currentConditions() {
-            return this.$store.getters.getCurrentConditionsByStatTypes([
-                STAT_TYPE_ENUM,
-                STAT_TYPE_STATUS,
-                STAT_NUMERIC,
-                STAT_TYPE_ZYGOSITY,
-            ]);
-        },
-        importedConditions() {
-            return this.$store.getters.getCurrentConditionsByStatTypes([STAT_TYPE_IMPORT]);
-        },
     },
     methods: {
         displayEnum(condition) {

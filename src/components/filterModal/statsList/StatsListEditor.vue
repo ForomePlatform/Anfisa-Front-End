@@ -83,7 +83,7 @@ export default {
     computed: {
         // return data for current condition, {data: ..., type: ...}
         oCurrentCondition() {
-            return this.$store.getters.getCurrentConditions[this.name];
+            return this.$store.getters.oCurrentConditions[this.name];
         },
         // for numeric type,  this.oCurrentCondition.data = [min, max, ...]
         preselectedLinearMin() {

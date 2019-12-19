@@ -94,9 +94,7 @@ export default new Vuex.Store({
             }
             return [];
         },
-        getCurrentConditionsByStatTypes: state => statTypes =>
-            state.currentConditions.filter(condition => statTypes.includes(condition[0])),
-        getCurrentConditions: (state) => {
+        oCurrentConditions: (state) => {
             const result = {};
             state.currentConditions.forEach((condition) => {
                 if (condition[0] === STAT_TYPE_ZYGOSITY) {
@@ -173,18 +171,6 @@ export default new Vuex.Store({
         getTagsById: state => id => state.selectedGenTags.filter(tags => tags.id === id),
         getSelectedId(state) {
             return state.selectedVariant;
-        },
-        getStats(state) {
-            return state.stats;
-        },
-        getSelectedPreset(state) {
-            return state.selectedPreset;
-        },
-        getSelectedPresetSaved(state) {
-            return state.selectedPresetSaved;
-        },
-        getFilteredVariants(state) {
-            return state.filtered;
         },
     },
 });

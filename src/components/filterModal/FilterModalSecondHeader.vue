@@ -1,7 +1,7 @@
 <template>
     <div class="second-header">
         <div v-if="!loadView" class="second-header_separator">
-            <div class="second-header_variants" @click="$emit('close')">
+            <div class="second-header_variants" @click="onShowClick">
                 SEE {{variants || 0}} VARIANTS
             </div>
         </div>
@@ -9,16 +9,17 @@
             <div class="second-header_filters">
                 <b>{{conditionsLength || 0}}</b> Active Filters
             </div>
-            <b-button
-                    variant="none"
-                    class="second-header_clear"
-                    :disabled="!enableClearAll"
-                    @click="$emit('clearAll')"
+            <div
+                    :class="[
+            !enableClearAll ? 'second-header_clear__disabled' : 'second-header_clear__enabled',
+            'second-header_clear'
+          ]"
+                    @click="clearAll"
             >
                 <img v-if="enableClearAll" alt="close" src="@/assets/filterCloseIcon.svg"/>
                 <img v-else alt="close" src="@/assets/filterCloseDisabledIcon.png"/>
                 CLEAR ALL
-            </b-button>
+            </div>
             <div class="save-load">
                 <BaseSaveFilterDropdown
                         :enabled="Boolean(enableSave)"
@@ -47,21 +48,20 @@
     </div>
 </template>
 
-<script>import { STAT_TYPE_IMPORT } from '@/common/constants';
+<script>
 import BaseSaveFilterDropdown from './BaseSaveFilterDropdown.vue';
 
 export default {
-    props: ['onLoadClick', 'enableClearAll', 'enableSave', 'loadView', 'onCancel'],
+    props: ['onLoadClick', 'enableClearAll', 'enableSave', 'onShowClick', 'loadView', 'clearAll', 'onCancel'],
     computed: {
         variants() {
-            return this.$store.getters.getFilteredVariants;
+            return this.$store.state.filtered;
         },
         conditionsLength() {
-            return this.$store.state.currentConditions
-                .filter(condition => condition[0] !== STAT_TYPE_IMPORT).length;
+            return this.$store.state.currentConditions.filter(condition => condition[0] !== 'import').length;
         },
         currentFilter() {
-            return this.$store.getters.getSelectedPreset;
+            return this.$store.state.selectedPreset;
         },
         // display status of filter saving
         processing() {
@@ -133,18 +133,15 @@ export default {
         &_clear {
             padding: 0 23px 0 13px;
             float: left;
-            background-color: #da5959;
-            &:disabled {
+            &__disabled {
                 background-color: #15263e;
                 color: #1a3e6c;
                 cursor: default;
             }
-            &.active, &:hover, &:focus {
-                outline: none !important;
-                box-shadow: none;
-            }
-            &:hover {
-                background-color: #e68d8d;
+            &__enabled {
+                &:hover {
+                    background-color: #da5959;
+                }
             }
         }
         &_load {

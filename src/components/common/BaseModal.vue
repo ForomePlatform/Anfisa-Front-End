@@ -1,45 +1,26 @@
 <template>
-    <b-modal
-            :id="id ? id : ''"
-            ref="customPopup"
-            class="custom-popup"
-            centered
-            :title="title"
-            @ok="onSubmit"
-            :ok-disabled="okDisabled"
-            :cancel-title="cancelTitle || 'CANCEL'"
-            :ok-title="okTitle || 'OK'"
-            @hide="hideHandler"
-            :hide-footer="isFooterHide"
-            :no-close-on-backdrop="noBgClose || false"
-            @keyup.enter.native="enterKeyHandler"
-            :ok-only="okOnly || false"
-            :size="size"
-            :body-class="bodyClass"
-    >
-        <slot />
-        <slot name="modal-footer"/>
-    </b-modal>
+        <b-modal
+          :id="id ? id : ''"
+          ref="customPopup"
+          class="custom-popup"
+          centered
+          :title="title"
+          @ok="onSubmit"
+          :ok-disabled="okDisabled"
+          :cancel-title="cancelTitle || 'CANCEL'"
+          :ok-title="okTitle || 'OK'"
+          @hide="hideHandler"
+          :no-close-on-backdrop="noBgClose || false"
+          @keyup.enter.native="enterKeyHandler"
+          :ok-only="okOnly || false"
+        >
+            <slot />
+        </b-modal>
 </template>
 
 <script>
 export default {
-    props: [
-        'id',
-        'title',
-        'onSubmit',
-        'onCancel',
-        'okDisabled',
-        'onHide',
-        'cancelTitle',
-        'ok-title',
-        'noBgClose',
-        'enterKeyFunc',
-        'okOnly',
-        'size',
-        'isFooterHide',
-        'bodyClass',
-    ],
+    props: ['id', 'title', 'onSubmit', 'okDisabled', 'onHide', 'cancelTitle', 'ok-title', 'noBgClose', 'enterKeyFunc', 'okOnly'],
     methods: {
         openModal() {
             this.$refs.customPopup.show();
@@ -87,28 +68,27 @@ export default {
         .modal-body {
             padding: 0;
             margin-bottom: 0;
+            select {
+                outline: none;
+                border: none;
+                margin-bottom: 0 !important;
+                padding: 0;
+                border-radius: 0;
+                &:focus {
+                    box-shadow: none;
+                }
+                option {
+                    font-size: 16px;
+                    letter-spacing: 0px;
+                    color: #1a3e6c;
+                    padding: 10px 20px;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: #e7e7e7;
+                    }
+                }
+            }
         }
-            /*select {*/
-                /*outline: none;*/
-                /*border: none;*/
-                /*margin-bottom: 0 !important;*/
-                /*padding: 0;*/
-                /*border-radius: 0;*/
-                /*&:focus {*/
-                    /*box-shadow: none;*/
-                /*}*/
-                /*option {*/
-                    /*font-size: 16px;*/
-                    /*letter-spacing: 0px;*/
-                    /*color: #1a3e6c;*/
-                    /*padding: 10px 20px;*/
-                    /*cursor: pointer;*/
-                    /*&:hover {*/
-                        /*background-color: #e7e7e7;*/
-                    /*}*/
-                /*}*/
-            /*}*/
-        /*}*/
         .modal-footer {
             button {
                 padding: 5px 18px;

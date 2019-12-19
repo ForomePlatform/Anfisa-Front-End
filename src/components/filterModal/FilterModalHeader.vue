@@ -1,15 +1,24 @@
 <template>
         <div class="modal-header">
             <div class="modal-header_title">
-                {{ title }}
-                <slot name="subheader"></slot>
+                FILTER VARIANTS
+                <span v-if="!loadView" class="modal-header_title_descr">
+                    {{ title }}
+                </span>
             </div>
             <div class="modal-header_controls">
-                <slot name="extra-buttons"></slot>
+                <div
+                  :class="[advancedView ? 'modal-header_controls_code__active' : '',
+                    'modal-header_controls_code']"
+                  @click="onAdvancedClick"
+                >
+                    &lt;/&gt;
+                </div>
                 <img
+                  class="modal-header_controls_close"
                   alt="close icon"
                   src="@/assets/closeIcon.svg"
-                  @click="$emit('close')"
+                  @click="onClose"
                 />
             </div>
         </div>
@@ -17,11 +26,11 @@
 
 <script>
 export default {
-    name: 'FilterModalHeader',
-    props: {
-        title: {
-            type: String,
-            required: true,
+    props: ['onClose', 'onAdvancedClick', 'advancedView', 'loadView'],
+    computed: {
+        title() {
+            const { selectedPreset, selectedPresetSaved } = this.$store.state;
+            return ` (${selectedPreset || 'New Filter'}${selectedPresetSaved ? '' : ' - Unsaved'})`;
         },
     },
 };
@@ -29,6 +38,7 @@ export default {
 
 <style lang="scss" scoped>
     .modal-header {
+        width: 1224px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -39,7 +49,7 @@ export default {
         border-bottom: 0;
         &_title {
             font-size: 16px;
-            letter-spacing: 0;
+            letter-spacing: 0px;
             color: #2bb3ed;
             font-weight: 800;
             &_descr {
@@ -48,28 +58,23 @@ export default {
         }
         &_controls {
             display: flex;
-            img {
+            &_code {
+                border: 2px solid #1a3e6c;
+                font-size: 16px;
+                letter-spacing: 2px;
+                color: #2bb3ed;
+                font-weight: bold;
+                padding: 3px 6px 1px 10px;
+                border-radius: 20px;
+                margin-right: 24px;
+                cursor: pointer;
+                &__active, &:hover {
+                    background-color: #e3d989;
+                }
+            }
+            &_close {
                 cursor: pointer;
             }
-        }
-    }
-
-    .btn {
-        background-color: #091b33;
-        border: 2px solid #1a3e6c;
-        font-size: 16px;
-        letter-spacing: 2px;
-        color: #2bb3ed;
-        font-weight: bold;
-        padding: 3px 6px 1px 10px;
-        border-radius: 20px;
-        margin-right: 24px;
-        &.active, &:hover {
-            background-color: #e3d989;
-        }
-        &.active, &:hover, &:focus {
-            outline: none !important;
-            box-shadow: none;
         }
     }
 </style>

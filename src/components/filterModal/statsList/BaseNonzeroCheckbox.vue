@@ -1,7 +1,7 @@
 <template>
     <b-form-checkbox
       class="base-nonzero-checkbox"
-      @change="$emit('change')"
+      @change="onChange"
       :checked="checked"
     >
         <div class="base-nonzero-checkbox_title">Nonzero Only</div>
@@ -10,7 +10,7 @@
 
 <script>
 export default {
-    props: ['checked'],
+    props: ['checked', 'onChange'],
 };
 </script>
 
