@@ -19,7 +19,6 @@ export const LOGICAL_OPERATORS = {
     OR: 'Any',
     AND: 'All',
     NOT: 'None',
-    ONLY: 'Only',
 };
 
 export const LOGICAL_OPERATORS_STATUS = {
@@ -34,6 +33,8 @@ export const STAT_TYPE_FLOAT = 'float';
 export const STAT_TYPE_ENUM = 'enum';
 export const STAT_TYPE_STATUS = 'status';
 export const STAT_TYPE_ZYGOSITY = 'zygosity';
+export const STAT_TYPE_TRANSCRIPT_MULTISET = 'transcript-multiset';
+export const STAT_TYPE_TRANSCRIPT_STATUS = 'transcript-status';
 export const STAT_GROUP = 'group';
 export const STAT_NUMERIC = 'numeric';
 
@@ -50,6 +51,8 @@ export const STAT_TYPES = [
     STAT_TYPE_ENUM,
     STAT_TYPE_STATUS,
     STAT_TYPE_ZYGOSITY,
+    STAT_TYPE_TRANSCRIPT_MULTISET,
+    STAT_TYPE_TRANSCRIPT_STATUS,
 ];
 
 export const LOG_EDITOR_MARKS = [0, 0.0001, 0.001, 0.01, 0.05, 0.5, 1];
@@ -93,3 +96,8 @@ export const IMPORT_STAT_MODAL = {
 //view types
 export const VARIANT_VIEW = 'variantView';
 export const LIST_VIEW = 'listView';
+
+export const SAVE_FILTER_MODAL = {
+    title: 'SAVE FILTER',
+    text: 'Filter name can’t be empty',
+};
