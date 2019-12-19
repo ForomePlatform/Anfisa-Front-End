@@ -111,8 +111,11 @@ export default {
             const startIndex = this.itemPerPage * (this.page - 1);
             const items = this.itemsList.slice(startIndex, this.endIndex);
             items.forEach((item) => {
-                this.$store.dispatch('getListViewDetails', item.id);
-                this.$store.dispatch('getListViewTags', item.id);
+                const foundItems = this.$store.getters.getListViewDetailsById(item.id);
+                if (foundItems && foundItems.length === 0) {
+                    this.$store.dispatch('getListViewDetails', item.id);
+                    this.$store.dispatch('getListViewTags', item.id);
+                }
             });
         },
     },
