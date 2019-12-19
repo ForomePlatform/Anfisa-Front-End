@@ -34,8 +34,11 @@ export const STAT_TYPE_FLOAT = 'float';
 export const STAT_TYPE_ENUM = 'enum';
 export const STAT_TYPE_STATUS = 'status';
 export const STAT_TYPE_ZYGOSITY = 'zygosity';
+export const STAT_TYPE_TRANSCRIPT_MULTISET = 'transcript-multiset';
+export const STAT_TYPE_TRANSCRIPT_STATUS = 'transcript-status';
 export const STAT_GROUP = 'group';
 export const STAT_NUMERIC = 'numeric';
+export const STAT_TYPE_IMPORT = 'import';
 
 export const NUMERIC_RENDER_TYPES = {
     COORDINATE: 'neighborhood',
@@ -50,6 +53,8 @@ export const STAT_TYPES = [
     STAT_TYPE_ENUM,
     STAT_TYPE_STATUS,
     STAT_TYPE_ZYGOSITY,
+    STAT_TYPE_TRANSCRIPT_MULTISET,
+    STAT_TYPE_TRANSCRIPT_STATUS,
 ];
 
 export const LOG_EDITOR_MARKS = [0, 0.0001, 0.001, 0.01, 0.05, 0.5, 1];
@@ -89,3 +94,12 @@ export const IMPORT_STAT_MODAL = {
         (If you wish to add more conditions after Compound_Het, please remove it first. Then added it again after all other conditions were added )`,
     ok: 'SUBMIT',
 };
+
+export const SAVE_FILTER_MODAL = {
+    title: 'SAVE FILTER',
+    text: 'Filter name can’t be empty',
+};
+
+// view types
+export const VARIANT_VIEW = 'variantView';
+export const LIST_VIEW = 'listView';

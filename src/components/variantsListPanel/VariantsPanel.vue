@@ -148,14 +148,14 @@ export default {
                 }
                 this.selectItem(list[newIndex].id);
             }
-        }
+        },
     },
     mounted() {
         window.addEventListener('keydown', this.keydownHandler);
     },
     destroyed() {
-        window.removeEventListener('keydown', this.keydownHandler)
-    }
+        window.removeEventListener('keydown', this.keydownHandler);
+    },
 };
 </script>
 

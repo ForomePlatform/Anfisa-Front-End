@@ -150,7 +150,7 @@ export default {
                 if (!(!!result.variants.length || !!result.family.length)) {
                     result = [];
                 }
-            } else if (stat.render !== 'operative'){
+            } else if (stat.render !== 'operative') {
                 result = this.filterData(result, isSubstat);
             }
             return result;
