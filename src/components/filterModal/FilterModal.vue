@@ -60,12 +60,21 @@
     >
         <p class="mt-3 ml-3">{{ IMPORT_STAT_MODAL.text }}</p>
     </BaseModal>
+    <BaseModal
+      ref="saveFilterWarning"
+      :title="SAVE_FILTER_MODAL.title"
+      :onSubmit="() => {}"
+      okTitle="OK"
+      :okOnly="true"
+    >
+        <p class="mt-3 ml-3">{{ SAVE_FILTER_MODAL.text }}</p>
+    </BaseModal>
     </div>
 </template>
 
 <script>
 import EventBus from '@/eventBus';
-import { IMPORT_STAT_MODAL } from '@/common/constants';
+import { IMPORT_STAT_MODAL, SAVE_FILTER_MODAL } from '@/common/constants';
 import BaseModal from '@/components/common/BaseModal.vue';
 import FilterModalHeader from './FilterModalHeader.vue';
 import FilterModalSecondHeader from './FilterModalSecondHeader.vue';
@@ -85,6 +94,7 @@ export default {
             modalContentHeight: 620,
             IMPORT_STAT_MODAL,
             importedStat: null,
+            SAVE_FILTER_MODAL,
         };
     },
     computed: {
@@ -147,6 +157,7 @@ export default {
         openLoadView() {
             this.loadView = true;
             this.$store.dispatch('getList');
+            this.$store.dispatch('getStatList', {});
         },
         clearAllHandler() {
             if (this.enableClearAll) {
@@ -164,7 +175,7 @@ export default {
         importStat() {
             this.$store.commit('setCurrentConditions', ['import', this.importedStat]);
             this.$store.dispatch('getListByConditions').then(() => {
-                this.$store.commit('setCurrentConditions', ['enum', this.importedStat, null, ['True']]);
+                this.$store.commit('setCurrentConditions', ['enum', this.importedStat, null, ['Proband']]);
                 this.$store.dispatch('getListByConditions');
             });
         },
@@ -173,6 +184,9 @@ export default {
         EventBus.$on('IMPORT_STAT', (statName) => {
             this.importedStat = statName;
             this.$refs.importStatWarning.openModal();
+        });
+        EventBus.$on('SAVE_FILTER', () => {
+            this.$refs.saveFilterWarning.openModal();
         });
     },
 };

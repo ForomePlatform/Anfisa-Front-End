@@ -18,6 +18,12 @@
                         <pre>{{ content }}</pre>
                     </div>
                     <table v-else class="base-table_table">
+                        <tr v-if="colhead">
+                            <td/>
+                            <td v-for="head in colhead" class="colhead" :key="head[0]">
+                                {{ head[0] }}
+                            </td>
+                        </tr>
                         <tr v-for="(row, index) in data" v-bind:key="index">
                             <td
                                 v-for="(cell, index) in row"
@@ -44,6 +50,7 @@ export default {
         data: Array,
         secondary: Boolean,
         content: String,
+        colhead: Array,
     },
     components: {
         BaseScrollHorizontal,
@@ -165,6 +172,11 @@ export default {
                 position: relative;
             }
         }
+    }
+
+    .colhead {
+        color: #1a3e6c !important;
+        font-weight: bold;
     }
 
 </style>

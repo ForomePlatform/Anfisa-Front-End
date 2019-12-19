@@ -42,6 +42,7 @@ export default {
         }
     },
     updated() {
+        this.variantByUrl();
         const itemElement = document.querySelector('.variants-list > .variants-list_item__active');
         const listElement = document.querySelector('.variants-list').parentNode;
         if ((!listElement) || (!itemElement)) {
@@ -57,6 +58,14 @@ export default {
             diff = itemRect.bottom - listRect.bottom;
         }
         listElement.scrollTop += diff;
+    },
+    methods: {
+        variantByUrl() {
+            const id = Number(this.$route.query.variant);
+            if (id && id >= 1 && id <= this.data.length && !this.selectedItem) {
+                this.selectItem(id - 1);
+            }
+        },
     },
 };
 </script>
