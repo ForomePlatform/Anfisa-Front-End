@@ -55,39 +55,35 @@
 </template>
 
 <script>
-    export default {
-        name: "ZygosityCheckboxesRange",
-        props: {
-            steps: {
-                type: Object,
-                required: true
-            },
-            sampleId: {
-                type: String,
-                required: true
-            }
+export default {
+    name: 'ZygosityCheckboxesRange',
+    props: {
+        steps: {
+            type: Object,
+            required: true,
         },
-        computed: {
-            getRect1Id() {
-                if ((this.steps.step1 && this.steps.step2) ||
-                    (this.steps.step1 && this.steps.step3))
-                {
-                    return 'active-rect'
-                } else {
-                    return 'disabled-rect'
-                }
-            },
-            getRect2Id() {
-                if ((this.steps.step2 && this.steps.step3) ||
-                    (this.steps.step1 && this.steps.step3))
-                {
-                    return 'active-rect'
-                } else {
-                    return 'disabled-rect'
-                }
+        sampleId: {
+            type: String,
+            required: true,
+        },
+    },
+    computed: {
+        getRect1Id() {
+            if ((this.steps.step1 && this.steps.step2) ||
+                    (this.steps.step1 && this.steps.step3)) {
+                return 'active-rect';
             }
-        }
-    }
+            return 'disabled-rect';
+        },
+        getRect2Id() {
+            if ((this.steps.step2 && this.steps.step3) ||
+                    (this.steps.step1 && this.steps.step3)) {
+                return 'active-rect';
+            }
+            return 'disabled-rect';
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>

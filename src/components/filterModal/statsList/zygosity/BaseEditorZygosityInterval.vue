@@ -13,18 +13,19 @@
 </template>
 
 <script>
-    import ZygosityCheckboxesRange from "./ZygosityCheckboxesRange.vue";
-    import ZygosityCustomRange from "./ZygosityCustomRange.vue";
-    export default {
-        name: "BaseEditorZygosityInterval",
-        components: {ZygosityCustomRange, ZygosityCheckboxesRange},
-        props: {
-            zygosity: {
-                type: Object,
-                required: true
-            }
-        }
-    }
+import ZygosityCheckboxesRange from './ZygosityCheckboxesRange.vue';
+import ZygosityCustomRange from './ZygosityCustomRange.vue';
+
+export default {
+    name: 'BaseEditorZygosityInterval',
+    components: { ZygosityCustomRange, ZygosityCheckboxesRange },
+    props: {
+        zygosity: {
+            type: Object,
+            required: true,
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>

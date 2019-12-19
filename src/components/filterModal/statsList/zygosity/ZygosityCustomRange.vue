@@ -19,15 +19,15 @@
 </template>
 
 <script>
-    export default {
-        name: "ZygosityCustomRange",
-        props: {
-            interval: {
-                fromValue: '',
-                toValue: ''
-            }
-        }
-    }
+export default {
+    name: 'ZygosityCustomRange',
+    props: {
+        interval: {
+            fromValue: '',
+            toValue: '',
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>

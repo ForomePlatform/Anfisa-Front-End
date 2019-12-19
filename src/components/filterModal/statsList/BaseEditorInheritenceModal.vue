@@ -87,123 +87,123 @@
 </template>
 
 <script>
-    import BaseModal from '@/components/common/BaseModal.vue';
-    import BaseEditorZygosityCheckbox from "./zygosity/BaseEditorZygosityInterval.vue";
+import BaseModal from '@/components/common/BaseModal.vue';
+import BaseEditorZygosityCheckbox from './zygosity/BaseEditorZygosityInterval.vue';
 
-    const VARIANT = "variant";
-    const GENE = "gene";
-    const TRANSCRIPT = "transcript";
+const VARIANT = 'variant';
+const GENE = 'gene';
+const TRANSCRIPT = 'transcript';
 
-    export default {
-        name: 'BaseEditorInheritenceModal',
-        components: {
-            BaseEditorZygosityCheckbox,
-            BaseModal,
-        },
-        props: {
-            id: String,
-            title: String,
-            okTitle: String,
-            cancelTitle: String,
-            onSubmit: Function,
-            size: String,
-            isFooterHide: Boolean,
-        },
-        data() {
-            return {
-                show: false,
-                levelSelection: '',
-                scope: '',
-                prePopulate: '',
-                currentStep: '',
-                zygosityData: [
-                    {
-                        sampleId: 'bgm9001a1',
-                        steps: {
-                            step1: '',
-                            step2: '',
-                            step3: ''
-                        },
-                        interval: {
-                            fromValue: '',
-                            toValue: ''
-                        }
-                    }, {
-                        sampleId: 'bgm9001u1',
-                        steps: {
-                            step1: '',
-                            step2: '',
-                            step3: ''
-                        },
-                        interval: {
-                            fromValue: '',
-                            toValue: ''
-                        }
-                    }, {
-                        sampleId: 'bgm9001u2',
-                        steps: {
-                            step1: '',
-                            step2: '',
-                            step3: ''
-                        },
-                        interval: {
-                            fromValue: '',
-                            toValue: ''
-                        }
-                    }
-                ],
-                steps: {
-                    levelStep: 'Select Level',
-                    prePopulateStep: 'Select Pre-populate',
-                    zygosityStep: 'Select Zygosity Interval (for custom range use WheelsIcon)',
-                    scopeStep: 'Select Scope'
+export default {
+    name: 'BaseEditorInheritenceModal',
+    components: {
+        BaseEditorZygosityCheckbox,
+        BaseModal,
+    },
+    props: {
+        id: String,
+        title: String,
+        okTitle: String,
+        cancelTitle: String,
+        onSubmit: Function,
+        size: String,
+        isFooterHide: Boolean,
+    },
+    data() {
+        return {
+            show: false,
+            levelSelection: '',
+            scope: '',
+            prePopulate: '',
+            currentStep: '',
+            zygosityData: [
+                {
+                    sampleId: 'bgm9001a1',
+                    steps: {
+                        step1: '',
+                        step2: '',
+                        step3: '',
+                    },
+                    interval: {
+                        fromValue: '',
+                        toValue: '',
+                    },
+                }, {
+                    sampleId: 'bgm9001u1',
+                    steps: {
+                        step1: '',
+                        step2: '',
+                        step3: '',
+                    },
+                    interval: {
+                        fromValue: '',
+                        toValue: '',
+                    },
+                }, {
+                    sampleId: 'bgm9001u2',
+                    steps: {
+                        step1: '',
+                        step2: '',
+                        step3: '',
+                    },
+                    interval: {
+                        fromValue: '',
+                        toValue: '',
+                    },
                 },
-                scopeOptions: [
-                    { text: 'Entire Workspace', value: 'workspace' },
-                    { text: 'Variants, remaining after application of all other filters', value: 'variants' },
-                ],
-                levelSelectionOptions: [
-                    { text: 'Variant', value: VARIANT },
-                    { text: 'Gene', value: GENE },
-                    { text: 'Transcript', value: TRANSCRIPT },
-                ],
-                prePopulateOptions: [
-                    { text: 'Autosomal dominant', value: 'autosomalDominant' },
-                    { text: 'Homozygous recessive', value: 'homozygousRecessive' },
-                    { text: 'X-linked', value: 'xLinked' },
-                    { text: 'Compensational', value: 'compensational' },
-                ]
-            };
-        },
-        created() {
-            this.currentStep = this.steps.levelStep
-        },
-        methods: {
-            openModal() {
-                this.$refs.inheritenceModal.show();
+            ],
+            steps: {
+                levelStep: 'Select Level',
+                prePopulateStep: 'Select Pre-populate',
+                zygosityStep: 'Select Zygosity Interval (for custom range use WheelsIcon)',
+                scopeStep: 'Select Scope',
             },
-            closeModal() {
-                this.$refs.inheritenceModal.hide();
-            },
-            setNextStep(nextStep) {
-                if (nextStep === TRANSCRIPT) {
-                    this.currentStep = this.steps.zygosityStep
-                } else if ((nextStep === GENE || nextStep === VARIANT)
+            scopeOptions: [
+                { text: 'Entire Workspace', value: 'workspace' },
+                { text: 'Variants, remaining after application of all other filters', value: 'variants' },
+            ],
+            levelSelectionOptions: [
+                { text: 'Variant', value: VARIANT },
+                { text: 'Gene', value: GENE },
+                { text: 'Transcript', value: TRANSCRIPT },
+            ],
+            prePopulateOptions: [
+                { text: 'Autosomal dominant', value: 'autosomalDominant' },
+                { text: 'Homozygous recessive', value: 'homozygousRecessive' },
+                { text: 'X-linked', value: 'xLinked' },
+                { text: 'Compensational', value: 'compensational' },
+            ],
+        };
+    },
+    created() {
+        this.currentStep = this.steps.levelStep;
+    },
+    methods: {
+        openModal() {
+            this.$refs.inheritenceModal.show();
+        },
+        closeModal() {
+            this.$refs.inheritenceModal.hide();
+        },
+        setNextStep(nextStep) {
+            if (nextStep === TRANSCRIPT) {
+                this.currentStep = this.steps.zygosityStep;
+            } else if ((nextStep === GENE || nextStep === VARIANT)
                     && this.currentStep !== this.steps.scopeStep
                     && !this.prePopulate) {
-                    this.currentStep = this.steps.prePopulateStep
-                } else {
-                    this.currentStep = this.steps.scopeStep
-                }
-            },
-            clearAll() {
-                this.currentStep = this.steps.levelStep;
-                this.levelSelection = '';
-                this.scope = '';
-                this.prePopulate = '';
+                this.currentStep = this.steps.prePopulateStep;
+            } else {
+                this.currentStep = this.steps.scopeStep;
             }
         },
-    };
+        clearAll() {
+            this.currentStep = this.steps.levelStep;
+            this.levelSelection = '';
+            this.scope = '';
+            this.prePopulate = '';
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>
