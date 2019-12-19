@@ -33,7 +33,9 @@ export function setDetailsToListView(state, details) {
 }
 
 export function addDetailsToListView(state, details) {
-    state.listViewDetails.push(details);
+    if (!state.listViewDetails.includes(details)) {
+        state.listViewDetails.push(details);
+    }
 }
 
 export function setSelectedVariant(state, selectedVariant) {
