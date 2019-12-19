@@ -193,13 +193,14 @@ export function clearTagFilterValue(state) {
 
 export function setZygosityVariants(state, payload) {
     let list = state.stats;
-    if (payload[1].vgroup) {
-        const targetGroup = list.find(item => item.title === payload[1].vgroup
+    const units = payload.units[0];
+    if (units[1].vgroup) {
+        const targetGroup = list.find(item => item.title === units[1].vgroup
             && item.type === STAT_GROUP);
         list = targetGroup.data;
     }
-    const targetItemIndex = list.findIndex(item => item.name === payload[1].name);
-    Vue.set(list, targetItemIndex, utils.prepareStatDataByType(payload));
+    const targetItemIndex = list.findIndex(item => item.name === units[1].name);
+    Vue.set(list, targetItemIndex, utils.prepareStatDataByType(units));
 }
 
 export function resetListDependencies(state) {

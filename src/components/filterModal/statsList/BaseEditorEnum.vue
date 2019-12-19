@@ -23,7 +23,7 @@
         <div class="enum-editor_list">
             <b-form-checkbox
               class="enum-editor_list_item"
-              v-for="([prop, count], index) in filteredList"
+              v-for="([prop, count, countVariant], index) in filteredList"
               v-bind:key="index + '_' + prop"
               @change="changeHandler(prop)"
               :checked="selected.includes(prop)"
@@ -32,9 +32,16 @@
                     <span>
                         {{prop}}
                     </span>
-                    <span v-if="!isOperativeRender || count">
-                        ({{count}})
-                    </span>
+                    <template v-if="countVariant">
+                        <span v-if="!isOperativeRender || countVariant">
+                            ({{countVariant}}/{{count}})
+                        </span>
+                    </template>
+                    <template v-else>
+                        <span v-if="!isOperativeRender || count">
+                            ({{count}})
+                        </span>
+                    </template>
                 </div>
             </b-form-checkbox>
         </div>

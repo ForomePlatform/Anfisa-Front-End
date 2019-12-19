@@ -31,6 +31,15 @@
                     @clearAll="clearAllHandler"
                     @close="closeModal"
             />
+            <BaseEditorInheritenceModal
+                    :id="CUSTOM_INHERITENCE_ID"
+                    title="CUSTOM INHERITENCE DIALOG"
+                    okTitle="APPLY"
+                    cancelTitle="CLEAR"
+                    :isFooterHide="true"
+                    :onSubmit="openLoadView"
+                    size="xl"
+            />
             <div v-if="advancedView" class="filter-modal_advanced-view">
                 <FilterModalAdvancedView />
             </div>
@@ -43,21 +52,10 @@
             <div v-else class="filter-modal_content"
                  ref="filterModalContent"
                  :style="{'height' : `${modalContentHeight}px`}">
-                <StatsList
-                        :modalId="CUSTOM_INHERITENCE_ID"
-                />
+                <StatsList />
                 <ConditionsView />
             </div>
         </b-modal>
-        <BaseEditorInheritenceModal
-                :id="CUSTOM_INHERITENCE_ID"
-                title="CUSTOM INHERITENCE DIALOG"
-                okTitle="APPLY"
-                cancelTitle="CLEAR"
-                :isFooterHide="true"
-                :onSubmit="openLoadView"
-                size="xl"
-        />
         <BaseWarningModal
                 :id="LOAD_MODAL_ID"
                 okTitle="LOAD ANYWAY"
@@ -78,128 +76,146 @@
         >
             <p class="mt-3 ml-3">{{ IMPORT_STAT_MODAL.text }}</p>
         </BaseModal>
+        <BaseModal
+                ref="saveFilterWarning"
+                :title="SAVE_FILTER_MODAL.title"
+                :onSubmit="() => {}"
+                okTitle="OK"
+                :okOnly="true"
+        >
+            <p class="mt-3 ml-3">{{ SAVE_FILTER_MODAL.text }}</p>
+        </BaseModal>
+        >>>>>>> f3ec55317ae51c608ac8fe980d3045c5a69ab690
     </div>
 </template>
 
 <script>
-import EventBus from '@/eventBus';
-import { IMPORT_STAT_MODAL } from '@/common/constants';
-import BaseModal from '@/components/common/BaseModal.vue';
-import FilterModalHeader from './FilterModalHeader.vue';
-import FilterModalSecondHeader from './FilterModalSecondHeader.vue';
-import StatsList from './statsList/StatsList.vue';
-import ConditionsView from './conditionsView/ConditionsView.vue';
-import LoadView from './loadView/LoadView.vue';
-import FilterModalAdvancedView from './FilterModalAdvancedView.vue';
-import BaseWarningModal from './BaseWarningModal.vue';
-import BaseEditorInheritenceModal from './statsList/BaseEditorInheritenceModal.vue';
+    import EventBus from '@/eventBus';
+    import { IMPORT_STAT_MODAL, SAVE_FILTER_MODAL } from '@/common/constants';
+    import BaseModal from '@/components/common/BaseModal.vue';
+    import FilterModalHeader from './FilterModalHeader.vue';
+    import FilterModalSecondHeader from './FilterModalSecondHeader.vue';
+    import StatsList from './statsList/StatsList.vue';
+    import ConditionsView from './conditionsView/ConditionsView.vue';
+    import LoadView from './loadView/LoadView.vue';
+    import FilterModalAdvancedView from './FilterModalAdvancedView.vue';
+    import BaseWarningModal from './BaseWarningModal.vue';
+    import BaseEditorInheritenceModal from './statsList/BaseEditorInheritenceModal.vue';
 
-export default {
-    name: 'FilterModal',
-    components: {
-        BaseEditorInheritenceModal,
-        FilterModalHeader,
-        FilterModalSecondHeader,
-        StatsList,
-        ConditionsView,
-        LoadView,
-        FilterModalAdvancedView,
-        BaseWarningModal,
-        BaseModal,
-    },
-    data() {
-        return {
-            title: 'FILTER VARIANTS',
-            loadView: false,
-            advancedView: false,
-            CLEAR_MODAL_ID: 'filterModalClearWarning',
-            LOAD_MODAL_ID: 'filterModalLoadWarning',
-            CUSTOM_INHERITENCE_ID: 'customInheritenceId',
-            modalContentHeight: 620,
-            importedStat: null,
+    export default {
+        name: 'FilterModal',
+        components: {
+            BaseEditorInheritenceModal,
+            FilterModalHeader,
+            FilterModalSecondHeader,
+            StatsList,
+            ConditionsView,
+            LoadView,
+            FilterModalAdvancedView,
+            BaseWarningModal,
+            BaseModal,
+        },
+        data() {
+            return {
+                    title: 'FILTER VARIANTS',
+                    loadView: false,
+                    advancedView: false,
+                    CLEAR_MODAL_ID: 'filterModalClearWarning',
+                    LOAD_MODAL_ID: 'filterModalLoadWarning',
+                    CUSTOM_INHERITENCE_ID: 'customInheritenceId',
+                    modalContentHeight: 620,
+                    importedStat: null,
+                <<<<<<< HEAD
             IMPORT_STAT_MODAL,
+        =======
+                SAVE_FILTER_MODAL,
+        >>>>>>> f3ec55317ae51c608ac8fe980d3045c5a69ab690
         };
-    },
-    computed: {
-        enableClearAll() {
-            return !this.loadView && !this.advancedView
+        },
+        computed: {
+            enableClearAll() {
+                return !this.loadView && !this.advancedView
                     && !(!this.selectedPreset && this.selectedPresetSaved);
-        },
-        enableSave() {
-            return !this.loadView && !this.advancedView && !this.selectedPresetSaved
+            },
+            enableSave() {
+                return !this.loadView && !this.advancedView && !this.selectedPresetSaved
                     && this.$store.state.currentConditions.length;
+            },
+            selectedPreset() {
+                return this.$store.getters.getSelectedPreset;
+            },
+            selectedPresetSaved() {
+                return this.$store.getters.getSelectedPresetSaved;
+            },
+            getSubtitle() {
+                const { selectedPreset, selectedPresetSaved } = this.$store.state;
+                return ` (${selectedPreset || 'New Filter'}${selectedPresetSaved ? '' : ' - Unsaved'})`;
+            },
         },
-        selectedPreset() {
-            return this.$store.getters.getSelectedPreset;
-        },
-        selectedPresetSaved() {
-            return this.$store.getters.getSelectedPresetSaved;
-        },
-        getSubtitle() {
-            const { selectedPreset, selectedPresetSaved } = this.$store.state;
-            return ` (${selectedPreset || 'New Filter'}${selectedPresetSaved ? '' : ' - Unsaved'})`;
-        },
-    },
-    methods: {
-        openModal() {
-            this.$refs.filterModal.show();
-            setTimeout(() => {
-                this.modalContentHeight = this.$refs.filterModalContent.offsetWidth / 2.3;
-            }, 1);
-        },
-        closeModal() {
-            this.$refs.filterModal.hide();
-        },
-        loadViewToggle() {
-            if (this.loadView) {
-                this.loadView = false;
-            } else if (this.selectedPresetSaved) {
-                this.loadView = true;
-            } else {
-                this.$root.$emit('bv::show::modal', this.LOAD_MODAL_ID);
-            }
-        },
-        onFilterLoad(preset, conditions) {
-            this.$store.commit('setPreset', preset);
-            this.$store.commit('setAllCurrentConditions', conditions);
-            this.$store.dispatch('getListByFilter');
-            this.loadView = false;
-        },
-        removeFilter(filterName) {
-            this.$store.dispatch('removeFilter', filterName);
-        },
-        openLoadView() {
-            this.loadView = true;
-            this.$store.dispatch('getList');
-        },
-        clearAllHandler() {
-            if (this.enableClearAll) {
-                if (this.selectedPreset && !this.selectedPresetSaved) {
-                    this.$root.$emit('bv::show::modal', this.CLEAR_MODAL_ID);
+        methods: {
+            openModal() {
+                this.$refs.filterModal.show();
+                setTimeout(() => {
+                    this.modalContentHeight = this.$refs.filterModalContent.offsetWidth / 2.3;
+                }, 1);
+            },
+            closeModal() {
+                this.$refs.filterModal.hide();
+            },
+            loadViewToggle() {
+                if (this.loadView) {
+                    this.loadView = false;
+                } else if (this.selectedPresetSaved) {
+                    this.loadView = true;
                 } else {
-                    this.$store.dispatch('getList');
-                    this.$store.dispatch('getFilters');
+                    this.$root.$emit('bv::show::modal', this.LOAD_MODAL_ID);
                 }
-            }
+            },
+            onFilterLoad(preset, conditions) {
+                this.$store.commit('setPreset', preset);
+                this.$store.commit('setAllCurrentConditions', conditions);
+                this.$store.dispatch('getListByFilter');
+                this.loadView = false;
+            },
+            removeFilter(filterName) {
+                this.$store.dispatch('removeFilter', filterName);
+            },
+            openLoadView() {
+                this.loadView = true;
+                this.$store.dispatch('getList');
+                this.$store.dispatch('getStatList', {});
+            },
+            clearAllHandler() {
+                if (this.enableClearAll) {
+                    if (this.selectedPreset && !this.selectedPresetSaved) {
+                        this.$root.$emit('bv::show::modal', this.CLEAR_MODAL_ID);
+                    } else {
+                        this.$store.dispatch('getList');
+                        this.$store.dispatch('getFilters');
+                    }
+                }
+            },
+            clearAllSubmit() {
+                this.$store.dispatch('getList');
+            },
+            importStat() {
+                this.$store.commit('setCurrentConditions', ['import', this.importedStat]);
+                this.$store.dispatch('getListByConditions').then(() => {
+                    this.$store.commit('setCurrentConditions', ['enum', this.importedStat, null, ['Proband']]);
+                    this.$store.dispatch('getListByConditions');
+                });
+            },
         },
-        clearAllSubmit() {
-            this.$store.dispatch('getList');
-        },
-        importStat() {
-            this.$store.commit('setCurrentConditions', ['import', this.importedStat]);
-            this.$store.dispatch('getListByConditions').then(() => {
-                this.$store.commit('setCurrentConditions', ['enum', this.importedStat, null, ['True']]);
-                this.$store.dispatch('getListByConditions');
+        mounted() {
+            EventBus.$on('IMPORT_STAT', (statName) => {
+                this.importedStat = statName;
+                this.$refs.importStatWarning.openModal();
+            });
+            EventBus.$on('SAVE_FILTER', () => {
+                this.$refs.saveFilterWarning.openModal();
             });
         },
-    },
-    mounted() {
-        EventBus.$on('IMPORT_STAT', (statName) => {
-            this.importedStat = statName;
-            this.$refs.importStatWarning.openModal();
-        });
-    },
-};
+    };
 </script>
 
 <style lang="scss" scoped>
