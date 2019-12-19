@@ -74,7 +74,7 @@ export default {
                 : this.$store.state.stats;
         },
         oCurrentConditions() {
-            return this.$store.getters.oCurrentConditions;
+            return this.$store.getters.getCurrentConditions;
         },
         searchQuery: {
             get() {
@@ -214,6 +214,7 @@ export default {
             const elements = document.getElementsByClassName(this.className);
             const expandSet = new Set();
             this.stats.forEach((stat) => {
+                console.log(stat)
                 if (this.oCurrentConditions[stat.name]) {
                     expandSet.add(getStatName(stat));
                 } else if (stat.type === STAT_GROUP) {
