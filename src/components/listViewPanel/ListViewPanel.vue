@@ -66,9 +66,9 @@ export default {
             return this.isLoading() && this.endIndex === this.itemPerPage;
         },
         isSubLoading() {
-            console.log(this.isLoading())
-            return this.isLoading()
-        }
+            console.log(this.isLoading());
+            return this.isLoading();
+        },
     },
     watch: {
         itemsList() {
