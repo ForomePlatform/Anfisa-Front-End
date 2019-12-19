@@ -12,8 +12,8 @@
               placeholder="Search"
             />
         </div>
-        <BaseNonzeroCheckbox :checked="nonzeroChecked" :onChange="toggleNonzeroCheckbox"/>
-        <div v-for="stat in stats" v-bind:key="stat.name">
+        <BaseNonzeroCheckbox :checked="nonzeroChecked" @change="toggleNonzeroCheckbox"/>
+        <div v-for="stat in getStats" :key="stat.name">
             <BaseCollapseHeader
               :className="className"
               :name="stat.title || stat.name"
@@ -25,7 +25,7 @@
                 <div v-if="stat.type === 'group'">
                     <BaseCollapseHeader
                       v-for="subStat in stat.data"
-                      v-bind:key="subStat.name"
+                      :key="subStat.name"
                       :className="className"
                       :name="subStat.title || subStat.name"
                       :disabled="secondaryDisabled(subStat)"
@@ -50,6 +50,7 @@
                 />
             </BaseCollapseHeader>
         </div>
+        <b-button @click="show" variant="primary">Show Modal</b-button>
     </div>
 </template>
 
@@ -60,8 +61,18 @@ import BaseCollapseHeader from './BaseCollapseHeader.vue';
 import BaseExpandButton from './BaseExpandButton.vue';
 import StatsListEditor from './StatsListEditor.vue';
 import BaseNonzeroCheckbox from './BaseNonzeroCheckbox.vue';
+import BaseEditorInheritence from './BaseEditorInheritenceModal.vue';
 
 export default {
+    name: 'StatsList',
+    components: {
+        BaseEditorInheritence,
+        BaseCollapseHeader,
+        BaseExpandButton,
+        StatsListEditor,
+        BaseNonzeroCheckbox,
+    },
+    props: ['modalId'],
     data() {
         return {
             className: 'js-toggle-filters',
@@ -69,12 +80,12 @@ export default {
         };
     },
     computed: {
-        stats() {
+        getStats() {
             return this.searchQuery ? this.$store.getters.getFilteredStats(this.searchQuery)
-                : this.$store.state.stats;
+                : this.$store.getters.getStats;
         },
-        oCurrentConditions() {
-            return this.$store.getters.oCurrentConditions;
+        getCurrentConditions() {
+            return this.$store.getters.getCurrentConditions;
         },
         searchQuery: {
             get() {
@@ -85,13 +96,10 @@ export default {
             },
         },
     },
-    components: {
-        BaseCollapseHeader,
-        BaseExpandButton,
-        StatsListEditor,
-        BaseNonzeroCheckbox,
-    },
     methods: {
+        show() {
+            this.$root.$emit('bv::show::modal', this.modalId);
+        },
         toggleFilters(expand) {
             const elements = document.getElementsByClassName(this.className);
             Array.from(elements).forEach((element) => {
@@ -177,8 +185,8 @@ export default {
             }
         },
         filledStat(stat) {
-            return Boolean(this.oCurrentConditions[stat.name] || (stat.type === STAT_GROUP
-                && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
+            return Boolean(this.getCurrentConditions[stat.name] || (stat.type === STAT_GROUP
+                && stat.data.filter(subStat => this.getCurrentConditions[subStat.name]).length));
         },
         showStat(stat) {
             return !this.hasProblemGroup(stat) &&
@@ -211,12 +219,12 @@ export default {
             this.$store.commit('setFilterSearchQuery', '');
             const elements = document.getElementsByClassName(this.className);
             const expandSet = new Set();
-            this.stats.forEach((stat) => {
-                if (this.oCurrentConditions[stat.name]) {
+            this.getStats.forEach((stat) => {
+                if (this.getCurrentConditions[stat.name]) {
                     expandSet.add(getStatName(stat));
                 } else if (stat.type === STAT_GROUP) {
                     stat.data.forEach((subStat) => {
-                        if (this.oCurrentConditions[subStat.name]) {
+                        if (this.getCurrentConditions[subStat.name]) {
                             expandSet.add(getStatName(stat));
                             expandSet.add(getStatName(subStat));
                         }
