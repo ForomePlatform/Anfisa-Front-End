@@ -36,11 +36,6 @@ export default {
     components: {
         BaseVariantIcon,
     },
-    mounted() {
-        if (this.root) {
-            this.$store.commit('setListMounting', false);
-        }
-    },
     updated() {
         this.variantByUrl();
         const itemElement = document.querySelector('.variants-list > .variants-list_item__active');

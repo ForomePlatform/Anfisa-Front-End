@@ -24,6 +24,7 @@ export default new Vuex.Store({
         workspacesList: [],
         note: '',
         notes: [],
+        isShowAllNotes: false,
         saveNoteStatus: null,
         exportFileUrl: null,
         exportFileLoading: false,
@@ -37,7 +38,7 @@ export default new Vuex.Store({
         rulesParams: '',
         filterDetails: [],
         version: '',
-        listMounting: false,
+        listLoading: false,
         tagFilterValue: '',
         filterSearchQuery: '',
         annotations: {
@@ -52,7 +53,7 @@ export default new Vuex.Store({
         },
         panels: {},
         compiled: null,
-        transcripts: null,
+        transcripts: [0, 0],
         meta: null,
     },
     actions,
@@ -155,6 +156,9 @@ export default new Vuex.Store({
         },
         getNotes(state) {
             return state.notes;
+        },
+        isShowAllNotes(state) {
+            return state.isShowAllNotes;
         },
         getZones(state) {
             return state.zones;

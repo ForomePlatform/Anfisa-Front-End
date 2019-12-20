@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import VariantView from './views/VariantView.vue';
 import ListView from './views/ListView.vue';
 import AnnotationDev from './views/AnnotationDev.vue';
+import { VARIANT_VIEW, LIST_VIEW } from './common/constants';
 
 
 Vue.use(Router);
@@ -13,12 +14,12 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'variantView',
+            name: VARIANT_VIEW,
             component: VariantView,
         },
         {
             path: '/listView',
-            name: 'listView',
+            name: LIST_VIEW,
             component: ListView,
         },
         {

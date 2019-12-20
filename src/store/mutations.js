@@ -28,12 +28,14 @@ export function setVariantDetails(state, variantDetails) {
     state.variantDetails = variantDetails;
 }
 
-export function setListViewDetails(state, details) {
+export function setDetailsToListView(state, details) {
     state.listViewDetails = details;
 }
 
 export function addDetailsToListView(state, details) {
-    state.listViewDetails.push(details);
+    if (!state.listViewDetails.includes(details)) {
+        state.listViewDetails.push(details);
+    }
 }
 
 export function setSelectedVariant(state, selectedVariant) {
@@ -179,8 +181,8 @@ export function setVersion(state, version) {
     state.version = version;
 }
 
-export function setListMounting(state, value) {
-    state.listMounting = value;
+export function setLoading(state, value) {
+    state.listLoading = value;
 }
 
 export function setTagFilterValue(state, value) {
@@ -193,13 +195,14 @@ export function clearTagFilterValue(state) {
 
 export function setZygosityVariants(state, payload) {
     let list = state.stats;
-    if (payload[1].vgroup) {
-        const targetGroup = list.find(item => item.title === payload[1].vgroup
+    const units = payload.units[0];
+    if (units[1].vgroup) {
+        const targetGroup = list.find(item => item.title === units[1].vgroup
             && item.type === STAT_GROUP);
         list = targetGroup.data;
     }
-    const targetItemIndex = list.findIndex(item => item.name === payload[1].name);
-    Vue.set(list, targetItemIndex, utils.prepareStatDataByType(payload));
+    const targetItemIndex = list.findIndex(item => item.name === units[1].name);
+    Vue.set(list, targetItemIndex, utils.prepareStatDataByType(units));
 }
 
 export function resetListDependencies(state) {
@@ -248,6 +251,10 @@ export function setTranscripts(state, transcripts) {
 
 export function setMeta(state, meta) {
     state.meta = meta;
+}
+
+export function updateShowAllNotes(state, isShowAllNotes) {
+    state.isShowAllNotes = isShowAllNotes;
 }
 
 export function addNote(state, note) {

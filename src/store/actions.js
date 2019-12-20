@@ -14,12 +14,15 @@ const commonHttp = axios.create({
 });
 
 export function getList(context) {
+    context.commit('setRecords', []);
+    context.dispatch('setListLoading', true);
     const params = new URLSearchParams();
     params.append('ws', context.state.workspace);
     commonHttp.post('/list', params)
         .then((response) => {
             const { data } = response;
             context.commit('setRecords', data.records);
+            context.commit('setLoading', false);
             context.commit('setWorkspace', data.workspace);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
@@ -35,7 +38,12 @@ export function getList(context) {
         });
 }
 
+export function setListLoading(context, isLoading) {
+    context.commit('setLoading', isLoading);
+}
+
 export function getListByFilter(context) {
+    context.dispatch('setLoading', true);
     const params = utils.prepareParams({
         ws: context.state.workspace,
         filter: context.state.selectedPreset,
@@ -48,6 +56,7 @@ export function getListByFilter(context) {
     return commonHttp.post('/list', params).then((response) => {
         const { data } = response;
         context.commit('setRecords', data.records);
+        context.commit('setLoading', false);
         context.commit('setTotal', data.total);
         context.commit('setFiltered', data.filtered);
         context.commit('setTranscripts', data.transcripts);
@@ -71,6 +80,7 @@ export function getListByConditions(context, zoneChanged) {
         context.dispatch('getStatList', { conditions: context.state.currentConditions }),
         commonHttp.post('/list', params).then((response) => {
             const { data } = response;
+            context.commit('setDetailsToListView', []);
             context.commit('setRecords', data.records);
             context.commit('setTotal', data.total);
             context.commit('setFiltered', data.filtered);
@@ -128,6 +138,9 @@ export function addDetails(context, data, id) {
         details,
     };
     context.commit('addDetailsToListView', result);
+}
+export function clearAllDetailsToListView(context) {
+    context.commit('setDetailsToListView', []);
 }
 export function getListViewDetails(context, id) {
     const params = new URLSearchParams();
@@ -485,10 +498,10 @@ export function removeFilter(context, filterName) {
         context.commit('setStats', utils.prepareStatList(statList));
         context.commit('removeAllCurrentConditions');
         context.commit('setTranscripts', response.data.transcripts);
-        context.dispatch('getFilterDetails');
-        context.dispatch('getListByFilter');
         context.commit('setPreset', null);
         context.commit('changePresetSaved', true);
+        context.dispatch('getFilterDetails');
+        context.dispatch('getListByFilter');
     }).catch((error) => {
         console.log(error);
     });

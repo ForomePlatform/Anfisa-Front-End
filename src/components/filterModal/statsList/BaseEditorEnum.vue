@@ -21,22 +21,31 @@
 
         <div class="separator"/>
         <div class="enum-editor_list">
-            <b-form-checkbox
-              class="enum-editor_list_item"
-              v-for="([prop, count], index) in filteredList"
-              v-bind:key="index + '_' + prop"
-              @change="changeHandler(prop)"
-              :checked="selected.includes(prop)"
-            >
-                <div class="enum-editor_list_item_descr" >
-                    <span>
-                        {{prop}}
-                    </span>
-                    <span v-if="!isOperativeRender || count">
-                        ({{count}})
-                    </span>
-                </div>
-            </b-form-checkbox>
+            <virtual-list :size="28" :remain="Math.min(8, filteredList.length)">
+                <b-form-checkbox
+                  class="enum-editor_list_item"
+                  v-for="([prop, count, countVariant], index) in filteredList"
+                  v-bind:key="index + '_' + prop"
+                  @change="changeHandler(prop)"
+                  :checked="selected.includes(prop)"
+                >
+                    <div class="enum-editor_list_item_descr" >
+                        <span>
+                            {{prop}}
+                        </span>
+                        <template v-if="countVariant">
+                            <span v-if="!isOperativeRender || countVariant">
+                                ({{countVariant}}/{{count}})
+                            </span>
+                        </template>
+                        <template v-else>
+                            <span v-if="!isOperativeRender || count">
+                                ({{count}})
+                            </span>
+                        </template>
+                    </div>
+                </b-form-checkbox>
+            </virtual-list>
         </div>
         <div class="enum-editor_button" @click="addData">
             {{buttonText}}
@@ -45,6 +54,7 @@
 </template>
 
 <script>
+import virtualList from 'vue-virtual-scroll-list';
 import EventBus from '@/eventBus';
 
 export default {
@@ -55,6 +65,9 @@ export default {
         };
     },
     props: ['list', 'onSubmit', 'preselectedData', 'buttonText', 'render', 'name', 'removeImport'],
+    components: {
+        'virtual-list': virtualList,
+    },
     computed: {
         filteredList() {
             if (this.query) {
@@ -125,9 +138,8 @@ export default {
             letter-spacing: 0px;
         }
         &_list {
-            padding: 8px 16px;
+            margin: 8px 0 8px 16px;
             border-radius: 0 0 4px 4px;
-            overflow-y: auto;
             max-height: 320px;
             background-color: #fff;
             &_item {
@@ -141,6 +153,7 @@ export default {
                     letter-spacing: 0px;
                     color:#77869f;
                     align-content: center;
+                    padding-right: 8px;
                 }
             }
         }

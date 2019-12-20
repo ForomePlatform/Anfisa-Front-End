@@ -42,6 +42,7 @@
                             :data="variantDetails[item.name].data"
                             :secondary="item.secondary"
                             :content="variantDetails[item.name].content"
+                            :colhead="variantDetails[item.name].colhead"
                         />
                     </BaseResizeSensor>
                 </grid-item>
@@ -94,6 +95,9 @@ export default {
                 },
                 {
                     x: 0, y: 30, w: 6, h: 5, i: 9, name: 'VCF', secondary: true,
+                },
+                {
+                    x: 0, y: 35, w: 6, h: 5, i: 10, name: 'view_cohorts', secondary: true,
                 },
             ],
         };

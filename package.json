@@ -1,7 +1,7 @@
 {
   "name": "anfisa-front-end",
-  "version": "0.5.9",
-  "backendVersion": "0.5.9",
+  "version": "0.5.12",
+  "backendVersion": "0.5.12",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -20,6 +20,7 @@
     "vue-grid-layout": "^2.3.6",
     "vue-router": "3.0.1",
     "vue-slider-component": "3.0.3",
+    "vue-virtual-scroll-list": "^1.4.4",
     "vuex": "3.0.1"
   },
   "devDependencies": {

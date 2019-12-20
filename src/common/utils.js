@@ -7,6 +7,8 @@ import {
     STAT_GROUP,
     EXPIRED_TIME,
     STAT_TYPE_ZYGOSITY,
+    STAT_TYPE_TRANSCRIPT_MULTISET,
+    STAT_TYPE_TRANSCRIPT_STATUS,
     NUMERIC_RENDER_TYPES,
 } from './constants';
 
@@ -50,6 +52,8 @@ export const prepareStatDataByType = (statItem) => {
         return prepareNumericStatData(statItem);
     case STAT_TYPE_ENUM:
     case STAT_TYPE_STATUS:
+    case STAT_TYPE_TRANSCRIPT_MULTISET:
+    case STAT_TYPE_TRANSCRIPT_STATUS:
         return prepareEnumStatData(statItem);
     case STAT_TYPE_ZYGOSITY:
         return prepareZygosityStatData(statItem);
@@ -62,10 +66,15 @@ export function getStatListWithOperativeStat(data) {
     const statsToAdd = (data && data['avail-import']) || [];
     let statList = data['stat-list'];
     if (statList && Array.isArray(statList)) {
-        statsToAdd.forEach((statToAdd) => {
+        statsToAdd.forEach((statToAdd, index) => {
             const dubbedHetStat = statList.findIndex(statItem => statItem[1].name === statToAdd);
             if (dubbedHetStat === -1) {
-                const target = [STAT_TYPE_ENUM, { vgroup: 'Inheritance', name: statToAdd, render: 'operative' }, [['Proband', null]]];
+                const target = [STAT_TYPE_ENUM, {
+                    vgroup: 'Inheritance',
+                    name: statToAdd,
+                    render: 'operative',
+                    title: data['avail-import-titles'] ? data['avail-import-titles'][index] : '',
+                }, [['Proband', null]]];
                 statList = [...statList, target];
             }
         });
@@ -144,6 +153,7 @@ export function prepareVariantDetails(data) {
             result[item.name] = {
                 title: item.title,
                 data: tableData,
+                ...item.colhead ? { colhead: item.colhead } : {},
             };
         } else if (item.type === 'pre') {
             result[item.title] = {
@@ -163,13 +173,14 @@ export function expired(date) {
 
 export function checkNonzeroStat(stat) {
     if (stat.type === STAT_TYPE_ENUM || stat.type === STAT_TYPE_STATUS) {
-        const nonzeroItems = stat.data.filter(item => item[1]);
-        return Boolean(nonzeroItems.length);
+        return stat.data.some(item => item[1]);
     } else if (stat.type === STAT_TYPE_INT || stat.type === STAT_TYPE_FLOAT) {
         return Boolean(stat.data[0] || stat.data[1]);
     } else if (stat.type === STAT_TYPE_ZYGOSITY) {
-        const nonzeroItems = stat.data.variants.filter(item => item[1]);
-        return Boolean(nonzeroItems.length);
+        return stat.data.variants.some(item => item[1]);
+    } else if (stat.type === STAT_TYPE_TRANSCRIPT_MULTISET
+               || stat.type === STAT_TYPE_TRANSCRIPT_STATUS) {
+        return stat.data.some(item => item[2]);
     }
     return false;
 }
