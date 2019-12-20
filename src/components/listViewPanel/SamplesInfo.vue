@@ -17,8 +17,9 @@
             </div>
         </div>
         <div>{{ getFilters }}</div>
-
-        <div class="to-details-button"><b-link @click="toggleToDetails">More details</b-link></div>
+        <div class="to-details-button">
+            <b-link @click="toggleToDetails">More details</b-link>
+        </div>
     </div>
 </template>
 
@@ -140,13 +141,13 @@ export default {
         background-color: #000;
         margin-right: 5px;
     }
+    .genotype {
+        font-size: 10px;
+    }
     .to-details-button {
         position: relative;
         text-align: right;
         margin-top: 15px;
         font-size: 14px;
-    }
-    .genotype {
-        font-size: 10px;
     }
 </style>

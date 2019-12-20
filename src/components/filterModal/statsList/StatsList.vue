@@ -13,7 +13,7 @@
             />
         </div>
         <BaseNonzeroCheckbox :checked="nonzeroChecked" :onChange="toggleNonzeroCheckbox"/>
-        <div v-for="stat in stats" v-bind:key="stat.name">
+        <div v-for="stat in stats" :key="stat.name">
             <BaseCollapseHeader
               :className="className"
               :name="stat.title || stat.name"
@@ -25,7 +25,7 @@
                 <div v-if="stat.type === 'group'">
                     <BaseCollapseHeader
                       v-for="subStat in stat.data"
-                      v-bind:key="subStat.name"
+                      :key="subStat.name"
                       :className="className"
                       :name="subStat.title || subStat.name"
                       :disabled="secondaryDisabled(subStat)"
@@ -62,6 +62,14 @@ import StatsListEditor from './StatsListEditor.vue';
 import BaseNonzeroCheckbox from './BaseNonzeroCheckbox.vue';
 
 export default {
+    name: 'StatsList',
+    components: {
+        BaseCollapseHeader,
+        BaseExpandButton,
+        StatsListEditor,
+        BaseNonzeroCheckbox,
+    },
+    props: ['modalId'],
     data() {
         return {
             className: 'js-toggle-filters',
@@ -85,13 +93,10 @@ export default {
             },
         },
     },
-    components: {
-        BaseCollapseHeader,
-        BaseExpandButton,
-        StatsListEditor,
-        BaseNonzeroCheckbox,
-    },
     methods: {
+        show() {
+            this.$root.$emit('bv::show::modal', this.modalId);
+        },
         toggleFilters(expand) {
             const elements = document.getElementsByClassName(this.className);
             Array.from(elements).forEach((element) => {
@@ -182,8 +187,7 @@ export default {
         },
         showStat(stat) {
             return !this.hasProblemGroup(stat) &&
-                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery) ||
-                (stat.render === 'operative'));
+                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery));
         },
         primaryDisabled(stat) {
             return !this.filledStat(stat) && (
@@ -194,8 +198,7 @@ export default {
         inheritanceHandler(stat) {
             if (stat.title === 'Inheritance') {
                 return !stat.data.filter(item => !this.hasProblemGroup(item) &&
-                    (stat.type !== STAT_TYPE_ZYGOSITY || this.filteredData(item).variants))
-                    .length || !stat.data.length;
+                    this.filteredData(item).variants).length || !stat.data.length;
             }
             return !stat.data.length;
         },

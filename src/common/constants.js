@@ -19,6 +19,7 @@ export const LOGICAL_OPERATORS = {
     OR: 'Any',
     AND: 'All',
     NOT: 'None',
+    ONLY: 'Only',
 };
 
 export const LOGICAL_OPERATORS_STATUS = {
@@ -37,6 +38,7 @@ export const STAT_TYPE_TRANSCRIPT_MULTISET = 'transcript-multiset';
 export const STAT_TYPE_TRANSCRIPT_STATUS = 'transcript-status';
 export const STAT_GROUP = 'group';
 export const STAT_NUMERIC = 'numeric';
+export const STAT_TYPE_IMPORT = 'import';
 
 export const NUMERIC_RENDER_TYPES = {
     COORDINATE: 'neighborhood',
@@ -97,3 +99,7 @@ export const SAVE_FILTER_MODAL = {
     title: 'SAVE FILTER',
     text: 'Filter name can’t be empty',
 };
+
+// view types
+export const VARIANT_VIEW = 'variantView';
+export const LIST_VIEW = 'listView';

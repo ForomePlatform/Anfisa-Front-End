@@ -28,12 +28,14 @@ export function setVariantDetails(state, variantDetails) {
     state.variantDetails = variantDetails;
 }
 
-export function setListViewDetails(state, details) {
+export function setDetailsToListView(state, details) {
     state.listViewDetails = details;
 }
 
 export function addDetailsToListView(state, details) {
-    state.listViewDetails.push(details);
+    if (!state.listViewDetails.includes(details)) {
+        state.listViewDetails.push(details);
+    }
 }
 
 export function setSelectedVariant(state, selectedVariant) {
@@ -179,8 +181,8 @@ export function setVersion(state, version) {
     state.version = version;
 }
 
-export function setListMounting(state, value) {
-    state.listMounting = value;
+export function setLoading(state, value) {
+    state.listLoading = value;
 }
 
 export function setTagFilterValue(state, value) {
@@ -249,6 +251,10 @@ export function setTranscripts(state, transcripts) {
 
 export function setMeta(state, meta) {
     state.meta = meta;
+}
+
+export function updateShowAllNotes(state, isShowAllNotes) {
+    state.isShowAllNotes = isShowAllNotes;
 }
 
 export function addNote(state, note) {
