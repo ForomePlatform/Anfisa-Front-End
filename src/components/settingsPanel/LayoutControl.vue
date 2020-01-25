@@ -21,24 +21,16 @@
 </template>
 
 <script>
+import EventBus from '@/eventBus';
+
 export default {
     name: 'SettingsHeader',
     methods: {
         expand() {
-            const elements = document.getElementsByClassName('js-table_header');
-            Array.from(elements).forEach((element) => {
-                if (element.getAttribute('aria-expanded') === 'false') {
-                    element.click();
-                }
-            });
+            EventBus.$emit('EXPAND_TABLES', true);
         },
         collapse() {
-            const elements = document.getElementsByClassName('js-table_header');
-            Array.from(elements).forEach((element) => {
-                if (element.getAttribute('aria-expanded') === 'true') {
-                    element.click();
-                }
-            });
+            EventBus.$emit('EXPAND_TABLES', false);
         },
     },
 };

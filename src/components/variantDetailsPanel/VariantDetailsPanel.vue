@@ -21,9 +21,10 @@
                 :vertical-compact="true"
                 :use-css-transforms="true"
                 :row-height="1"
+                @layout-updated="saveLayout"
             >
                 <grid-item
-                    v-for="item in layout"
+                    v-for="(item, index) in layout"
                     :x="item.x"
                     :y="item.y"
                     :w="item.w"
@@ -43,6 +44,8 @@
                             :secondary="item.secondary"
                             :content="variantDetails[item.name].content"
                             :colhead="variantDetails[item.name].colhead"
+                            :expanded="item.expanded"
+                            @expand-table="expandHandler(index)"
                         />
                     </BaseResizeSensor>
                 </grid-item>
@@ -53,6 +56,8 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import EventBus from '@/eventBus';
 import VueGridLayout from 'vue-grid-layout';
 import BaseTable from './BaseTable.vue';
 import TopFixedPanel from './TopFixedPanel.vue';
@@ -67,37 +72,37 @@ export default {
             showNotes: false,
             layout: [
                 {
-                    x: 0, y: 0, w: 6, h: 5, i: 0, name: 'view_gen',
+                    x: 0, y: 0, w: 6, h: 5, i: 0, name: 'view_gen', expanded: false,
                 },
                 {
-                    x: 0, y: 5, w: 4, h: 5, i: 1, name: 'view_qsamples',
+                    x: 0, y: 5, w: 4, h: 5, i: 1, name: 'view_qsamples', expanded: false,
                 },
                 {
-                    x: 4, y: 5, w: 2, h: 5, i: 2, name: 'view_gnomAD',
+                    x: 4, y: 5, w: 2, h: 5, i: 2, name: 'view_gnomAD', expanded: false,
                 },
                 {
-                    x: 0, y: 10, w: 4, h: 5, i: 3, name: 'view_genetics',
+                    x: 0, y: 10, w: 4, h: 5, i: 3, name: 'view_genetics', expanded: false,
                 },
                 {
-                    x: 4, y: 10, w: 2, h: 5, i: 4, name: 'view_db',
+                    x: 4, y: 10, w: 2, h: 5, i: 4, name: 'view_db', expanded: false,
                 },
                 {
-                    x: 0, y: 15, w: 3, h: 5, i: 5, name: 'colocated_v', secondary: true,
+                    x: 0, y: 15, w: 3, h: 5, i: 5, name: 'colocated_v', secondary: true, expanded: false,
                 },
                 {
-                    x: 3, y: 15, w: 3, h: 5, i: 6, name: '_main', secondary: true,
+                    x: 3, y: 15, w: 3, h: 5, i: 6, name: '_main', secondary: true, expanded: false,
                 },
                 {
-                    x: 0, y: 20, w: 6, h: 5, i: 7, name: 'view_pred', secondary: true,
+                    x: 0, y: 20, w: 6, h: 5, i: 7, name: 'view_pred', secondary: true, expanded: false,
                 },
                 {
-                    x: 0, y: 25, w: 6, h: 5, i: 8, name: 'transcripts', secondary: true,
+                    x: 0, y: 25, w: 6, h: 5, i: 8, name: 'transcripts', secondary: true, expanded: false,
                 },
                 {
-                    x: 0, y: 30, w: 6, h: 5, i: 9, name: 'VCF', secondary: true,
+                    x: 0, y: 30, w: 6, h: 5, i: 9, name: 'VCF', secondary: true, expanded: false,
                 },
                 {
-                    x: 0, y: 35, w: 6, h: 5, i: 10, name: 'view_cohorts', secondary: true,
+                    x: 0, y: 35, w: 6, h: 5, i: 10, name: 'view_cohorts', secondary: true, expanded: false,
                 },
             ],
         };
@@ -133,6 +138,31 @@ export default {
         isDataFilled(obj) {
             return obj && obj.data && obj.data.length;
         },
+        saveLayout() {
+            localStorage.setItem('tables-config', JSON.stringify(this.layout));
+        },
+        expandHandler(index) {
+            const item = this.layout[index];
+            item.expanded = Vue.set(item, 'expanded', !item.expanded);
+            this.saveLayout();
+        },
+    },
+    mounted() {
+        const tablesConfig = localStorage.getItem('tables-config');
+        if (tablesConfig) {
+            this.layout = JSON.parse(tablesConfig);
+        }
+        EventBus.$on('EXPAND_TABLES', (state) => {
+            const { layout } = this;
+            const tablesOrder = layout.slice().sort((a, b) => (a.y >= b.y ? 1 : -1))
+                .map(item => item.i);
+            for (let index = 0; index < layout.length; index += 1) {
+                const delay = state ? tablesOrder.indexOf(layout[index].i) * 50 : 0;
+                setTimeout(() => {
+                    Vue.set(layout[index], 'expanded', state);
+                }, delay);
+            }
+        });
     },
 };
 </script>
