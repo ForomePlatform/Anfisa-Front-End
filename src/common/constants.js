@@ -103,3 +103,39 @@ export const SAVE_FILTER_MODAL = {
 // view types
 export const VARIANT_VIEW = 'variantView';
 export const LIST_VIEW = 'listView';
+
+export const DEFAULT_TABLES_LAYOUT = [
+    {
+        x: 0, y: 0, w: 6, h: 5, i: 0, name: 'view_gen', expanded: false,
+    },
+    {
+        x: 0, y: 5, w: 4, h: 5, i: 1, name: 'view_qsamples', expanded: false,
+    },
+    {
+        x: 4, y: 5, w: 2, h: 5, i: 2, name: 'view_gnomAD', expanded: false,
+    },
+    {
+        x: 0, y: 10, w: 4, h: 5, i: 3, name: 'view_genetics', expanded: false,
+    },
+    {
+        x: 4, y: 10, w: 2, h: 5, i: 4, name: 'view_db', expanded: false,
+    },
+    {
+        x: 0, y: 15, w: 3, h: 5, i: 5, name: 'colocated_v', secondary: true, expanded: false,
+    },
+    {
+        x: 3, y: 15, w: 3, h: 5, i: 6, name: '_main', secondary: true, expanded: false,
+    },
+    {
+        x: 0, y: 20, w: 6, h: 5, i: 7, name: 'view_pred', secondary: true, expanded: false,
+    },
+    {
+        x: 0, y: 25, w: 6, h: 5, i: 8, name: 'transcripts', secondary: true, expanded: false,
+    },
+    {
+        x: 0, y: 30, w: 6, h: 5, i: 9, name: 'VCF', secondary: true, expanded: false,
+    },
+    {
+        x: 0, y: 35, w: 6, h: 5, i: 10, name: 'view_cohorts', secondary: true, expanded: false,
+    },
+];

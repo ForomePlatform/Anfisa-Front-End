@@ -16,6 +16,12 @@
               src="@/assets/collapseLayout.svg"
               @click="collapse"
             />
+            <img
+              class="layout-control_icon  ml-2"
+              alt="Reset layout"
+              src="@/assets/redo.svg"
+              @click="resetTablesLayout"
+            />
         </div>
     </div>
 </template>
@@ -31,6 +37,9 @@ export default {
         },
         collapse() {
             EventBus.$emit('EXPAND_TABLES', false);
+        },
+        resetTablesLayout() {
+            EventBus.$emit('RESET_TABLES_LAYOUT');
         },
     },
 };
