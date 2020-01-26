@@ -1,9 +1,11 @@
 <template>
     <div class="base-table">
         <div
-          v-b-toggle="'table_'+id"
+          @click="$emit('expand-table')"
+          :aria-expanded="expanded ? 'true' : 'false'"
           :class="['base-table_header', 'js-table_header',
-            secondary ? 'base-table_header-secondary' : '']"
+            secondary ? 'base-table_header-secondary' : '',
+            expanded ? null : 'collapsed']"
         >
             {{title.toUpperCase()}}
             <div class="base-table_icons">
@@ -11,7 +13,7 @@
                 <div class="base-table_icons_collapse" />
             </div>
         </div>
-        <b-collapse :id="'table_'+id" class="js-table_body">
+        <b-collapse :id="'table_'+id" class="js-table_body" :visible="expanded">
             <div class="base-table_table-wrapper">
                 <BaseScrollHorizontal :id="id">
                     <div v-if="content" class="base-table_html">
@@ -51,6 +53,7 @@ export default {
         secondary: Boolean,
         content: String,
         colhead: Array,
+        expanded: Boolean,
     },
     components: {
         BaseScrollHorizontal,
