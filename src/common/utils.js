@@ -242,3 +242,12 @@ export function generateJsonFromInputData(data) {
     }
     return null;
 }
+
+export function showPopover(title) {
+    return {
+        content: title,
+        html: true,
+        placement: 'top',
+        delay: { show: 400, hide: 0 },
+    };
+}
