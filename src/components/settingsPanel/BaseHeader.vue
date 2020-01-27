@@ -9,6 +9,7 @@
               class="base-header_icon"
               alt="select project"
               src="@/assets/selectProjectIcon.svg"
+              v-b-popover.hover = "popoverHandler('Select workspace')"
               @click="onClick"
             />
             <img
@@ -16,6 +17,7 @@
               class="base-header_icon  ml-2"
               alt="project"
               src="@/assets/projectIcon.svg"
+              v-b-popover.hover = "popoverHandler('Project')"
             />
             <img
               v-if="type === 'filter' && active"
@@ -23,6 +25,7 @@
               alt="filter"
               src="@/assets/filterIconRed.svg"
               @click="onClick"
+              v-b-popover.hover = "popoverHandler('Edit filter')"
             />
             <img
               v-else-if="type === 'filter'"
@@ -30,12 +33,15 @@
               alt="filter"
               src="@/assets/filterIcon.svg"
               @click="onClick"
+              v-b-popover.hover = "popoverHandler('Edit filter')"
             />
         </div>
     </div>
 </template>
 
 <script>
+import { showPopover } from '@/common/utils';
+
 export default {
     name: 'BaseHeader',
     props: {
@@ -45,6 +51,11 @@ export default {
         onClick: {
             type: Function,
             default: () => {},
+        },
+    },
+    methods: {
+        popoverHandler(title) {
+            return showPopover(title);
         },
     },
 };

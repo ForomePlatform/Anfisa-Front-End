@@ -7,16 +7,18 @@
             <div>
                 <b-link @click="getVariantLink">
                     <img
-                            class="view-control_icon"
-                            alt="Variant view"
-                            src="@/assets/tableViewIcon.svg"
+                        class="view-control_icon"
+                        alt="Variant view"
+                        src="@/assets/tableViewIcon.svg"
+                        v-b-popover.hover = "popoverHandler('Variants view')"
                     />
                 </b-link>
                 <b-link @click="getListViewLink">
                     <img
-                            class="view-control_icon  ml-2"
-                            alt="List view"
-                            src="@/assets/listViewIcon.svg"
+                        class="view-control_icon  ml-2"
+                        alt="List view"
+                        src="@/assets/listViewIcon.svg"
+                        v-b-popover.hover = "popoverHandler('List view')"
                     />
                 </b-link>
             </div>
@@ -26,6 +28,7 @@
 </template>
 
 <script>
+import { showPopover } from '@/common/utils';
 import router from '../../router';
 import BaseCheckbox from '../common/BaseCheckbox.vue';
 import { LIST_VIEW } from '../../common/constants';
@@ -52,6 +55,9 @@ export default {
         getListViewLink() {
             const ws = this.$store.getters.getWorkspace;
             router.push({ path: '/listView', query: { ws } });
+        },
+        popoverHandler(title) {
+            return showPopover(title);
         },
     },
     watch: {
