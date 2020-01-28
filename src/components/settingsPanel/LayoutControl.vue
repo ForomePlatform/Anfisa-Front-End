@@ -6,15 +6,24 @@
         <div>
             <img
               class="layout-control_icon"
-              alt="settings icon"
+              alt="Expand tables"
               src="@/assets/expandLayout.svg"
               @click="expand"
+              v-b-popover.hover = "popoverHandler('Expand tables')"
             />
             <img
               class="layout-control_icon  ml-2"
-              alt="open site"
+              alt="Collapse tables"
               src="@/assets/collapseLayout.svg"
               @click="collapse"
+              v-b-popover.hover = "popoverHandler('Collapse tables')"
+            />
+            <img
+              class="layout-control_icon  ml-2"
+              alt="Reset layout"
+              src="@/assets/redo.svg"
+              @click="resetTablesLayout"
+              v-b-popover.hover = "popoverHandler('Reset layout')"
             />
         </div>
     </div>
@@ -22,6 +31,7 @@
 
 <script>
 import EventBus from '@/eventBus';
+import { showPopover } from '@/common/utils';
 
 export default {
     name: 'SettingsHeader',
@@ -31,6 +41,12 @@ export default {
         },
         collapse() {
             EventBus.$emit('EXPAND_TABLES', false);
+        },
+        resetTablesLayout() {
+            EventBus.$emit('RESET_TABLES_LAYOUT');
+        },
+        popoverHandler(title) {
+            return showPopover(title);
         },
     },
 };

@@ -58,6 +58,7 @@
 <script>
 import Vue from 'vue';
 import EventBus from '@/eventBus';
+import { DEFAULT_TABLES_LAYOUT } from '@/common/constants';
 import VueGridLayout from 'vue-grid-layout';
 import BaseTable from './BaseTable.vue';
 import TopFixedPanel from './TopFixedPanel.vue';
@@ -70,41 +71,7 @@ export default {
     data() {
         return {
             showNotes: false,
-            layout: [
-                {
-                    x: 0, y: 0, w: 6, h: 5, i: 0, name: 'view_gen', expanded: false,
-                },
-                {
-                    x: 0, y: 5, w: 4, h: 5, i: 1, name: 'view_qsamples', expanded: false,
-                },
-                {
-                    x: 4, y: 5, w: 2, h: 5, i: 2, name: 'view_gnomAD', expanded: false,
-                },
-                {
-                    x: 0, y: 10, w: 4, h: 5, i: 3, name: 'view_genetics', expanded: false,
-                },
-                {
-                    x: 4, y: 10, w: 2, h: 5, i: 4, name: 'view_db', expanded: false,
-                },
-                {
-                    x: 0, y: 15, w: 3, h: 5, i: 5, name: 'colocated_v', secondary: true, expanded: false,
-                },
-                {
-                    x: 3, y: 15, w: 3, h: 5, i: 6, name: '_main', secondary: true, expanded: false,
-                },
-                {
-                    x: 0, y: 20, w: 6, h: 5, i: 7, name: 'view_pred', secondary: true, expanded: false,
-                },
-                {
-                    x: 0, y: 25, w: 6, h: 5, i: 8, name: 'transcripts', secondary: true, expanded: false,
-                },
-                {
-                    x: 0, y: 30, w: 6, h: 5, i: 9, name: 'VCF', secondary: true, expanded: false,
-                },
-                {
-                    x: 0, y: 35, w: 6, h: 5, i: 10, name: 'view_cohorts', secondary: true, expanded: false,
-                },
-            ],
+            layout: JSON.parse(JSON.stringify(DEFAULT_TABLES_LAYOUT)),
         };
     },
     components: {
@@ -162,6 +129,9 @@ export default {
                     Vue.set(layout[index], 'expanded', state);
                 }, delay);
             }
+        });
+        EventBus.$on('RESET_TABLES_LAYOUT', () => {
+            this.layout = JSON.parse(JSON.stringify(DEFAULT_TABLES_LAYOUT));
         });
     },
 };
