@@ -186,8 +186,6 @@ export default {
                 && stat.data.filter(subStat => this.oCurrentConditions[subStat.name]).length));
         },
         showStat(stat) {
-            console.log(`Show.${stat.name}: ${!this.hasProblemGroup(stat) &&
-                (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery))}`);
             return !this.hasProblemGroup(stat) &&
                 (!this.nonzeroChecked || checkNonzeroStat(stat, this.searchQuery));
         },
