@@ -173,7 +173,7 @@ export function expired(date) {
 
 export function checkNonzeroStat(stat) {
     if (stat.type === STAT_TYPE_ENUM || stat.type === STAT_TYPE_STATUS) {
-        return stat.data.some(item => item[1]);
+        return stat.render !== 'operative' ? stat.data.some(item => item[1]) : true;
     } else if (stat.type === STAT_TYPE_INT || stat.type === STAT_TYPE_FLOAT) {
         return Boolean(stat.data[0] || stat.data[1]);
     } else if (stat.type === STAT_TYPE_ZYGOSITY) {
