@@ -186,7 +186,7 @@ export function checkNonzeroStat(stat) {
 }
 
 export function checkStatByQuery(stat, query = '') {
-    if (includes(stat.name, query)) {
+    if (includes(stat.name, query) || (stat.title && includes(stat.title, query))) {
         return true;
     } else if (stat.type === STAT_TYPE_ENUM || stat.type === STAT_TYPE_STATUS) {
         return stat.data.some(item => includes(item[0], query));
