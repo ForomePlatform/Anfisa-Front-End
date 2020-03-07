@@ -106,33 +106,32 @@ export default {
             });
         },
         hasFiltered(subStat) {
-            if (this.searchQuery) {
-                const query = this.searchQuery.toLowerCase();
+            if (this.searchQuery.trim()) {
+                const query = this.searchQuery.toLowerCase().trim();
                 let array = subStat.data;
                 if (subStat.type === 'zygosity') {
                     // INHERITANCE - custom handler
                     array = array.variants.concat(array.family);
                 }
-                const result = array.filter((item) => {
+                return array.some((item) => {
                     if (Array.isArray(item)) {
                         const nonCheckedRes = this.nonzeroChecked ? item[1] : true;
                         return nonCheckedRes && item[0].toLowerCase().includes(query);
                     }
                     return false;
                 });
-                return !!result.length;
             }
             return false;
         },
         hasSecondaryFiltered(data) {
-            return !!data.filter(item => (item.name ? item.name.toLowerCase()
-                .includes(this.searchQuery.toLowerCase()) : false)).length;
+            return data.some(item => item.name && item.name.toLowerCase()
+                .includes(this.searchQuery.toLowerCase()));
         },
         hasPrimaryFiltered(data) {
             if (data.data && Array.isArray(data.data)) {
-                const filter = data.data.filter(item => (Array.isArray(item) ?
-                    this.hasFiltered(data) : this.hasFiltered(item)));
-                return filter.length ? true : this.hasSecondaryFiltered(data.data);
+                return data.data.some(item =>
+                    (Array.isArray(item) ? this.hasFiltered(data) : this.hasFiltered(item)))
+                        || this.hasSecondaryFiltered(data.data);
             }
             return false;
         },
