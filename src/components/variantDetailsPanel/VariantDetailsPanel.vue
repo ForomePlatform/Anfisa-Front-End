@@ -122,9 +122,9 @@ export default {
             this.saveLayout();
         },
         hasFiltered(table, query) {
-            if (query.length < 3 || table.title.includes('VCF')) {
+            /* if (table.title.includes('VCF')) {
                 return 0;
-            }
+            } */
             const result = table.title.toLowerCase().includes(query) ? 1 : 0;
             return result + table.data.filter(item =>
                 item[0].data && item[0].data.toLowerCase().includes(query)).length;
@@ -155,11 +155,12 @@ export default {
             if (query.length < 3) {
                 return;
             }
-            this.resultOfSearch = this.layout.reduce((previous, item, index) => {
-                const result = this.hasFiltered(this.variantDetails[item.name], query);
-                this.layout[index].expanded = !!result;
-                return previous + result;
-            }, 0);
+            this.resultOfSearch = this.layout.filter(item => item.name !== 'VCF')
+                .reduce((previous, item, index) => {
+                    const result = this.hasFiltered(this.variantDetails[item.name], query);
+                    this.layout[index].expanded = !!result;
+                    return previous + result;
+                }, 0);
         },
     },
 };
