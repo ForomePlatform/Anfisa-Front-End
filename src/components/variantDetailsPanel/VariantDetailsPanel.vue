@@ -125,6 +125,7 @@ export default {
             /* if (table.title.includes('VCF')) {
                 return 0;
             } */
+            console.log(table);
             const result = table.title.toLowerCase().includes(query) ? 1 : 0;
             return result + table.data.filter(item =>
                 item[0].data && item[0].data.toLowerCase().includes(query)).length;
