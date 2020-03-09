@@ -32,6 +32,7 @@
                                 v-html="cell.data ? cell.data : cell"
                                 :title="cell.title ? cell.title : false"
                                 v-bind:key="index"
+                                :class="{'cell--selected':isSelected(cell)}"
                                 nowrap
                             />
                         </tr>
@@ -57,6 +58,19 @@ export default {
     },
     components: {
         BaseScrollHorizontal,
+    },
+    computed: {
+        query() {
+            return this.$store.state.variantDetailsFilterValue.toLowerCase().trim();
+        },
+    },
+    methods: {
+        isSelected(cell) {
+            if (this.query.length < 3) {
+                return false;
+            }
+            return !!cell.data && cell.data.toLowerCase().includes(this.query);
+        },
     },
 };
 </script>
@@ -180,6 +194,10 @@ export default {
     .colhead {
         color: #1a3e6c !important;
         font-weight: bold;
+    }
+
+    .cell--selected {
+        background-color:#a4b6c5;
     }
 
 </style>

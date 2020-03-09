@@ -8,7 +8,16 @@
                 <td v-html="item[1]"/>
             </tr>
         </table>
-        <TopFixedPanelTags />
+        <div class="annotation-table-wrapper">
+            <TopFixedPanelTags />
+            <input
+                class="variant-details__search"
+                v-model="variantDetailsFilterValue"
+                placeholder="Search in Variant Details"
+                title="Input at least 3 symbols"
+            />
+            <span class="variant-details__label">{{ searchLabel }}</span>
+        </div>
     </div>
 </template>
 
@@ -26,9 +35,33 @@ export default {
     },
     props: {
         data: Array,
+        resultOfSearch: Number,
     },
     components: {
         TopFixedPanelTags,
+    },
+    computed: {
+        variantDetailsFilterValue: {
+            get() {
+                return this.$store.state.variantDetailsFilterValue;
+            },
+            set(value) {
+                this.$store.commit('setVariantDetailsFilterValue', value);
+            },
+        },
+        searchLabel() {
+            const query = this.$store.state.variantDetailsFilterValue.trim();
+            let label = '';
+            if (!query) {
+                label = '';
+            } else if (query.length < 3) {
+                label = 'Input at least 3 symbols';
+            } else {
+                const matches = `match${this.resultOfSearch === 1 ? '' : 'es'}`;
+                label = `Found ${this.resultOfSearch} ${matches}`;
+            }
+            return label;
+        },
     },
     mounted() {
         this.adjustWidth();
@@ -45,7 +78,7 @@ export default {
         position: fixed;
         display: flex;
         flex-direction: row;
-        height: 84px;
+        height: 104px;
         overflow-y: auto;
         background-color: #fff;
         margin: 0 10px 0 10px;
@@ -54,6 +87,12 @@ export default {
         box-shadow: 0px 12px 24px rgba(24,64,104,0.09);
         box-sizing: border-box;
         z-index: 3;
+    }
+    .annotation-table-wrapper {
+        margin-left: 10px;
+        padding-left: 10px;
+        border-left: dotted 1px #DCDCDC;
+        line-height: 18px;
     }
     .annotation-table {
         flex: 0 0 220px;
@@ -64,6 +103,32 @@ export default {
         }
         td {
             overflow: hidden;
+        }
+    }
+    .variant-details {
+        &__search {
+            flex: 1;
+            border: none;
+            font-size: 12px;
+            line-height: 16px;
+            margin-left: 4px;
+            width: 150px;
+            font-size: 12px;
+            letter-spacing: 0px;
+            &:focus {
+                border: none;
+                outline: none;
+            }
+            &::-webkit-input-placeholder {color: #babfc3; font-size: 12px;}
+            &::-moz-placeholder          {color: #babfc3; font-size: 12px;}
+            &:-moz-placeholder           {color: #babfc3; font-size: 12px;}
+            &:-ms-input-placeholder      {color: #babfc3; font-size: 12px;}
+        }
+
+        &__label {
+            font-size: 12px;
+            letter-spacing: 0px;
+            color: #586978;
         }
     }
 </style>
