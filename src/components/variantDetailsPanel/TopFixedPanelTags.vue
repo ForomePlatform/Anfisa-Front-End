@@ -81,10 +81,8 @@ export default {
 
 <style lang="scss" scoped>
     .tags-panel {
-        margin-left: 10px;
-        padding-left: 10px;
-        border-left: dotted 1px #DCDCDC;
-        line-height: 18px;
+        border-bottom: 1px dotted #DCDCDC;
+        padding-bottom: 4px;
         &_input {
             flex: 1;
             border: none;

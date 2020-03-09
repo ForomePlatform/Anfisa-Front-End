@@ -40,6 +40,7 @@ export default new Vuex.Store({
         version: '',
         listLoading: false,
         tagFilterValue: '',
+        variantDetailsFilterValue: '',
         filterSearchQuery: '',
         annotations: {
             showFinished: false,

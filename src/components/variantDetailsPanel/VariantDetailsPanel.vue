@@ -1,6 +1,10 @@
 <template>
     <div class="variant-details">
-        <TopFixedPanel v-if="isSelected" :data="annotation" />
+        <TopFixedPanel
+            v-if="isSelected"
+            :data="annotation"
+            :resultOfSearch="resultOfSearch"
+        />
         <BaseFixedButton
           v-if="isSelected"
           :onClick="openNote"
@@ -72,6 +76,7 @@ export default {
         return {
             showNotes: false,
             layout: JSON.parse(JSON.stringify(DEFAULT_TABLES_LAYOUT)),
+            resultOfSearch: 0,
         };
     },
     components: {
@@ -87,6 +92,9 @@ export default {
     computed: {
         variantDetails() {
             return this.$store.state.variantDetails;
+        },
+        variantDetailsFilterValue() {
+            return this.$store.state.variantDetailsFilterValue.trim().toLowerCase();
         },
         annotation() {
             return this.$store.getters.annotation;
@@ -113,6 +121,17 @@ export default {
             item.expanded = Vue.set(item, 'expanded', !item.expanded);
             this.saveLayout();
         },
+        hasFiltered(group, query) {
+            if (!query) {
+                return false;
+            }
+            if (group.title === 'VCF') {
+                return false;
+            }
+            const result = group.title.toLowerCase().includes(query) ? 1 : 0;
+            return result + group.data.filter(item =>
+                item[0].data && item[0].data.toLowerCase().includes(query)).length;
+        },
     },
     mounted() {
         const tablesConfig = localStorage.getItem('tables-config');
@@ -134,6 +153,18 @@ export default {
             this.layout = JSON.parse(JSON.stringify(DEFAULT_TABLES_LAYOUT));
         });
     },
+    watch: {
+        variantDetailsFilterValue(query) {
+            if (query.length < 3) {
+                return;
+            }
+            this.resultOfSearch = this.layout.reduce((previous, item, index) => {
+                const result = this.hasFiltered(this.variantDetails[item.name], query);
+                this.layout[index].expanded = !!result;
+                return previous + result;
+            }, 0);
+        },
+    },
 };
 </script>
 
@@ -144,7 +175,7 @@ export default {
         overflow-y: scroll;
         background-color: #f9f4e0;
         &_tables {
-            margin-top: 100px;
+            margin-top: 130px;
         }
     }
     .fixed-button {
