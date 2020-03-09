@@ -122,7 +122,6 @@ export default {
             this.saveLayout();
         },
         hasFiltered(table, query) {
-            console.log(table);
             if (!table || table.title.includes('VCF')) {
                 return 0;
             }
@@ -156,13 +155,11 @@ export default {
             if (query.length < 3) {
                 return;
             }
-            console.log(this.variantDetails);
-            this.resultOfSearch = this.layout.filter(item => item.name !== 'VCF')
-                .reduce((previous, item, index) => {
-                    const result = this.hasFiltered(this.variantDetails[item.name], query);
-                    this.layout[index].expanded = !!result;
-                    return previous + result;
-                }, 0);
+            this.resultOfSearch = this.layout.reduce((previous, item, index) => {
+                const result = this.hasFiltered(this.variantDetails[item.name], query);
+                this.layout[index].expanded = !!result;
+                return previous + result;
+            }, 0);
         },
     },
 };
