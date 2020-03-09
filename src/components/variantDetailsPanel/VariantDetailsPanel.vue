@@ -122,17 +122,16 @@ export default {
             this.saveLayout();
         },
         hasFiltered(table, query) {
-            /* if (table.title.includes('VCF')) {
-                return 0;
-            } */
             console.log(table);
+            if (!table || table.title.includes('VCF')) {
+                return 0;
+            }
             const result = table.title.toLowerCase().includes(query) ? 1 : 0;
             return result + table.data.filter(item =>
                 item[0].data && item[0].data.toLowerCase().includes(query)).length;
         },
     },
     mounted() {
-        console.log(this.variantDetails);
         const tablesConfig = localStorage.getItem('tables-config');
         if (tablesConfig) {
             this.layout = JSON.parse(tablesConfig);
@@ -157,6 +156,7 @@ export default {
             if (query.length < 3) {
                 return;
             }
+            console.log(this.variantDetails);
             this.resultOfSearch = this.layout.filter(item => item.name !== 'VCF')
                 .reduce((previous, item, index) => {
                     const result = this.hasFiltered(this.variantDetails[item.name], query);
