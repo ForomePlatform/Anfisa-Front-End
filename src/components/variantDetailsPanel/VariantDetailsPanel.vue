@@ -132,6 +132,7 @@ export default {
         },
     },
     mounted() {
+        console.log(this.variantDetails);
         const tablesConfig = localStorage.getItem('tables-config');
         if (tablesConfig) {
             this.layout = JSON.parse(tablesConfig);
