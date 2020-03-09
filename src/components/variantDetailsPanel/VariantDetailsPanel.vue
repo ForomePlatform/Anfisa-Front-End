@@ -122,10 +122,7 @@ export default {
             this.saveLayout();
         },
         hasFiltered(group, query) {
-            if (!query) {
-                return 0;
-            }
-            if (group.title === 'VCF') {
+            if (query.length < 3 || (group.title && group.title === 'VCF')) {
                 return 0;
             }
             const result = group.title.toLowerCase().includes(query) ? 1 : 0;
