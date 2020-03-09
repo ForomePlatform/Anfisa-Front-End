@@ -122,6 +122,7 @@ export default {
             this.saveLayout();
         },
         hasFiltered(group, query) {
+            console.log(group.title);
             if (query.length < 3 || group.title.trim() === 'VCF') {
                 return 0;
             }
