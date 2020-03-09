@@ -121,13 +121,13 @@ export default {
             item.expanded = Vue.set(item, 'expanded', !item.expanded);
             this.saveLayout();
         },
-        hasFiltered(group, query) {
+        hasFiltered(table, query) {
             /* console.log(group.title);
             if (query.length < 3 || group.title.includes('VCF')) {
                 return 0;
             } */
-            const result = group.title.toLowerCase().includes(query) ? 1 : 0;
-            return result + group.data.filter(item =>
+            const result = table.title.toLowerCase().includes(query) ? 1 : 0;
+            return result + table.data.filter(item =>
                 item[0].data && item[0].data.toLowerCase().includes(query)).length;
         },
     },
