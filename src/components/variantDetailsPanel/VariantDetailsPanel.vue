@@ -123,10 +123,10 @@ export default {
         },
         hasFiltered(group, query) {
             if (!query) {
-                return false;
+                return 0;
             }
             if (group.title === 'VCF') {
-                return false;
+                return 0;
             }
             const result = group.title.toLowerCase().includes(query) ? 1 : 0;
             return result + group.data.filter(item =>
