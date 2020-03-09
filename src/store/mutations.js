@@ -189,6 +189,10 @@ export function setTagFilterValue(state, value) {
     state.tagFilterValue = value;
 }
 
+export function setVariantDetailsFilterValue(state, value) {
+    state.variantDetailsFilterValue = value;
+}
+
 export function clearTagFilterValue(state) {
     state.tagFilterValue = '';
 }
