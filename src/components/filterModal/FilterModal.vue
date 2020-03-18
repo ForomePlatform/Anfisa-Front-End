@@ -136,8 +136,9 @@ export default {
             this.advancedView = !this.advancedView;
         },
         onFilterLoad(preset, conditions) {
+            const conditionsCopy = JSON.parse(JSON.stringify(conditions));
             this.$store.commit('setPreset', preset);
-            this.$store.commit('setAllCurrentConditions', conditions);
+            this.$store.commit('setAllCurrentConditions', conditionsCopy);
             this.$store.dispatch('getListByFilter');
             this.loadView = false;
         },
