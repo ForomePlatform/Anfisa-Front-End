@@ -1,6 +1,6 @@
 {
   "name": "anfisa-front-end",
-  "version": "0.5.14",
+  "version": "0.5.15",
   "backendVersion": "0.5.12",
   "private": true,
   "scripts": {
