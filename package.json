@@ -10,7 +10,7 @@
     "demo": "vue-cli-service build --mode demo"
   },
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "baron": "^3.0.3",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "2.0.0-rc.13",
